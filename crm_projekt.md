@@ -35,7 +35,7 @@
 *(Ez a szekció nem egy fázis, hanem folyamatosan érvényes szabálygyűjtemény. Minden munkamenetnek ellenőriznie kell, hogy az adott lépés megfelel-e ezeknek.)*
 
 - **Testreszabható mezők:** `custom_fields` definíciós tábla + JSON-alapú rugalmas tárolás a rekordokon (kontaktok, projektek), hogy fiókonként/szolgáltatás-típusonként eltérő egyedi mezőket lehessen felvenni kód-módosítás nélkül.
-- **GDPR:** hozzájárulás-nyilvántartás kontaktonként, soft delete + ütemezett végleges törlés, adatexport (CSV/JSON) funkció minden kontakt/account adatáról.
+- **GDPR:** hozzájárulás-nyilvántartás kontaktonként, soft delete + ütemezett végleges törlés, adatexport (CSV/JSON) funkció minden kontakt/account adatáról. Részletes folyamatterv (megőrzési idő, anonimizálás, export tartalma): [`docs/gdpr-terv.md`](docs/gdpr-terv.md).
 - **Verziókezelés:** Git + GitHub (ingyenes privát repó) — kötelező minden fejlesztési lépésnél, hogy visszakövethető legyen a történet.
 - **Környezetek:** lokális fejlesztői környezet ≠ éles környezet; csak tesztelt kód kerül élesbe.
 - **Jogosultságkezelés:** szerepkör-alapú (ki mit láthat/módosíthat), `account_id`-hoz kötött adatelkülönítés + egy **super admin** nézet Robnak, aki mindent lát/kezel.
@@ -47,7 +47,7 @@
 - **Karakterkódolás:** UTF-8 következetesen mindenhol (adatbázis, fájlok, API) — kiemelten a magyar ékezetes karakterek miatt (CSV-import, minden szövegmező).
 - **Titkok kezelése:** API-kulcsok, jelszavak `.env` fájlban, `.gitignore`-ral kizárva a Git-verziókezelésből — soha nem kerülnek nyilvánosan a repóba.
 - **Dokumentáció-struktúra:** `/docs` mappa a projektben, MD-fájlokkal, egyszerű szövegszerkesztővel is bővíthető. Két ág: (1) fejlesztői/AI-dokumentáció — technikai leírás a rendszer felépítéséről, ezt olvassa minden jövőbeli AI-munkamenet is; (2) felhasználói dokumentáció/súgó — ha mások is használják a CRM-et.
-- **API-dokumentáció:** automatikusan generált, ingyenes eszközzel (pl. Laravel Scribe), hogy a kódból mindig naprakész maradjon külső modulok (ajánlatkészítő, szerződéskészítő stb.) számára.
+- **API-dokumentáció:** automatikusan generált, ingyenes eszközzel (pl. Laravel Scribe), hogy a kódból mindig naprakész maradjon külső modulok (ajánlatkészítő, szerződéskészítő stb.) számára. Tervezési alap (végpont-lista modulonként, a tényleges kódolás előtt összeállítva): [`docs/api-tervek.md`](docs/api-tervek.md).
 - **Automatizált alapteszt:** kritikus funkciókhoz (pl. account-elkülönítés) automata teszt, ingyenes Laravel-eszközzel (Pest/PHPUnit), hogy jövőbeli módosítás ne törjön el meglévő működést.
 - **Verziószámozás:** a rendszer fejlődését verziószámmal követjük (pl. v0.1.0 = MVP), ahogy a TextBuilder projektnél is.
 - **Teszt-personák:** mivel univerzális a rendszer, a fejlesztés/tesztelés több kitalált felhasználói profillal történik (pl. coach, webdesigner, "egészen más szakma"), hogy a rugalmasság ténylegesen mindenkinek működjön, ne csak Rob use case-ének.
@@ -121,6 +121,12 @@
   - A 7. szekció (Nyitott kérdések) frissítve: a pipeline-kérdés "piszkozat kész" állapotba került; a számlázás kérdésre javasolt egy alapértelmezett irányt (MVP-ben csak követés-státusz, tényleges számlagenerálás későbbi integrációs modul) — nem kritikus, felülbírálható döntésként, hogy ne blokkolja a haladást.
   - **Git verziókövetés elindítva:** a `d:\AI\CRM` mappa eddig nem volt Git-repó — most inicializálva lett (`git init`), `.gitignore` létrehozva (kizárva `.env`, `/vendor`, `/node_modules` stb. a jövőbeli Laravel-projekthez), és ez a munkamenet lett az első commit. Ezután minden lényegesebb változtatás után az AI automatikusan commitol (lásd 3. szekció Git-stratégia).
   **Következő lépés:** további nyitott kérdéseken/dokumentáción lehet haladni Laravel nélkül (pl. REST API végpont-lista részletes kidolgozása, admin-felület wireframe terve a service_types/pipelines/custom_fields szerkesztéséhez), amíg Rob nem jelzi, hogy másik gépen folytatja és telepíthető a Laragon.
+  **Folytatás, még ugyanebben a munkamenetben, tovább dolgozva:**
+  - [`docs/api-tervek.md`](docs/api-tervek.md) — az `architektura.md`-ben vázolt belső REST API modulonkénti végpont-listája (Contacts, Pipelines, Projects, CustomFields, Integrations, jövőbeli coach-kereső webhook/SSO, super admin), hogy amint kész a Laravel-váz, gyorsan route-okká/kontrollerekké alakítható legyen.
+  - [`docs/gdpr-terv.md`](docs/gdpr-terv.md) — konkrét folyamatterv: hozzájárulás-rögzítés, adatexport tartalma és végpontja, kétlépcsős törlés (azonnali soft delete + **javasolt 30 napos** megőrzés utáni automatikus, ütemezett végleges anonimizálás), azzal a feltételezéssel, hogy az üzleti/pénzügyi rekordok (deals/projects) a személyes adat törlése után is megmaradnak számviteli okból — **ezt érdemes lesz könyvelővel/jogásszal megerősíttetni élesítés előtt, nem blokkolja az MVP-t**.
+  - [`docs/admin-felulet-terv.md`](docs/admin-felulet-terv.md) — szöveges wireframe-terv arról, milyen "Beállítások" felületen (Szolgáltatás-típusok / Pipeline-ok / Egyedi mezők szerkesztő) tudja majd Rob ténylegesen, kattintgatva, kódolás nélkül létrehozni egy vadonatúj szakmai profilt — ez a konkrét válasz a "ne kelljen fejlesztés" elvárásra. MVP-ben egyszerűsítésként javasolva egy Artisan konzol-parancs vagy közvetlen adatbázis-szerkesztés (phpMyAdmin, ami már elérhető `D:\phpMyAdmin-5.1.1-all-languages` alatt) is elég lehet, amíg a teljes admin-UI el nem készül.
+  Mind a négy új `docs/` fájl és a `crm_projekt.md` kapcsolódó bővítései (3., 4. szekció linkek) egy második commitban kerülnek be a git-történetbe.
+  **Következő lépés:** ha Rob visszatér és jelzi a gépváltást, először a környezet-ellenőrzés (10. szekció) jön, utána a `pipeline-sablonok.md` és a nyitott kérdések közös átbeszélése, majd a tényleges Laravel-projekt inicializálása a most lefektetett `schema.sql`/`api-tervek.md` alapján.
 
 ---
 
