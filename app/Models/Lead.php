@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Models;
+
+use App\Models\Concerns\BelongsToAccount;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * Még nem minősített érdeklődő — a Contacttól külön, amíg nem derül ki, hogy valódi
+ * kapcsolat-e (CRM best practice, pl. Salesforce Lead objektuma). "Konvertáláskor"
+ * (ld. LeadController::convert) lesz belőle Contact, opcionálisan Deal is.
+ */
+#[Fillable([
+    'account_id', 'owner_user_id', 'service_type_id', 'first_name', 'last_name', 'email',
+    'phone', 'company', 'source', 'status', 'score', 'notes', 'custom_fields',
+    'converted_at', 'converted_contact_id', 'converted_deal_id',
+])]
+class Lead extends Model
+{
+    use BelongsToAccount, HasFactory, SoftDeletes;
+
+    protected function casts(): array
+    {
+        return [
+            'custom_fields' => 'array',
+            'converted_at' => 'datetime',
+        ];
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_user_id');
+    }
+
+    public function serviceType(): BelongsTo
+    {
+        return $this->belongsTo(ServiceType::class);
+    }
+
+    public function convertedContact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class, 'converted_contact_id');
+    }
+
+    public function convertedDeal(): BelongsTo
+    {
+        return $this->belongsTo(Deal::class, 'converted_deal_id');
+    }
+
+    public function tasks(): MorphMany
+    {
+        return $this->morphMany(Task::class, 'taskable');
+    }
+
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'noteable');
+    }
+}

@@ -29,6 +29,7 @@ Ez azt jelenti: ha Rob a coachlab.hu-n túl pl. egy fényképészt vagy egy kön
 | subscription_tier | varchar | `free` / `basic` / `premium` — később bővíthető |
 | locale | varchar | alapértelmezett nyelv (pl. `hu`) |
 | timezone | varchar | |
+| theme_palette | varchar default 'forest' | `forest` (zöld) / `salesforce` (kék/fehér) — fiók-szintű vizuális identitás, lásd `szinvilag-terv.md` |
 | created_at / updated_at | timestamp | |
 | deleted_at | timestamp nullable | soft delete (GDPR) |
 
@@ -42,6 +43,7 @@ Ez azt jelenti: ha Rob a coachlab.hu-n túl pl. egy fényképészt vagy egy kön
 | role | varchar | `owner` / `admin` / `member` — egyszerű, később finomítható jogosultsági mátrixra |
 | is_super_admin | boolean default false | csak Robnak — mindent lát/kezel, account-határok felett |
 | locale | varchar | |
+| theme_mode | varchar nullable | `NULL` = a paletta alapértelmezése, vagy `dark`/`light` — személyes felülbírálás a fiók palettáján belül |
 | created_at / updated_at / deleted_at | | |
 
 ### `service_types`
@@ -117,6 +119,29 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | gdpr_consent_note | text nullable | mihez, milyen formában (GDPR nyilvántartás) |
 | custom_fields | json nullable | |
 | created_at / updated_at / deleted_at | | soft delete kötelező (GDPR törlési igény miatt is) |
+
+### `leads` (még nem minősített érdeklődők)
+
+*CRM best practice (2026-07-25, Rob kérése) — a klasszikus Salesforce Lead objektum egyszerűsített megfelelője: egy lead még NEM Contact, amíg ki nem derül, hogy valódi, munkára érdemes kapcsolat-e. A "konvertálás" (`LeadController::convert`) Contactot hoz létre belőle, és ha van megadva érdeklődési terület (`service_type_id`), az adott szolgáltatás alapértelmezett pipeline-jának első lépésén egy Dealt is.*
+
+| Oszlop | Típus | Megjegyzés |
+|---|---|---|
+| id | bigint PK | |
+| account_id | bigint FK | |
+| owner_user_id | bigint FK nullable | |
+| service_type_id | bigint FK nullable | milyen szolgáltatás iránt érdeklődik |
+| first_name, last_name | varchar | |
+| email, phone | varchar nullable | |
+| company | varchar nullable | |
+| source | varchar nullable | pl. "weboldal", "ajánlás", "hideg hívás" |
+| status | varchar default 'new' | `new` / `contacted` / `qualified` / `unqualified` / `converted` |
+| score | tinyint nullable | egyszerű 0-100 lead-pontszám (CRM best practice — a jövőben finomítható tényleges pontozási szabályokkal) |
+| notes | text nullable | |
+| custom_fields | json nullable | |
+| converted_at | timestamp nullable | |
+| converted_contact_id | bigint FK nullable → contacts.id | |
+| converted_deal_id | bigint FK nullable → deals.id | |
+| created_at / updated_at / deleted_at | | |
 
 ### `deals` (üzletek/lehetőségek egy pipeline-on belül)
 

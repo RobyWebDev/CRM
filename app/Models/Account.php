@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * A tenant — egy coach/webdesigner/SEO-s teljes fiókja. Minden más tábla
  * account_id-n keresztül ehhez kötődik (lásd adatmodell.md).
  */
-#[Fillable(['name', 'slug', 'owner_user_id', 'subscription_tier', 'locale', 'timezone'])]
+#[Fillable(['name', 'slug', 'owner_user_id', 'subscription_tier', 'locale', 'timezone', 'theme_palette'])]
 class Account extends Model
 {
     use HasFactory, SoftDeletes;
@@ -36,6 +36,11 @@ class Account extends Model
     public function pipelines(): HasMany
     {
         return $this->hasMany(Pipeline::class);
+    }
+
+    public function leads(): HasMany
+    {
+        return $this->hasMany(Lead::class);
     }
 
     public function contacts(): HasMany

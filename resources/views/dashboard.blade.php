@@ -18,7 +18,11 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-fluid-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-fluid-sm">
+                <a href="{{ route('leads.index') }}" class="bg-surface hover:bg-surface-hover border border-line rounded-lg p-fluid-md transition">
+                    <p class="text-fluid-xs text-ink-muted uppercase tracking-wide">{{ __('Nyitott leadek') }}</p>
+                    <p class="text-fluid-2xl font-semibold text-ink mt-1">{{ $openLeadsCount ?? 0 }}</p>
+                </a>
                 <a href="{{ route('contacts.index') }}" class="bg-surface hover:bg-surface-hover border border-line rounded-lg p-fluid-md transition">
                     <p class="text-fluid-xs text-ink-muted uppercase tracking-wide">{{ __('Kontaktok') }}</p>
                     <p class="text-fluid-2xl font-semibold text-ink mt-1">{{ $contactsCount ?? 0 }}</p>

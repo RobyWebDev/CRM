@@ -15,6 +15,12 @@
 
             <div class="p-4 sm:p-8 bg-surface border border-line shadow sm:rounded-lg">
                 <div class="max-w-xl">
+                    @include('profile.partials.update-theme-form')
+                </div>
+            </div>
+
+            <div class="p-4 sm:p-8 bg-surface border border-line shadow sm:rounded-lg">
+                <div class="max-w-xl">
                     @include('profile.partials.update-password-form')
                 </div>
             </div>

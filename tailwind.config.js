@@ -29,6 +29,7 @@ export default {
                 line: 'var(--border-subtle)',
                 'line-strong': 'var(--border-strong)',
                 accent: 'var(--accent-primary)',
+                'accent-ink': 'var(--accent-ink)',
                 success: 'var(--status-success)',
                 danger: 'var(--status-danger)',
                 warning: 'var(--status-warning)',

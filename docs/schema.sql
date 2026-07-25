@@ -17,6 +17,7 @@ CREATE TABLE accounts (
     subscription_tier VARCHAR(50) NOT NULL DEFAULT 'free',
     locale VARCHAR(10) NOT NULL DEFAULT 'hu',
     timezone VARCHAR(64) NOT NULL DEFAULT 'Europe/Budapest',
+    theme_palette VARCHAR(30) NOT NULL DEFAULT 'forest', -- forest / salesforce — lásd szinvilag-terv.md
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
     deleted_at TIMESTAMP NULL
@@ -35,6 +36,7 @@ CREATE TABLE users (
     role VARCHAR(50) NOT NULL DEFAULT 'member', -- owner / admin / member
     is_super_admin BOOLEAN NOT NULL DEFAULT FALSE, -- csak Robnak: minden accountot lát/kezel
     locale VARCHAR(10) NOT NULL DEFAULT 'hu',
+    theme_mode VARCHAR(10) NULL, -- NULL = paletta alapértelmezése, vagy 'dark'/'light' — személyes felülbírálás
     remember_token VARCHAR(100) NULL,
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
@@ -169,6 +171,38 @@ CREATE TABLE deals (
     CONSTRAINT fk_deals_contact FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE SET NULL,
     CONSTRAINT fk_deals_organization FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL,
     CONSTRAINT fk_deals_owner FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- leads — még nem minősített érdeklődők (CRM best practice, pl. Salesforce Lead
+-- objektuma) — "konvertáláskor" Contact (+ opcionálisan Deal) lesz belőle
+-- ============================================================
+CREATE TABLE leads (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    account_id BIGINT UNSIGNED NOT NULL,
+    owner_user_id BIGINT UNSIGNED NULL,
+    service_type_id BIGINT UNSIGNED NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NULL,
+    email VARCHAR(255) NULL,
+    phone VARCHAR(50) NULL,
+    company VARCHAR(255) NULL,
+    source VARCHAR(255) NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'new', -- new / contacted / qualified / unqualified / converted
+    score TINYINT UNSIGNED NULL, -- egyszerű 0-100 lead-pontszám
+    notes TEXT NULL,
+    custom_fields JSON NULL,
+    converted_at TIMESTAMP NULL,
+    converted_contact_id BIGINT UNSIGNED NULL,
+    converted_deal_id BIGINT UNSIGNED NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL,
+    CONSTRAINT fk_leads_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+    CONSTRAINT fk_leads_owner FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL,
+    CONSTRAINT fk_leads_service_type FOREIGN KEY (service_type_id) REFERENCES service_types(id) ON DELETE SET NULL,
+    CONSTRAINT fk_leads_converted_contact FOREIGN KEY (converted_contact_id) REFERENCES contacts(id) ON DELETE SET NULL,
+    CONSTRAINT fk_leads_converted_deal FOREIGN KEY (converted_deal_id) REFERENCES deals(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================

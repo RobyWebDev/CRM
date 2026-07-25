@@ -29,7 +29,7 @@
                     <a href="{{ route('deals.index', ['pipeline' => $p->id]) }}"
                        role="tab"
                        aria-selected="{{ $pipeline && $pipeline->id === $p->id ? 'true' : 'false' }}"
-                       class="px-4 py-2 rounded-md text-fluid-xs font-medium transition {{ $pipeline && $pipeline->id === $p->id ? 'bg-accent text-page' : 'bg-surface text-ink-soft hover:bg-surface-hover' }}">
+                       class="px-4 py-2 rounded-md text-fluid-xs font-medium transition {{ $pipeline && $pipeline->id === $p->id ? 'bg-accent text-accent-ink' : 'bg-surface text-ink-soft hover:bg-surface-hover' }}">
                         {{ $p->name }}
                     </a>
                 @endforeach
@@ -40,10 +40,39 @@
                     {{ __('Nincs még pipeline beállítva.') }}
                 </div>
             @else
-                {{-- Kanban tábla --}}
-                <div class="flex gap-fluid-sm overflow-x-auto pb-fluid-sm">
+                {{--
+                    Kanban tábla — húzd-és-ejtsd a kártyákat másik oszlopba (natív HTML5 DnD + Alpine).
+                    A kártyákon lévő "mozgatás" select ugyanezt a végpontot hívja: WCAG 2.5.7 miatt a
+                    húzás-alapú műveletnek kell legyen egyetlen-mutatóeszközös (kattintásos) alternatívája
+                    is — a drag-and-drop ettől függetlenül a fő, gyors interakció marad.
+                --}}
+                <div class="flex gap-fluid-sm overflow-x-auto pb-fluid-sm"
+                     x-data="{
+                        draggedId: null,
+                        dragOverStage: null,
+                        async moveTo(stageId) {
+                            if (! this.draggedId) return;
+                            const dealId = this.draggedId;
+                            this.draggedId = null;
+                            this.dragOverStage = null;
+                            const res = await fetch(`/deals/${dealId}/move`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                    'Accept': 'application/json',
+                                },
+                                body: `pipeline_stage_id=${stageId}`,
+                            });
+                            if (res.ok) { window.location.reload(); }
+                        }
+                     }">
                     @foreach ($pipeline->stages as $stage)
-                        <div class="flex-shrink-0 w-72 bg-sunken border border-line rounded-lg p-fluid-xs">
+                        <div class="flex-shrink-0 w-72 bg-sunken border rounded-lg p-fluid-xs transition-colors"
+                             :class="dragOverStage === {{ $stage->id }} ? 'border-line-strong' : 'border-line'"
+                             @dragover.prevent="dragOverStage = {{ $stage->id }}"
+                             @dragleave="dragOverStage = null"
+                             @drop.prevent="moveTo({{ $stage->id }})">
                             <div class="flex items-center justify-between px-2 py-1 mb-2">
                                 <h3 class="font-semibold text-fluid-xs uppercase tracking-wide text-ink-soft">
                                     {{ $stage->name }}
@@ -53,7 +82,9 @@
 
                             <div class="space-y-2">
                                 @foreach ($stage->deals as $deal)
-                                    <div class="bg-surface border border-line rounded-md p-fluid-xs">
+                                    <div class="bg-surface border border-line rounded-md p-fluid-xs cursor-grab active:cursor-grabbing"
+                                         draggable="true"
+                                         @dragstart="draggedId = {{ $deal->id }}">
                                         <a href="{{ route('deals.edit', $deal) }}" class="block font-medium text-ink text-fluid-base hover:text-accent">
                                             {{ $deal->title }}
                                         </a>

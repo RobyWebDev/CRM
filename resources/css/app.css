@@ -3,12 +3,18 @@
 @tailwind utilities;
 
 /*
- * Színvilág (docs/szinvilag-terv.md) + fluid tipográfia/spacing (docs/tipografia-layout-terv.md).
- * Minden érték kétszer szerepel: hex fallback először, oklch() másodszor felülírja
- * azokban a böngészőkben, amik értik — nincs szükség @supports-ra, a kaszkád intézi.
+ * Több-paletta témarendszer — lásd docs/szinvilag-terv.md.
+ * `data-palette` választja a paletta-CSALÁDOT (forest = cib.hu-zöld ihletésű, salesforce =
+ * Salesforce Lightning-ihletésű világoskék/fehér), `data-theme` a sötét/világos MÓDOT azon belül.
+ * Mindkét attribútum hiánya = forest + dark (az eredeti alapértelmezés, nincs migráció a
+ * meglévő felhasználóknak). Minden szín kétszer szerepel: hex fallback, majd oklch() felülírja,
+ * ahol a böngésző érti — nincs szükség @supports-ra, a kaszkád intézi.
  */
+
+/* ============================================================
+   FOREST paletta — sötét (alapértelmezett, nincs attribútum kell hozzá)
+   ============================================================ */
 :root {
-    /* Sötét téma — alapértelmezett, nincs szükség data-theme attribútumra */
     --bg-sunken: #05261a;
     --bg-sunken: oklch(24% 0.045 165);
     --bg-page: #0f3f2e;
@@ -32,6 +38,7 @@
 
     --accent-primary: #efd62f;
     --accent-primary: oklch(87% 0.17 100);
+    --accent-ink: #0f3f2e; /* szöveg accent-hátterű gombon */
 
     --status-success: #6fd087;
     --status-success: oklch(78% 0.14 150);
@@ -42,7 +49,7 @@
     --status-info: #77cce6;
     --status-info: oklch(80% 0.09 220);
 
-    /* Fluid típusskála */
+    /* Fluid típusskála — palettától független, lásd tipografia-layout-terv.md */
     --step--1: clamp(0.875rem, 0.85rem + 0.1vw, 0.95rem);
     --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
     --step-1: clamp(1.125rem, 1.05rem + 0.35vw, 1.3rem);
@@ -58,8 +65,10 @@
     --space-xl: clamp(3rem, 2.3rem + 3.5vw, 5rem);
 }
 
-/* Világos téma — később kapcsolható (pl. felhasználói beállítás), lásd szinvilag-terv.md 4. szekció */
-[data-theme='light'] {
+/* ============================================================
+   FOREST paletta — világos (data-theme="light", data-palette nélkül vagy palette="forest")
+   ============================================================ */
+[data-theme='light']:not([data-palette='salesforce']) {
     --bg-page: #f7faf9;
     --bg-surface: #ffffff;
     --bg-surface-hover: #eef4f1;
@@ -70,6 +79,78 @@
     --border-subtle: #d7e4de;
     --border-strong: #0e6247;
     --accent-primary: #0b4a35;
+    --accent-ink: #ffffff;
+
+    /* Fontos javítás: a sötét témára hangolt világos státusz-színek 1.5-2:1 kontrasztot adtak
+       fehér háttéren (WCAG-bukás) — ezek sötétebb, világos háttérre tervezett változatok. */
+    --status-success: #1f7a3d;
+    --status-danger: #c22b1e;
+    --status-warning: #8a5a00;
+    --status-info: #0f6e8c;
+}
+
+/* ============================================================
+   SALESFORCE paletta — világos (a paletta természetes/alap módja, Salesforce Lightning
+   Design System valós tokenjeiből: #0176d3 kék, #f3f3f3/#e5e5e5 szürkék stb.)
+   ============================================================ */
+[data-palette='salesforce'] {
+    --bg-page: #f3f8fd;
+    --bg-page: oklch(97.7% 0.009 248);
+    --bg-surface: #ffffff;
+    --bg-surface-hover: #eef4ff;
+    --bg-sunken: #f3f3f3;
+    --bg-sunken: oklch(96% 0 89.9);
+
+    --text-primary: #181818;
+    --text-primary: oklch(20.9% 0 89.9);
+    --text-secondary: #3e3e3c;
+    --text-secondary: oklch(36.3% 0.003 106.6);
+    --text-muted: #5c5c5c;
+    --text-muted: oklch(47.5% 0 89.9);
+
+    --border-subtle: #e5e5e5;
+    --border-strong: #706e6b;
+    --border-strong: oklch(53.9% 0.005 78.3);
+
+    --accent-primary: #0176d3;
+    --accent-primary: oklch(56.3% 0.167 251.9);
+    --accent-ink: #ffffff;
+
+    --status-success: #2e844a;
+    --status-danger: #ba0517;
+    --status-warning: #a86403;
+    --status-info: #0b6a6f;
+}
+
+/* ============================================================
+   SALESFORCE paletta — sötét (data-theme="dark" a salesforce paletta mellett — navy)
+   ============================================================ */
+[data-palette='salesforce'][data-theme='dark'] {
+    --bg-sunken: #001028;
+    --bg-page: #001639;
+    --bg-page: oklch(20.8% 0.075 257.3);
+    --bg-surface: #032d60;
+    --bg-surface: oklch(30.4% 0.101 256.5);
+    --bg-surface-hover: #014486;
+    --bg-surface-hover: oklch(39.1% 0.126 254.5);
+
+    --text-primary: #ffffff;
+    --text-secondary: #c9d8ec;
+    --text-secondary: oklch(87.7% 0.032 255.6);
+    --text-muted: #8fa8c4;
+
+    --border-subtle: #0d3a70;
+    --border-strong: #5695c9;
+    --border-strong: oklch(64.9% 0.102 245.2);
+
+    --accent-primary: #1b96ff;
+    --accent-primary: oklch(66.5% 0.184 251);
+    --accent-ink: #001639;
+
+    --status-success: #4bce6f;
+    --status-danger: #ff8c82;
+    --status-warning: #ffb85c;
+    --status-info: #5fd4d0;
 }
 
 html {
