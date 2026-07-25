@@ -165,6 +165,8 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 
 *Külön entitás a `projects` mellett — ide tartozik pl. a marketing/SEO pipeline-okban szereplő "folyamatos kezelés / havi riportolás" lépés utáni munka, ami nem egyszeri, hanem visszatérő havi díjas szolgáltatás. Döntés: 2026-07-25, Rob választása a `crm_projekt.md` 7. szekció nyitott kérdésére (retainer vs. egyszerű mező a `projects`-en) — a tisztább, önálló fogalmat választotta.*
 
+*Pontosítás (2026-07-25, Rob): a retainer NEM csak a marketing/SEO ágra vonatkozik — webdesignnál is van havi díjas karbantartás, ugyanígy retainerként kezelendő (lásd `pipeline-sablonok.md` webdesign 9. lépés). Minden retainerhez tartozhat egy visszatérő teendő-lista: a `tasks` tábla polimorf kapcsolata (`taskable`) már ma is lehetővé teszi, hogy egy `retainer`-hez feladatokat rendeljünk (`Retainer::tasks()`). Ha a gyakorlatban kiderül, hogy minden hónapban ugyanazok a teendők ismétlődnek (pl. "havi riport elkészítése", "biztonsági mentés ellenőrzése"), egy jövőbeli finomítás lehet egy "teendő-sablon" mechanizmus, ami minden új `retainer_invoices` periódusnál automatikusan létrehozza a szokásos feladatokat — ez MVP-ben még nem szükséges, egyelőre kézzel is felvehetők a teendők.*
+
 | Oszlop | Típus | Megjegyzés |
 |---|---|---|
 | id | bigint PK | |

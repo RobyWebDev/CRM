@@ -57,7 +57,17 @@ Mobilon a fülek helyett egymás alatti szekciók, összecsukható (accordion) f
 - Minden elsődleges cselekvés-gomb ("+ Új...", "Mentés") mobilon is könnyen elérhető legyen (nem csak asztali hover-menüben).
 - Tailwind alapértelmezett breakpointjai (`sm`/`md`/`lg`) elegendők, nincs szükség egyedi breakpoint-rendszerre.
 
-## 8. Kapcsolódó dokumentumok
+## 8. Akadálymentesség / méretezhető szöveg
+
+*Rob kérése (2026-07-25): a felhasználók köre nagyon vegyes látásra nézve (Rob maga sem lát élesen, de lesznek fiatal és idősebb felhasználók is) — a felület NEM épülhet nagyon kicsi, fix méretű betűkre.*
+
+- **Relatív mértékegységek mindenhol:** CSS `rem`/`em`, soha nem fix `px` a betűméreteken — ez azt jelenti, hogy a böngésző/OS alap betűméret-beállítása (amit egy gyengénlátó felhasználó felnagyíthat) ténylegesen érvényesül a CRM-en belül is.
+- **Böngésző-nagyítás (Ctrl+/Ctrl-, pinch-zoom) soha nem tiltható le** — nincs `user-scalable=no` vagy hasonló a `viewport` meta tagben.
+- **Alapértelmezett testszöveg minimum 16px-nek megfelelő** (`1rem`), ne menjünk 14px (`0.875rem`) alá a törzsszövegben; a Tailwind alapértelmezett `text-sm`/`text-xs` osztályok csak másodlagos, nem kritikus szövegekhez (pl. időbélyeg, segédszöveg) használhatók.
+- **Kontraszt:** szürke-szürke helyett kellően sötét szöveg világos háttéren (WCAG AA irányadó, kb. 4.5:1 kontrasztarány törzsszövegre).
+- **Jövőbeli finomítás (nem MVP-blokkoló):** ha igény lesz rá, egy egyszerű "betűméret nagyítása" kapcsoló a felhasználói beállításokban (pl. egy `font_scale` preferencia a `users` táblán) — ez akkor kerüljön be, amikor a tényleges Beállítások/Profil képernyő megépül, nem kell most külön migrációt írni hozzá.
+
+## 9. Kapcsolódó dokumentumok
 
 - [`admin-felulet-terv.md`](admin-felulet-terv.md) — Beállítások képernyők.
 - [`api-tervek.md`](api-tervek.md) — a képernyők mögötti végpontok.

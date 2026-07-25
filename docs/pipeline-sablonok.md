@@ -69,7 +69,7 @@
 | 6 | Fejlesztés fázis | |
 | 7 | Ügyfél review / módosítások | |
 | 8 | Élesítés (launch) | |
-| 9 | Utókövetés / karbantartási szerződés | opcionális, külön deal is lehet |
+| 9 | Utókövetés / karbantartási szerződés | opcionális → `retainers` (havi karbantartás — lásd `adatmodell.md`; ugyanaz a retainer-mechanizmus, mint a marketing/SEO ágnál) |
 | 10 | Lezárva — sikeres / nem lett ügyfél | won / lost |
 
 **Javasolt egyedi mezők:**
