@@ -1,9 +1,103 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+/*
+ * Színvilág (docs/szinvilag-terv.md) + fluid tipográfia/spacing (docs/tipografia-layout-terv.md).
+ * Minden érték kétszer szerepel: hex fallback először, oklch() másodszor felülírja
+ * azokban a böngészőkben, amik értik — nincs szükség @supports-ra, a kaszkád intézi.
+ */
+:root {
+    /* Sötét téma — alapértelmezett, nincs szükség data-theme attribútumra */
+    --bg-sunken: #05261a;
+    --bg-sunken: oklch(24% 0.045 165);
+    --bg-page: #0f3f2e;
+    --bg-page: oklch(33% 0.06 165);
+    --bg-surface: #1c503c;
+    --bg-surface: oklch(39% 0.065 165);
+    --bg-surface-hover: #2a624b;
+    --bg-surface-hover: oklch(45% 0.07 165);
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --text-primary: #f2f6f4;
+    --text-primary: oklch(97% 0.006 165);
+    --text-secondary: #b9cdc3;
+    --text-secondary: oklch(83% 0.025 165);
+    --text-muted: #91ac9f;
+    --text-muted: oklch(72% 0.035 165);
+
+    --border-subtle: #426757;
+    --border-subtle: oklch(48% 0.05 165);
+    --border-strong: #62a98b;
+    --border-strong: oklch(68% 0.085 165);
+
+    --accent-primary: #efd62f;
+    --accent-primary: oklch(87% 0.17 100);
+
+    --status-success: #6fd087;
+    --status-success: oklch(78% 0.14 150);
+    --status-danger: #fb9890;
+    --status-danger: oklch(78% 0.12 25);
+    --status-warning: #ffc249;
+    --status-warning: oklch(85% 0.15 80);
+    --status-info: #77cce6;
+    --status-info: oklch(80% 0.09 220);
+
+    /* Fluid típusskála */
+    --step--1: clamp(0.875rem, 0.85rem + 0.1vw, 0.95rem);
+    --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    --step-1: clamp(1.125rem, 1.05rem + 0.35vw, 1.3rem);
+    --step-2: clamp(1.3rem, 1.15rem + 0.65vw, 1.6rem);
+    --step-3: clamp(1.6rem, 1.35rem + 1.1vw, 2.1rem);
+    --step-4: clamp(2rem, 1.6rem + 1.8vw, 2.75rem);
+
+    /* Fluid térköz-skála */
+    --space-xs: clamp(0.5rem, 0.45rem + 0.25vw, 0.625rem);
+    --space-sm: clamp(0.75rem, 0.65rem + 0.5vw, 1rem);
+    --space-md: clamp(1.25rem, 1.05rem + 1vw, 1.75rem);
+    --space-lg: clamp(2rem, 1.6rem + 2vw, 3rem);
+    --space-xl: clamp(3rem, 2.3rem + 3.5vw, 5rem);
+}
+
+/* Világos téma — később kapcsolható (pl. felhasználói beállítás), lásd szinvilag-terv.md 4. szekció */
+[data-theme='light'] {
+    --bg-page: #f7faf9;
+    --bg-surface: #ffffff;
+    --bg-surface-hover: #eef4f1;
+    --bg-sunken: #eef4f1;
+    --text-primary: #132b21;
+    --text-secondary: #3f5c50;
+    --text-muted: #5c7a6d;
+    --border-subtle: #d7e4de;
+    --border-strong: #0e6247;
+    --accent-primary: #0b4a35;
+}
+
+html {
+    color-scheme: dark;
+}
+[data-theme='light'] {
+    color-scheme: light;
+}
+
+body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    font-size: var(--step-0);
+}
+
+/* WCAG 2.4.11 — a fókusz-jelzés sosem takarható, és csak billentyűzetes navigációnál jelenik meg */
+:focus-visible {
+    outline: 3px solid var(--border-strong);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
