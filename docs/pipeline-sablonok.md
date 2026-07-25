@@ -89,9 +89,9 @@
 | 3 | Stratégia/ajánlat kidolgozása | |
 | 4 | Ajánlat kiküldve | |
 | 5 | Szerződéskötés | |
-| 6 | Kampány/tevékenység beindítása | → `projects` |
-| 7 | Folyamatos kezelés / riportolás | havi ismétlődő munka |
-| 8 | Megújítás vagy lezárás | |
+| 6 | Kampány/tevékenység beindítása | → `retainers` (havi díjas, ismétlődő munka — lásd `adatmodell.md`) |
+| 7 | Folyamatos kezelés / riportolás | a `retainer` fut, `retainer_invoices` generálódik havonta |
+| 8 | Megújítás vagy lezárás | a `retainer.status` → `ended`, ha megszűnik |
 | 9 | Lezárva — sikeres / nem lett ügyfél | won / lost |
 
 **Javasolt egyedi mezők:**

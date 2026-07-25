@@ -12,7 +12,7 @@ app/
 │   ├── Account.php, User.php
 │   ├── Contact.php, Organization.php
 │   ├── ServiceType.php, Pipeline.php, PipelineStage.php, Deal.php
-│   ├── Project.php, Task.php, Note.php, Document.php
+│   ├── Project.php, Retainer.php, RetainerInvoice.php, Task.php, Note.php, Document.php
 │   ├── CustomFieldDefinition.php
 │   ├── Subscription.php, Integration.php, ApiKey.php
 │   └── Concerns/
@@ -57,6 +57,8 @@ php artisan make:model Pipeline -m
 php artisan make:model PipelineStage -m
 php artisan make:model Deal -mf
 php artisan make:model Project -mf
+php artisan make:model Retainer -mf
+php artisan make:model RetainerInvoice -m
 php artisan make:model Task -mf
 php artisan make:model Note -m
 php artisan make:model Document -m
@@ -118,7 +120,7 @@ php artisan vendor:publish --tag=sanctum-migrations
 
 ## 3. `BelongsToAccount` trait — a tenant-elkülönítés kulcsa
 
-Minden tenant-scope-olt modell (Contact, Organization, Deal, Project, Task, Note, Document, ServiceType, Pipeline, CustomFieldDefinition, Integration, ApiKey) ezt a trait-et használja:
+Minden tenant-scope-olt modell (Contact, Organization, Deal, Project, Retainer, RetainerInvoice, Task, Note, Document, ServiceType, Pipeline, CustomFieldDefinition, Integration, ApiKey) ezt a trait-et használja:
 
 - Global scope, ami automatikusan `WHERE account_id = auth()->user()->account_id` szűrést ad minden lekérdezéshez.
 - `creating` model-eseménynél automatikusan kitölti az `account_id`-t a bejelentkezett user account-jából.

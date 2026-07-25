@@ -158,6 +158,7 @@ CREATE TABLE deals (
     status VARCHAR(20) NOT NULL DEFAULT 'open', -- open / won / lost
     expected_close_date DATE NULL,
     closed_at TIMESTAMP NULL,
+    invoice_status VARCHAR(20) NOT NULL DEFAULT 'not_issued', -- not_issued / issued / paid — MVP: csak követés, nincs tényleges számla-generálás
     custom_fields JSON NULL,
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
@@ -187,6 +188,7 @@ CREATE TABLE projects (
     start_date DATE NULL,
     due_date DATE NULL,
     budget DECIMAL(12,2) NULL,
+    invoice_status VARCHAR(20) NOT NULL DEFAULT 'not_issued', -- not_issued / issued / paid — MVP: csak követés, nincs tényleges számla-generálás
     custom_fields JSON NULL,
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
@@ -197,6 +199,58 @@ CREATE TABLE projects (
     CONSTRAINT fk_projects_organization FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL,
     CONSTRAINT fk_projects_service_type FOREIGN KEY (service_type_id) REFERENCES service_types(id) ON DELETE SET NULL,
     CONSTRAINT fk_projects_owner FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- retainers — ismétlődő (havi/negyedéves) megbízások, elkülönítve az
+-- egyszeri "projects" rekordoktól (pl. folyamatos marketing/SEO kezelés)
+-- ============================================================
+CREATE TABLE retainers (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    account_id BIGINT UNSIGNED NOT NULL,
+    deal_id BIGINT UNSIGNED NULL, -- melyik "megnyert" dealből lett
+    contact_id BIGINT UNSIGNED NULL,
+    organization_id BIGINT UNSIGNED NULL,
+    service_type_id BIGINT UNSIGNED NULL,
+    owner_user_id BIGINT UNSIGNED NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NULL,
+    monthly_fee DECIMAL(12,2) NULL,
+    billing_cycle VARCHAR(20) NOT NULL DEFAULT 'monthly', -- monthly / quarterly / other
+    billing_day TINYINT UNSIGNED NULL, -- a hónap melyik napján esedékes a számlázás
+    status VARCHAR(20) NOT NULL DEFAULT 'active', -- active / paused / ended
+    started_at DATE NULL,
+    ended_at DATE NULL,
+    custom_fields JSON NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL,
+    CONSTRAINT fk_retainers_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+    CONSTRAINT fk_retainers_deal FOREIGN KEY (deal_id) REFERENCES deals(id) ON DELETE SET NULL,
+    CONSTRAINT fk_retainers_contact FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE SET NULL,
+    CONSTRAINT fk_retainers_organization FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL,
+    CONSTRAINT fk_retainers_service_type FOREIGN KEY (service_type_id) REFERENCES service_types(id) ON DELETE SET NULL,
+    CONSTRAINT fk_retainers_owner FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- retainer_invoices — egy retainer havi/negyedéves számlázási periódusai
+-- (MVP: csak követés-státusz, nincs tényleges számla-generálás/PDF)
+-- ============================================================
+CREATE TABLE retainer_invoices (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    account_id BIGINT UNSIGNED NOT NULL,
+    retainer_id BIGINT UNSIGNED NOT NULL,
+    period_start DATE NOT NULL,
+    period_end DATE NOT NULL,
+    amount DECIMAL(12,2) NULL,
+    invoice_status VARCHAR(20) NOT NULL DEFAULT 'not_issued', -- not_issued / issued / paid
+    issued_at TIMESTAMP NULL,
+    paid_at TIMESTAMP NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    CONSTRAINT fk_retainer_invoices_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+    CONSTRAINT fk_retainer_invoices_retainer FOREIGN KEY (retainer_id) REFERENCES retainers(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================

@@ -135,10 +135,13 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | status | varchar | `open` / `won` / `lost` |
 | expected_close_date | date nullable | |
 | closed_at | timestamp nullable | |
+| invoice_status | varchar default 'not_issued' | `not_issued` / `issued` / `paid` — **MVP: csak követés-státusz**, nincs tényleges számla-generálás (lásd `crm_projekt.md` 7. szekció, lezárt nyitott kérdés) |
 | custom_fields | json nullable | |
 | created_at / updated_at / deleted_at | | |
 
-### `projects` (aktív megbízások)
+### `projects` (aktív megbízások — EGYSZERI, határidős munka)
+
+*Fontos elhatárolás: a `projects` kizárólag egyszeri, kezdő- és záródátummal rendelkező megbízásokra való (pl. webdesign, coaching-program). Az ismétlődő, havi díjas munkákhoz (pl. folyamatos marketing/SEO kezelés) külön a `retainers` tábla szolgál — lásd lent. Ez a döntés 2026-07-25-én született, a `crm_projekt.md` 7. szekciójában dokumentált nyitott kérdés lezárásaként.*
 
 | Oszlop | Típus | Megjegyzés |
 |---|---|---|
@@ -154,8 +157,47 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | status | varchar | pl. `active` / `on_hold` / `completed` / `cancelled` — testreszabható lista lehet később enum helyett egy `project_statuses` konfig-táblával, ha kell |
 | start_date, due_date | date nullable | |
 | budget | decimal(10,2) nullable | |
+| invoice_status | varchar default 'not_issued' | `not_issued` / `issued` / `paid` — MVP: csak követés-státusz |
 | custom_fields | json nullable | |
 | created_at / updated_at / deleted_at | | |
+
+### `retainers` (ismétlődő/havi díjas megbízások)
+
+*Külön entitás a `projects` mellett — ide tartozik pl. a marketing/SEO pipeline-okban szereplő "folyamatos kezelés / havi riportolás" lépés utáni munka, ami nem egyszeri, hanem visszatérő havi díjas szolgáltatás. Döntés: 2026-07-25, Rob választása a `crm_projekt.md` 7. szekció nyitott kérdésére (retainer vs. egyszerű mező a `projects`-en) — a tisztább, önálló fogalmat választotta.*
+
+| Oszlop | Típus | Megjegyzés |
+|---|---|---|
+| id | bigint PK | |
+| account_id | bigint FK | |
+| deal_id | bigint FK nullable | melyik "megnyert" dealből lett |
+| contact_id | bigint FK nullable | |
+| organization_id | bigint FK nullable | |
+| service_type_id | bigint FK nullable | |
+| owner_user_id | bigint FK nullable | |
+| title | varchar | |
+| description | text nullable | |
+| monthly_fee | decimal(10,2) nullable | |
+| billing_cycle | varchar default 'monthly' | `monthly` / `quarterly` / `other` |
+| billing_day | tinyint nullable | a hónap melyik napján esedékes a számlázás |
+| status | varchar | `active` / `paused` / `ended` |
+| started_at, ended_at | date nullable | |
+| custom_fields | json nullable | |
+| created_at / updated_at / deleted_at | | |
+
+### `retainer_invoices` (egy retainer havi/negyedéves számlázási periódusai)
+
+*Mivel a retainer havonta (vagy más ciklusban) ismétlődően számlázandó, egyetlen `invoice_status` mező nem elég (mint az egyszeri `projects`/`deals` esetén) — időszakonként kell nyomon követni. MVP-ben ez is csak követés-státusz, nincs tényleges PDF-számla-generálás.*
+
+| Oszlop | Típus | Megjegyzés |
+|---|---|---|
+| id | bigint PK | |
+| account_id | bigint FK | |
+| retainer_id | bigint FK | |
+| period_start, period_end | date | az adott számlázási időszak |
+| amount | decimal(10,2) nullable | |
+| invoice_status | varchar default 'not_issued' | `not_issued` / `issued` / `paid` |
+| issued_at, paid_at | timestamp nullable | |
+| created_at / updated_at | | |
 
 ### `tasks`
 
@@ -206,7 +248,7 @@ Ez a tábla teszi lehetővé, hogy **fejlesztő nélkül** bármilyen egyedi mez
 | id | bigint PK | |
 | account_id | bigint FK | |
 | service_type_id | bigint FK nullable | ha null, minden szolgáltatásra érvényes; ha kitöltött, csak arra a szakmára jelenik meg |
-| entity_type | varchar | `contact` / `organization` / `deal` / `project` — melyik táblán jelenik meg a mező |
+| entity_type | varchar | `contact` / `organization` / `deal` / `project` / `retainer` — melyik táblán jelenik meg a mező |
 | field_key | varchar | pl. `felmeres_pontszam` — ez a kulcs a `custom_fields` JSON-ban |
 | label | varchar | felhasználónak látszó név, pl. "Felmérés pontszám" |
 | field_type | varchar | `text` / `textarea` / `number` / `date` / `boolean` / `select` / `multiselect` / `url` |
@@ -271,9 +313,10 @@ A `spatie/laravel-activitylog` csomag saját tábláját használjuk (nem kézze
 ## Kapcsolatok összefoglalása
 
 - Minden tábla `account_id`-t hordoz → tenant-elkülönítés (kivéve a globális Laravel rendszertáblák: `migrations`, `jobs`, `cache`, `sessions` stb.)
-- `contacts` / `organizations` / `deals` / `projects` mind hordozhat `custom_fields` JSON-t, amit a `custom_field_definitions` ír le.
-- `tasks`, `notes`, `documents` polimorf kapcsolattal bármihez köthetők (nem kell külön `contact_tasks`, `project_tasks` stb. tábla).
-- `deals` → `projects`: amikor egy deal "won" állapotba kerül, létrejöhet belőle egy `project` (ez lesz az esemény-alapú hook egyik első konkrét használata, lásd `architektura.md`).
+- `contacts` / `organizations` / `deals` / `projects` / `retainers` mind hordozhat `custom_fields` JSON-t, amit a `custom_field_definitions` ír le.
+- `tasks`, `notes`, `documents` polimorf kapcsolattal bármihez köthetők (nem kell külön `contact_tasks`, `project_tasks` stb. tábla) — ez érvényes a `retainers`-re is.
+- `deals` → `projects` VAGY `retainers`: amikor egy deal "won" állapotba kerül, a pipeline-sablon/szolgáltatás-típus jellegétől függően vagy egy egyszeri `project`, vagy egy ismétlődő `retainer` jön létre belőle (ez az esemény-alapú hook egyik konkrét használata, lásd `architektura.md`). Melyiket hozza létre? — a `service_types`/`pipelines` konfigurációjában (nem kódban) eldönthető alapértelmezés, hogy egy adott pipeline "won" lépése projektet vagy retainert generáljon-e.
+- `retainers` → `retainer_invoices`: egy retainerhez időszakonként (havonta/negyedévente) tartozik egy-egy számlázási rekord, amit ütemezett (pl. napi cron) job generálhat automatikusan a `billing_cycle`/`billing_day` alapján.
 
 ---
 

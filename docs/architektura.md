@@ -61,18 +61,23 @@ Laravel Events + Listeners párost használunk. Ez köti össze a pipeline-lép�
 DealStageChanged esemény kiváltódik
   → ha az új stage `is_won_stage = true`
   → DealWonListener lefut
-    → automatikusan létrehoz egy `projects` sort a dealből
-    → kiváltja a ProjectCreated eseményt
-      → (jövőben) ContractGeneratorListener reagálhat rá, ha be van kötve a szerződéskészítő integráció
+    → a pipeline/service_type konfigurációja alapján eldönti: egyszeri vagy ismétlődő munkáról van-e szó
+    → egyszeri munka esetén létrehoz egy `projects` sort a dealből → ProjectCreated esemény
+    → ismétlődő (retainer) munka esetén létrehoz egy `retainers` sort a dealből → RetainerCreated esemény
+      → (jövőben) ContractGeneratorListener reagálhat bármelyikre, ha be van kötve a szerződéskészítő integráció
 ```
+
+*A "projekt vagy retainer?" döntés (2026-07-25, lásd `crm_projekt.md` 7. szekció) nem kódba égetett — a pipeline-hoz/service_type-hoz rendelt beállítás dönti el, hogy a "won" lépés melyiket hozza létre, így ez is admin-oldalon, fejlesztő nélkül állítható.*
 
 **Tervezett alap-események induláshoz:**
 
 | Esemény | Mikor váltódik ki | Belső listener (MVP) |
 |---|---|---|
 | `DealCreated` | új deal létrehozásakor | activity_log bejegyzés |
-| `DealStageChanged` | deal pipeline-lépést vált | activity_log; ha won-stage → project létrehozása |
+| `DealStageChanged` | deal pipeline-lépést vált | activity_log; ha won-stage → project vagy retainer létrehozása (konfigurációtól függően) |
 | `ProjectCreated` | új projekt létrejön (kézzel vagy dealből) | activity_log; értesítés a felelősnek |
+| `RetainerCreated` | új ismétlődő megbízás létrejön (kézzel vagy dealből) | activity_log; értesítés a felelősnek; ütemezett `retainer_invoices` generálás beállítása |
+| `RetainerInvoicePeriodDue` | egy retainer következő számlázási periódusa esedékes (ütemezett job váltja ki `billing_cycle`/`billing_day` alapján) | új `retainer_invoices` sor `not_issued` státusszal |
 | `TaskDueSoon` | feladat határideje közeleg (ütemezett job váltja ki) | app-on belüli + e-mail emlékeztető |
 | `ContactConsentRecorded` | GDPR-hozzájárulás rögzítésekor | activity_log |
 
