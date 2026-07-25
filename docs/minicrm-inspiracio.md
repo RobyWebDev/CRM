@@ -98,6 +98,13 @@ A fentiek közül ezek **kis munkával, azonnal, általánosan (nem csak kisvál
 
 Ami **backlogban marad, később döntendő**: teljes automatizáció-szerkesztő UI, e-mail-kampány modul, webes űrlap+Facebook lead-befogás, Google Naptár-szinkronizáció, telefónia-integráció, riportok bővítése BI-szintre, fájl-melléklet egyedi mezőtípus, mezőcsoportosítás UI, rekord-szintű (nem csak szerepkör-szintű) jogosultság.
 
+## 9b. Kiegészítő kutatási kör (2026-07-25, Rob kérése "nézz utána, ha van még átvehető ötlet")
+
+Rob explicit kérésére még alaposabban átnéztem a MiniCRM dokumentációját, hogy nem maradt-e ki érdemi ötlet. Két új, korábban nem szereplő területet találtam:
+
+- **Teendő-sablon (task template):** rendszeresen ismétlődő, de NEM idő-alapú (tehát nem a már megvalósított `recurrence` mezőnkkel egyező) feladatokhoz — egy admin egyszer megírja a teendő szövegét/típusát/becsült időtartamát/ellenőrzőlistáját, ezután bármelyik kolléga "3 kattintással" felveheti magának vagy delegálhatja. **Ez különbözik a mi ismétlődő teendőnktől**: az idő alapján ismétlődik automatikusan, ez itt egy **újrafelhasználható sablon**, amit manuálisan (vagy automatizmusból) alkalmaznak bármikor, bármelyik rekordra. **Backlog-javaslat:** egy `task_templates` tábla (cím, leírás, típus, becsült időtartam, ellenőrzőlista JSON), és a meglévő `<x-task-list>` komponensen egy "sablonból" gomb. Nem MVP-blokkoló, de olcsó és általánosan hasznos (bármilyen szakmában van rutinfeladat).
+- **Ajánlat-sablon + digitális dokumentum-aláírás:** a MiniCRM lehetővé teszi, hogy egy ajánlatot/megrendelést/teljesítési igazolást előre elkészített sablonból generáljanak (PDF/DocX), majd az ügyfél **közvetlenül a rendszerben, kép ernyőn/érintéssel aláírja** (egyszerű elektronikus aláírás — SES —, tanúsítvánnyal: aláíró neve, e-mail, IP-cím, időpont, eszköz-ujjlenyomat). **Ez közvetlenül releváns Rob már meglévő, de a CRM-mel egyelőre tudatosan NEM összekötött ajánlatkészítő/szerződéskészítő eszközéhez** (lásd `crm_projekt.md` 7. szekció, lezárt nyitott kérdés: "előbb legyen egy működőképes alap CRM, aztán bonyolítsuk"). Amikor Rob elérkezettnek látja az integráció idejét, ez egy konkrét, kész mintát ad: (1) sablonból generált dokumentum a `documents` táblában, (2) egyszerű elektronikus aláírás beépítve (nem kell drága, teljes körű e-aláírás-szolgáltató, mint a DocuSign/AVDH, egy SES jogilag elég B2B, bizalmi-viszonyos ügyletekhez). **Nem MVP-blokkoló, a már lezárt nyitott kérdés ütemezését nem változtatja meg**, csak konkrét megvalósítási mintát ad a jövőre.
+
 ## 10. Kapcsolódó dokumentumok
 
 - [`crm_projekt.md`](../crm_projekt.md) 8. szekció — Ötlet-backlog, ahova a fenti "később döntendő" tételek bekerültek.

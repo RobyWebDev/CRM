@@ -19,7 +19,8 @@
 10c. **Tipográfia/layout:** [`tipografia-layout-terv.md`](tipografia-layout-terv.md) — fluid `clamp()`-skála, container query-k, modern CSS-egységek.
 11. **Biztonság:** [`biztonsag-terv.md`](biztonsag-terv.md) — bemenet-validáció, rate limiting, tenant-elkülönítés tesztje, HTTPS, 2FA (később).
 12. **Riportok** (opcionális, ha van rá idő MVP-ben): [`riportok-terv.md`](riportok-terv.md) — pipeline-tölcsér, win rate, bevétel szolgáltatásonként.
-12b. **MiniCRM-inspiráció:** [`minicrm-inspiracio.md`](minicrm-inspiracio.md) — alapos, valós dokumentációra épülő kutatás, konkrét átvételi javaslatokkal (címkék, ismétlődő teendők, automatizáció-minták, riport-mutatók).
+12b. **MiniCRM-inspiráció:** [`minicrm-inspiracio.md`](minicrm-inspiracio.md) — alapos, valós dokumentációra épülő kutatás, konkrét átvételi javaslatokkal (címkék, ismétlődő teendők, automatizáció-minták, riport-mutatók, teendő-sablonok, ajánlat-sablon+e-aláírás).
+12c. **ConnectSoft/GoHighLevel-inspiráció:** [`connectsoft-inspiracio.md`](connectsoft-inspiracio.md) — kutatás egy all-in-one értékesítési/marketing platformról (egységes kommunikációs idővonal, account-sablon-klónozás, review-automatizálás), és egyértelmű határvonal a CRM-hatókörön kívüli funkciók felé.
 13. **Tesztek:** [`teszterv.md`](teszterv.md) — Pest, [`teszt-personak.md`](teszt-personak.md) mindhárom profiljával.
 14. **Élesítéskor (később):** [`deployment-terv.md`](deployment-terv.md), [`coach-kereso-integracio.md`](coach-kereso-integracio.md) (csak 6. fázisban), [`onboarding-terv.md`](onboarding-terv.md) (csak 5-6. fázisban), [`teljesitmeny-terv.md`](teljesitmeny-terv.md) (csak ha valós lassulás jelentkezik), [`lokalizacio-terv.md`](lokalizacio-terv.md) (csak nem magyar tenanteknél, 6. fázis).
 
