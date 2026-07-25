@@ -23,10 +23,10 @@
                     <p class="text-fluid-xs text-ink-muted uppercase tracking-wide">{{ __('Kontaktok') }}</p>
                     <p class="text-fluid-2xl font-semibold text-ink mt-1">{{ $contactsCount ?? 0 }}</p>
                 </a>
-                <div class="bg-surface border border-line rounded-lg p-fluid-md">
+                <a href="{{ route('deals.index') }}" class="bg-surface hover:bg-surface-hover border border-line rounded-lg p-fluid-md transition">
                     <p class="text-fluid-xs text-ink-muted uppercase tracking-wide">{{ __('Nyitott dealek') }}</p>
-                    <p class="text-fluid-2xl font-semibold text-ink mt-1">—</p>
-                </div>
+                    <p class="text-fluid-2xl font-semibold text-ink mt-1">{{ $openDealsCount ?? 0 }}</p>
+                </a>
                 <div class="bg-surface border border-line rounded-lg p-fluid-md">
                     <p class="text-fluid-xs text-ink-muted uppercase tracking-wide">{{ __('Aktív projektek') }}</p>
                     <p class="text-fluid-2xl font-semibold text-ink mt-1">—</p>
