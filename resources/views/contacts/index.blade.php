@@ -22,8 +22,19 @@
 
             <form method="GET" class="flex gap-fluid-xs">
                 <x-text-input type="search" name="q" value="{{ $q }}" placeholder="{{ __('Keresés név vagy e-mail alapján...') }}" class="block w-full" />
+                @if ($tag !== '')
+                    <input type="hidden" name="tag" value="{{ $tag }}">
+                @endif
                 <x-secondary-button type="submit">{{ __('Keresés') }}</x-secondary-button>
             </form>
+
+            @if ($tag !== '')
+                <div class="flex items-center gap-2">
+                    <span class="text-fluid-xs text-ink-muted">{{ __('Szűrve címkére') }}:</span>
+                    <span class="text-fluid-xs px-2 py-0.5 rounded bg-accent text-accent-ink">#{{ $tag }}</span>
+                    <a href="{{ route('contacts.index') }}" class="text-fluid-xs text-accent underline">{{ __('szűrő törlése') }}</a>
+                </div>
+            @endif
 
             @if ($contacts->isEmpty())
                 <div class="bg-surface border border-line rounded-lg p-fluid-lg text-center text-ink-muted">
@@ -45,6 +56,13 @@
                             @endif
                             @if ($contact->phone)
                                 <p class="text-ink-soft text-fluid-xs">{{ $contact->phone }}</p>
+                            @endif
+                            @if ($contact->tags->isNotEmpty())
+                                <div class="flex flex-wrap gap-1 mt-2">
+                                    @foreach ($contact->tags as $contactTag)
+                                        <span class="text-fluid-xs px-1.5 py-0.5 rounded bg-sunken text-ink-muted">#{{ $contactTag->name }}</span>
+                                    @endforeach
+                                </div>
                             @endif
                         </a>
                     @endforeach

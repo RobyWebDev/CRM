@@ -130,8 +130,12 @@ CREATE TABLE contacts (
     owner_user_id BIGINT UNSIGNED NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NULL,
+    job_title VARCHAR(255) NULL, -- beosztás/pozíció (2026-07-25, MiniCRM-inspiráció)
     email VARCHAR(255) NULL,
     phone VARCHAR(50) NULL,
+    birthday DATE NULL,
+    website VARCHAR(255) NULL,
+    address TEXT NULL,
     source VARCHAR(255) NULL,
     gdpr_consent_at TIMESTAMP NULL,
     gdpr_consent_note TEXT NULL,
@@ -142,6 +146,29 @@ CREATE TABLE contacts (
     CONSTRAINT fk_contacts_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
     CONSTRAINT fk_contacts_organization FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL,
     CONSTRAINT fk_contacts_owner FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- tags / taggables — szabadon felvehető címkék kontaktokhoz/szervezetekhez
+-- (2026-07-25, MiniCRM-inspiráció, docs/minicrm-inspiracio.md 6. pont)
+-- ============================================================
+CREATE TABLE tags (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    account_id BIGINT UNSIGNED NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    color VARCHAR(20) NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    UNIQUE KEY tags_account_name_unique (account_id, name),
+    CONSTRAINT fk_tags_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE taggables (
+    tag_id BIGINT UNSIGNED NOT NULL,
+    taggable_type VARCHAR(255) NOT NULL,
+    taggable_id BIGINT UNSIGNED NOT NULL,
+    INDEX idx_taggables_taggable (taggable_type, taggable_id),
+    CONSTRAINT fk_taggables_tag FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -303,6 +330,7 @@ CREATE TABLE tasks (
     description TEXT NULL,
     due_date DATETIME NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'open', -- open / done / cancelled
+    recurrence VARCHAR(20) NULL, -- null / daily / weekly / monthly — MiniCRM-inspiráció (2026-07-25): készre jelöléskor automatikusan létrejön a következő előfordulás
     completed_at TIMESTAMP NULL,
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,

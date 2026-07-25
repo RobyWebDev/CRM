@@ -20,6 +20,7 @@
             @if (session('status'))
                 <div class="bg-surface border border-line rounded-lg p-fluid-sm text-success">
                     @if (session('status') === 'task-created') {{ __('Teendő felvéve.') }} @endif
+                    @if (session('status') === 'task-recurred') {{ __('Teendő kész, a következő előfordulás automatikusan létrejött.') }} @endif
                 </div>
             @endif
 

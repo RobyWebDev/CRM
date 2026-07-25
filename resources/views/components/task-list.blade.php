@@ -1,6 +1,8 @@
 {{--
     Újrahasznosítható teendő-lista + felvevő űrlap bármely taskable entitáshoz
     (Project, Retainer, Contact, Deal, Lead) — lásd adatmodell.md polimorf tasks tábla.
+    Ismétlődő teendő (MiniCRM-inspiráció): készre jelöléskor automatikusan létrejön a következő
+    előfordulás, lásd TaskController::toggle().
 --}}
 @props(['taskable', 'taskableType'])
 
@@ -18,7 +20,12 @@
                     </button>
                 </form>
                 <div class="min-w-0">
-                    <p class="text-fluid-base {{ $task->status === 'done' ? 'line-through text-ink-muted' : 'text-ink' }} truncate">{{ $task->title }}</p>
+                    <p class="text-fluid-base {{ $task->status === 'done' ? 'line-through text-ink-muted' : 'text-ink' }} truncate">
+                        {{ $task->title }}
+                        @if ($task->recurrence)
+                            <span class="text-fluid-xs text-info" title="{{ __('Ismétlődő teendő') }}">&#8635; {{ __(match($task->recurrence) { 'daily' => 'naponta', 'weekly' => 'hetente', 'monthly' => 'havonta', default => '' }) }}</span>
+                        @endif
+                    </p>
                     @if ($task->due_date)
                         <p class="text-fluid-xs text-ink-muted">{{ __('Határidő') }}: {{ $task->due_date->format('Y.m.d.') }}</p>
                     @endif
@@ -34,14 +41,20 @@
         <p class="text-ink-muted text-fluid-xs italic">{{ __('Még nincs teendő felvéve.') }}</p>
     @endforelse
 
-    <form method="POST" action="{{ route('tasks.store') }}" class="flex gap-2 mt-2">
+    <form method="POST" action="{{ route('tasks.store') }}" class="flex flex-wrap gap-2 mt-2">
         @csrf
         <input type="hidden" name="taskable_type" value="{{ $taskableType }}">
         <input type="hidden" name="taskable_id" value="{{ $taskable->id }}">
         <input type="text" name="title" required placeholder="{{ __('Új teendő...') }}"
-               class="flex-1 text-fluid-base rounded-md border-line-strong bg-sunken text-ink focus:border-line-strong focus:ring-line-strong" />
+               class="flex-1 min-w-[10rem] text-fluid-base rounded-md border-line-strong bg-sunken text-ink focus:border-line-strong focus:ring-line-strong" />
         <input type="date" name="due_date"
                class="text-fluid-base rounded-md border-line-strong bg-sunken text-ink focus:border-line-strong focus:ring-line-strong" />
+        <select name="recurrence" class="text-fluid-base rounded-md border-line-strong bg-sunken text-ink focus:border-line-strong focus:ring-line-strong">
+            <option value="">{{ __('Nem ismétlődő') }}</option>
+            <option value="daily">{{ __('Naponta') }}</option>
+            <option value="weekly">{{ __('Hetente') }}</option>
+            <option value="monthly">{{ __('Havonta') }}</option>
+        </select>
         <x-secondary-button type="submit">{{ __('+ Hozzáad') }}</x-secondary-button>
     </form>
 </div>

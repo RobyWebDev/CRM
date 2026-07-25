@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\BelongsToAccount;
 use App\Models\Concerns\HasPersonName;
+use App\Models\Concerns\HasTags;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,17 +14,19 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
-    'account_id', 'organization_id', 'owner_user_id', 'first_name', 'last_name',
-    'email', 'phone', 'source', 'gdpr_consent_at', 'gdpr_consent_note', 'custom_fields',
+    'account_id', 'organization_id', 'owner_user_id', 'first_name', 'last_name', 'job_title',
+    'email', 'phone', 'birthday', 'website', 'address', 'source', 'gdpr_consent_at',
+    'gdpr_consent_note', 'custom_fields',
 ])]
 class Contact extends Model
 {
-    use BelongsToAccount, HasFactory, HasPersonName, SoftDeletes;
+    use BelongsToAccount, HasFactory, HasPersonName, HasTags, SoftDeletes;
 
     protected function casts(): array
     {
         return [
             'gdpr_consent_at' => 'datetime',
+            'birthday' => 'date',
             'custom_fields' => 'array',
         ];
     }

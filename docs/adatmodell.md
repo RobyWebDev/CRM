@@ -114,12 +114,25 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | organization_id | bigint FK nullable | |
 | owner_user_id | bigint FK nullable | melyik munkatárshoz tartozik |
 | first_name, last_name | varchar | |
+| job_title | varchar nullable | beosztás/pozíció (2026-07-25, MiniCRM-inspiráció) |
 | email, phone | varchar nullable | |
+| birthday | date nullable | |
+| website | varchar nullable | |
+| address | text nullable | |
 | source | varchar nullable | honnan jött (pl. "ajánlás", "weboldal űrlap") |
 | gdpr_consent_at | timestamp nullable | mikor adott hozzájárulást |
 | gdpr_consent_note | text nullable | mihez, milyen formában (GDPR nyilvántartás) |
 | custom_fields | json nullable | |
 | created_at / updated_at / deleted_at | | soft delete kötelező (GDPR törlési igény miatt is) |
+
+### `tags` / `taggables` (címkék — 2026-07-25, MiniCRM-inspiráció)
+
+*Szabadon felvehető, kontaktokhoz/szervezetekhez rendelhető jelölők, amiket a felhasználó egyszerűen begépel (a nem létező címke automatikusan létrejön) — lásd `docs/minicrm-inspiracio.md` 6. pont.*
+
+| Tábla | Oszlop | Típus | Megjegyzés |
+|---|---|---|---|
+| `tags` | id, account_id, name, color, created_at/updated_at | | account-szinten egyedi név |
+| `taggables` | tag_id, taggable_type, taggable_id | | polimorf pivot-tábla (Laravel `morphToMany` konvenció) |
 
 ### `leads` (még nem minősített érdeklődők)
 
@@ -243,6 +256,7 @@ Polimorf kapcsolat, hogy bármihez (contact, deal, project) köthető legyen fel
 | description | text nullable | |
 | due_date | datetime nullable | |
 | status | varchar | `open` / `done` / `cancelled` |
+| recurrence | varchar nullable | `NULL` / `daily` / `weekly` / `monthly` — MiniCRM-inspiráció (2026-07-25): készre jelöléskor automatikusan létrejön a következő előfordulás (lásd `TaskController::toggle`) |
 | completed_at | timestamp nullable | |
 | created_at / updated_at / deleted_at | | |
 

@@ -20,6 +20,7 @@ class TaskController extends Controller
             'taskable_id' => ['required', 'integer'],
             'title' => ['required', 'string', 'max:255'],
             'due_date' => ['nullable', 'date'],
+            'recurrence' => ['nullable', 'in:daily,weekly,monthly'],
         ]);
 
         $modelClass = match ($data['taskable_type']) {
@@ -38,6 +39,7 @@ class TaskController extends Controller
             'taskable_id' => $taskable->id,
             'title' => $data['title'],
             'due_date' => $data['due_date'] ?? null,
+            'recurrence' => $data['recurrence'] ?? null,
             'status' => 'open',
         ]);
 
@@ -48,8 +50,27 @@ class TaskController extends Controller
     {
         if ($task->status === 'done') {
             $task->update(['status' => 'open', 'completed_at' => null]);
-        } else {
-            $task->update(['status' => 'done', 'completed_at' => now()]);
+
+            return back()->with('status', 'task-updated');
+        }
+
+        $task->update(['status' => 'done', 'completed_at' => now()]);
+
+        // Ismétlődő teendő (MiniCRM-inspiráció): készre jelöléskor automatikusan
+        // létrejön a következő előfordulás, az eredeti határidőhöz képest eltolva.
+        if ($task->recurrence) {
+            Task::create([
+                'taskable_type' => $task->taskable_type,
+                'taskable_id' => $task->taskable_id,
+                'assigned_user_id' => $task->assigned_user_id,
+                'title' => $task->title,
+                'description' => $task->description,
+                'due_date' => $task->nextDueDate(),
+                'recurrence' => $task->recurrence,
+                'status' => 'open',
+            ]);
+
+            return back()->with('status', 'task-recurred');
         }
 
         return back()->with('status', 'task-updated');
