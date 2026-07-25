@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Contact;
 use App\Models\Deal;
 use App\Models\Lead;
 use App\Models\Task;
@@ -52,6 +53,14 @@ class InsightsEngine
             $insights[] = [
                 'type' => 'danger',
                 'message' => __(':count lejárt határidejű, még nyitott teendőd van.', ['count' => $overdueTasks]),
+            ];
+        }
+
+        $contactsWithoutPhone = Contact::whereNull('phone')->orWhere('phone', '')->count();
+        if ($contactsWithoutPhone > 0) {
+            $insights[] = [
+                'type' => 'info',
+                'message' => __(':count kontaktnak nincs megadva telefonszáma — érdemes lehet pótolni, hogy könnyebben elérhetőek legyenek.', ['count' => $contactsWithoutPhone]),
             ];
         }
 
