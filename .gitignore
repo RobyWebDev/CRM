@@ -3,17 +3,33 @@
 .env.*
 !.env.example
 
-# Laravel (a projekt inicializálása után lesz relevánsa)
+# Laravel
 /vendor
 /node_modules
 /public/hot
 /public/storage
+/public/build
+/public/fonts-manifest.dev.json
 /storage/*.key
+/storage/pail
 /bootstrap/cache/*.php
 .phpunit.result.cache
+/.phpunit.cache
+*.log
+.env.backup
+.env.production
+.phpactor.json
+_ide_helper.php
+Homestead.json
+Homestead.yaml
+/auth.json
 
 # Editor / OS
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+.cursor/
+.codex/
+.nova/
+.zed/
