@@ -39,7 +39,7 @@
                         <a href="{{ route('leads.edit', $lead) }}" class="bg-surface hover:bg-surface-hover border border-line rounded-lg p-fluid-sm transition">
                             <div class="flex items-center justify-between">
                                 <p class="font-semibold text-ink text-fluid-base">
-                                    {{ trim($lead->first_name.' '.$lead->last_name) }}
+                                    {{ $lead->full_name }}
                                 </p>
                                 @if (! is_null($lead->score))
                                     <span class="text-fluid-xs text-ink-muted">{{ $lead->score }}/100</span>

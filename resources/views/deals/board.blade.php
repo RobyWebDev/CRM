@@ -95,7 +95,7 @@
                                         </a>
 
                                         @if ($deal->contact)
-                                            <p class="text-ink-muted text-fluid-xs mt-1">{{ trim($deal->contact->first_name.' '.$deal->contact->last_name) }}</p>
+                                            <p class="text-ink-muted text-fluid-xs mt-1">{{ $deal->contact->full_name }}</p>
                                         @endif
 
                                         @if ($deal->value)

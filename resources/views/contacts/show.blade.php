@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between gap-fluid-sm flex-wrap">
             <h2 class="font-semibold text-fluid-xl text-ink leading-tight">
-                {{ trim($contact->first_name.' '.$contact->last_name) }}
+                {{ $contact->full_name }}
             </h2>
             <div class="flex gap-fluid-xs">
                 <a href="{{ route('contacts.edit', $contact) }}"><x-secondary-button type="button">{{ __('Szerkesztés') }}</x-secondary-button></a>

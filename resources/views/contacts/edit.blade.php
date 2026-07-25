@@ -11,19 +11,7 @@
                 @csrf
                 @method('put')
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-fluid-sm">
-                    <div>
-                        <x-input-label for="first_name" :value="__('Keresztnév')" />
-                        <x-text-input id="first_name" name="first_name" class="block mt-1 w-full" :value="old('first_name', $contact->first_name)" required autofocus />
-                        <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
-                    </div>
-
-                    <div>
-                        <x-input-label for="last_name" :value="__('Vezetéknév')" />
-                        <x-text-input id="last_name" name="last_name" class="block mt-1 w-full" :value="old('last_name', $contact->last_name)" />
-                        <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
-                    </div>
-                </div>
+                <x-name-fields :first-name="old('first_name', $contact->first_name)" :last-name="old('last_name', $contact->last_name)" />
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-fluid-sm">
                     <div>

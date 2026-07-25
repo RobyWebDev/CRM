@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToAccount;
+use App\Models\Concerns\HasPersonName;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 ])]
 class Lead extends Model
 {
-    use BelongsToAccount, HasFactory, SoftDeletes;
+    use BelongsToAccount, HasFactory, HasPersonName, SoftDeletes;
 
     protected function casts(): array
     {

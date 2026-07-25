@@ -18,6 +18,23 @@ Amikor a 6. fázisban (SaaS réteg, coach-kereső integráció) megjelenhetnek n
 - Validációs üzenetek, e-mail sablonok (`ertesitesek-terv.md`), rendszerüzenetek mind lokalizálva.
 - **Egyedi mezők (`custom_field_definitions.label`)** — ezek felhasználó által megadott szövegek, ezeket NEM kell/lehet automatikusan fordítani, ez rendben van, mert account-specifikusak.
 
+## 2b. Névsorrend nyelv szerint (2026-07-25, megvalósítva)
+
+Rob kérésére ez már MVP-ben, ténylegesen implementálva van, nem csak terv: magyar nyelvi konvenció szerint a **vezetéknév áll elöl** (pl. "Kovács János"), angol (US) konvenció szerint a **keresztnév** (pl. "John Smith"). Ez minden `first_name`/`last_name` párost tartalmazó modellre vonatkozik (`Contact`, `Lead`).
+
+- **`App\Models\Concerns\HasPersonName`** trait — `full_name` accessort ad (`$contact->full_name`), ami a bejelentkezett user (vagy account) `locale` mezője alapján dönti el a sorrendet (`hu*` → vezetéknév elöl, egyébként → keresztnév elöl).
+- **`<x-name-fields>`** Blade-komponens — a kereszt-/vezetéknév beviteli mezőket ugyanígy, nyelv szerint helyes sorrendben (és a vizuálisan első mezőn `autofocus`-szal) jeleníti meg minden űrlapon (Kontaktok, Leadek létrehozása/szerkesztése).
+- Ez a mechanizmus már MOST is működik magyar nyelven (mivel `locale = 'hu'` mindenhol), és **készen áll** arra, hogy amint egy account/user `locale`-ja `en`-re (vagy `en_US`-re) vált, a sorrend automatikusan angol konvencióra váltson — nem kell hozzá új kód, csak a `locale` mező értéke.
+
+## 2c. Kapcsolódás a jövőbeli admin-szintű testreszabáshoz (backlog, lásd `crm_projekt.md` 8. szekció)
+
+Rob kifejezte, hogy admin-ként (ő) nagyon széles szabadságot szeretne a testreszabásban — "mint egy profi CRM-ben a fejlesztőnek vagy az adminnak". Ez két konkrét, később megvalósítandó ötletben csapódott le:
+
+1. **Mezőnevek/címkék admin általi átírása** — nem csak fordítás, hanem szabad átnevezés bármely mezőhöz.
+2. **Angol (US) nyelvi változat választhatósága** — alapértelmezésként a nemzetközileg jól bevált CRM-terminológiát (Lead, Deal, Pipeline, Contact stb.) érdemes használni, de admin-ként ezek is felülírhatók legyenek.
+
+Ez a két pont túlmutat a jelen dokumentum "sima fordítás" fókuszán — egy jövőbeli, admin-felületen szerkeszthető címke-rendszert igényelne (hasonlóan a `custom_field_definitions.label`-hez, csak a RENDSZER saját mezőire is kiterjesztve, nem csak az egyedi mezőkre). Nem MVP-blokkoló, később építendő.
+
 ## 3. Formátumok (dátum, pénznem, szám)
 
 - Dátum-formázás Laravel Carbon-nal, `locale`-alapú (`Carbon::setLocale()`), hogy magyar felhasználónál `2026.07.25.`, más locale-nál a helyi konvenció szerint jelenjen meg.

@@ -118,7 +118,7 @@ class LeadController extends Controller
                     'pipeline_id' => $pipeline->id,
                     'pipeline_stage_id' => $firstStage->id,
                     'contact_id' => $contact->id,
-                    'title' => trim($lead->first_name.' '.$lead->last_name).' — '.$lead->serviceType->name,
+                    'title' => $lead->full_name.' — '.$lead->serviceType->name,
                     'status' => 'open',
                 ]);
             }

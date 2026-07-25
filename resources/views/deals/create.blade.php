@@ -50,7 +50,7 @@
                         <option value="">{{ __('— nincs —') }}</option>
                         @foreach ($contacts as $contact)
                             <option value="{{ $contact->id }}" @selected(old('contact_id') == $contact->id)>
-                                {{ trim($contact->first_name.' '.$contact->last_name) }}
+                                {{ $contact->full_name }}
                             </option>
                         @endforeach
                     </select>

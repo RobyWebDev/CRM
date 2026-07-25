@@ -105,7 +105,7 @@
                                             <a href="{{ route('deals.edit', $deal) }}" class="font-medium text-ink hover:text-accent">{{ $deal->title }}</a>
                                         </td>
                                         <td class="px-4 py-2 text-ink-soft">
-                                            {{ $deal->contact ? trim($deal->contact->first_name.' '.$deal->contact->last_name) : '—' }}
+                                            {{ $deal->contact?->full_name ?? '—' }}
                                         </td>
                                         <td class="px-4 py-2">
                                             <form method="POST" action="{{ route('deals.move', $deal) }}">
@@ -150,7 +150,7 @@
                             <div class="bg-surface border border-line rounded-lg p-fluid-sm">
                                 <a href="{{ route('deals.edit', $deal) }}" class="font-medium text-ink text-fluid-base hover:text-accent">{{ $deal->title }}</a>
                                 @if ($deal->contact)
-                                    <p class="text-ink-muted text-fluid-xs mt-1">{{ trim($deal->contact->first_name.' '.$deal->contact->last_name) }}</p>
+                                    <p class="text-ink-muted text-fluid-xs mt-1">{{ $deal->contact->full_name }}</p>
                                 @endif
                                 @if ($deal->value)
                                     <p class="text-ink-soft text-fluid-xs">{{ number_format($deal->value, 0, ',', ' ') }} Ft</p>

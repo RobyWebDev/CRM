@@ -213,6 +213,16 @@
   2. **Automatikus adatmentés-felajánlás**: új `GET /profile/export` végpont (`ProfileController::export`, ugyanúgy owner/admin-hoz kötve), ami egy letölthető JSON-fájlba menti a fiók legfontosabb adatait (szervezetek, kontaktok, leadek, dealek, projektek, retainerek). Ez a GDPR-terv.md-ben már korábban tervezett adatexport funkció első, működő verziója. A törlés-megerősítő ablak (modal) automatikusan megjeleníti az "Adatok mentése most" gombot, mielőtt a jelszóval megerősített törlésre kerülne sor.
   **Végigtesztelve**: export-végpont ténylegesen letölthető JSON-t ad vissza helyes fájlnévvel (`Content-Disposition: attachment`), a szerepkör-ellenőrzés logikája (`in_array($role, ['owner','admin'])`) tinkerrel megerősítve.
   **Következő lépés:** a 8. szekcióban rögzített két backlog-tétel (paletta-admin, mezőnév-testreszabás) Rob jelzésére vár, mikor kerüljenek sorra.
+
+  **Tizenkettedik forduló — nyelv szerint helyes névsorrend, ténylegesen megvalósítva:** Rob kérése: magyar nyelvben magyar konvenció szerinti névsorrend (vezetéknév elöl), angolban (US) angol szabvány szerint (keresztnév elöl) — mindenhol, ahol személynév jelenik meg vagy szerkeszthető (Kontaktok, Leadek). Emellett megismételte az admin-szintű széles szabadság igényét ("mint egy profi CRM-ben a fejlesztőnek vagy az adminnak") — ez a korábban rögzített két backlog-tételt (paletta-admin, mezőnév-testreszabás) erősíti meg, nem hozott új konkrét, most megépítendő funkciót.
+  **Elkészült:**
+  1. **`App\Models\Concerns\HasPersonName`** trait — `full_name` accessor, ami a bejelentkezett user (vagy account) `locale` mezője alapján dönti el a sorrendet. `Contact` és `Lead` modell mindkettő használja.
+  2. **`<x-name-fields>`** Blade-komponens — a kereszt-/vezetéknév mezőket nyelv szerint helyes sorrendben jeleníti meg (a vizuálisan első mezőn `autofocus`), négy helyen váltva ki a korábbi kézzel írt, fix sorrendű mezőpárokat: `contacts/create`, `contacts/edit`, `leads/create`, `leads/edit`.
+  3. **Minden névmegjelenítés** (kontakt-lista, kontakt-részletek, lead-lista, lead-szerkesztés, deal-lista/kanban/űrlapok) a régi `trim($x->first_name.' '.$x->last_name)` minta helyett most `$x->full_name`-et használ — egyetlen helyen (`HasPersonName`) módosítható a teljes rendszer viselkedése.
+  4. A mechanizmus **most is működik** (mivel minden `locale` jelenleg `hu`), és készen áll arra, hogy amint egy account/user `locale`-ja `en`-re vált, a sorrend automatikusan angol konvencióra váltson — nem igényel új kódot.
+  **Végigtesztelve**: új kontakt létrehozva (`first_name=Anna, last_name=Kovacs`) → a listában helyesen "Kovacs Anna" jelenik meg (vezetéknév elöl); a form-mezők sorrendje (`for="last_name"` a HTML-ben `for="first_name"` előtt) is megerősítve.
+  **Következő lépés:** a névsorrend-mechanizmus dokumentálva `lokalizacio-terv.md` új 2b-2c szekciójában, összekötve a jövőbeli admin-szintű mezőnév-testreszabás backlog-tétellel.
+
 ## 7. Nyitott kérdések (még nincs döntés)
 
 - ~~A "coach kereső" weboldal és a CRM viszonya~~ → **LEZÁRVA (2026-07-25):** moduláris monolit + belső API + esemény-alapú hook-rendszer (lásd döntési napló).

@@ -35,7 +35,7 @@
                     @foreach ($contacts as $contact)
                         <a href="{{ route('contacts.show', $contact) }}" class="bg-surface hover:bg-surface-hover border border-line rounded-lg p-fluid-sm transition">
                             <p class="font-semibold text-ink text-fluid-base">
-                                {{ trim($contact->first_name.' '.$contact->last_name) }}
+                                {{ $contact->full_name }}
                             </p>
                             @if ($contact->organization)
                                 <p class="text-ink-muted text-fluid-xs">{{ $contact->organization->name }}</p>
