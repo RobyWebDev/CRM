@@ -14,8 +14,9 @@
 7. **Jogosultságok:** [`jogosultsagok-terv.md`](jogosultsagok-terv.md) — Policy-k.
 8. **Kiegészítő funkciók:** [`gdpr-terv.md`](gdpr-terv.md), [`ertesitesek-terv.md`](ertesitesek-terv.md), [`csv-import-terv.md`](csv-import-terv.md).
 9. **Admin-felület** (ha ráér az MVP-ben): [`admin-felulet-terv.md`](admin-felulet-terv.md).
-10. **Tesztek:** [`teszterv.md`](teszterv.md) — Pest, [`teszt-personak.md`](teszt-personak.md) mindhárom profiljával.
-11. **Élesítéskor (később):** [`deployment-terv.md`](deployment-terv.md), [`coach-kereso-integracio.md`](coach-kereso-integracio.md) (csak 6. fázisban).
+10. **Fő képernyők:** [`ui-wireframe-terv.md`](ui-wireframe-terv.md) — dashboard, kontaktok, kanban pipeline, projektek, feladatok.
+11. **Tesztek:** [`teszterv.md`](teszterv.md) — Pest, [`teszt-personak.md`](teszt-personak.md) mindhárom profiljával.
+12. **Élesítéskor (később):** [`deployment-terv.md`](deployment-terv.md), [`coach-kereso-integracio.md`](coach-kereso-integracio.md) (csak 6. fázisban), [`onboarding-terv.md`](onboarding-terv.md) (csak 5-6. fázisban).
 
 ## Még validálásra vár Robbal (nem technikai, hanem tartalmi kérdés)
 
