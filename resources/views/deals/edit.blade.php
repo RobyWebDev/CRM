@@ -63,6 +63,14 @@
                     </p>
                 @endif
 
+                @if ($deal->status === 'lost')
+                    <div>
+                        <x-input-label for="lost_reason" :value="__('Elvesztés oka (tanulság a jövőre)')" />
+                        <textarea id="lost_reason" name="lost_reason" rows="2" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">{{ old('lost_reason', $deal->lost_reason) }}</textarea>
+                        <x-input-error :messages="$errors->get('lost_reason')" class="mt-2" />
+                    </div>
+                @endif
+
                 <div class="flex items-center justify-end gap-fluid-xs">
                     <a href="{{ route('deals.index', ['pipeline' => $deal->pipeline_id]) }}"><x-secondary-button type="button">{{ __('Mégse') }}</x-secondary-button></a>
                     <x-primary-button>{{ __('Mentés') }}</x-primary-button>

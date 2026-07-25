@@ -19,17 +19,40 @@ class DealController extends Controller
             ? $pipelines->firstWhere('id', $request->integer('pipeline'))
             : $pipelines->first();
 
+        $isBoard = $request->string('view')->toString() === 'board';
+        $template = $isBoard ? 'deals.board' : 'deals.index';
+
+        if (! $pipeline) {
+            return view($template, ['pipelines' => $pipelines, 'pipeline' => null]);
+        }
+
         // Minden dealt mutatunk a jelenlegi lépésén, státusztól függetlenül — a "won"/"lost"
-        // dealek a záró lépésben maradnak látható, nem tűnnek el a kanban tábláról.
-        $pipeline?->load(['stages' => function ($query) {
+        // dealek a záró lépésben maradnak látható, nem tűnnek el a nézetből.
+        $pipeline->load(['stages' => function ($query) {
             $query->orderBy('sort_order')->with(['deals' => function ($dealQuery) {
                 $dealQuery->with('contact', 'organization')->latest();
             }]);
         }]);
 
-        return view('deals.index', [
+        // Súlyozott (forecast) érték — nyitott dealek értéke a stage-hez rendelt valószínűséggel
+        // szorozva (CRM best practice, pl. Pipedrive/Salesforce forecast-nézete). A `probability`
+        // mező már a séma része volt, eddig csak nem használtuk.
+        $openValue = 0;
+        $weightedValue = 0;
+        foreach ($pipeline->stages as $stage) {
+            foreach ($stage->deals as $deal) {
+                if ($deal->status === 'open') {
+                    $openValue += (float) $deal->value;
+                    $weightedValue += (float) $deal->value * (($stage->probability ?? 50) / 100);
+                }
+            }
+        }
+
+        return view($template, [
             'pipelines' => $pipelines,
             'pipeline' => $pipeline,
+            'openValue' => $openValue,
+            'weightedValue' => $weightedValue,
         ]);
     }
 
@@ -57,7 +80,7 @@ class DealController extends Controller
             'value' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        $deal = Deal::create($data + ['status' => 'open']);
+        $deal = Deal::create($data + ['status' => 'open', 'stage_entered_at' => now()]);
 
         return redirect()->route('deals.index', ['pipeline' => $deal->pipeline_id])->with('status', 'deal-created');
     }
@@ -78,6 +101,7 @@ class DealController extends Controller
             'value' => ['nullable', 'numeric', 'min:0'],
             'contact_id' => ['nullable', 'exists:contacts,id'],
             'pipeline_stage_id' => ['required', 'exists:pipeline_stages,id'],
+            'lost_reason' => ['nullable', 'string', 'max:2000'],
         ]);
 
         $this->applyStageChange($deal, (int) $data['pipeline_stage_id']);
@@ -87,8 +111,8 @@ class DealController extends Controller
     }
 
     /**
-     * Egy deal átmozgatása egy másik pipeline-lépésre (kanban drag-and-drop VAGY
-     * az akadálymentes "mozgatás" select mindkettő ezt hívja, lásd WCAG 2.5.7).
+     * Egy deal átmozgatása egy másik pipeline-lépésre (drag-and-drop VAGY az
+     * akadálymentes "mozgatás" select mindkettő ezt hívja, lásd WCAG 2.5.7).
      */
     public function move(Request $request, Deal $deal): RedirectResponse
     {
@@ -113,10 +137,15 @@ class DealController extends Controller
     /**
      * A pipeline_stage_id váltás automatikusan won/lost állapotba is állítja a dealt,
      * ha a cél-lépés is_won_stage/is_lost_stage — lásd architektura.md 5. pont.
+     * A stage_entered_at is frissül, ha ténylegesen új lépésre kerül (napok-a-lépésben számításhoz).
      */
     private function applyStageChange(Deal $deal, int $pipelineStageId): void
     {
         $stage = $deal->pipeline->stages()->findOrFail($pipelineStageId);
+
+        if ($deal->pipeline_stage_id !== $stage->id) {
+            $deal->stage_entered_at = now();
+        }
 
         $deal->pipeline_stage_id = $stage->id;
 

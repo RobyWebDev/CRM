@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[Fillable([
     'account_id', 'pipeline_id', 'pipeline_stage_id', 'contact_id', 'organization_id',
     'owner_user_id', 'title', 'value', 'currency', 'status', 'expected_close_date',
-    'closed_at', 'invoice_status', 'custom_fields',
+    'closed_at', 'stage_entered_at', 'lost_reason', 'invoice_status', 'custom_fields',
 ])]
 class Deal extends Model
 {
@@ -26,8 +26,15 @@ class Deal extends Model
             'value' => 'decimal:2',
             'expected_close_date' => 'date',
             'closed_at' => 'datetime',
+            'stage_entered_at' => 'datetime',
             'custom_fields' => 'array',
         ];
+    }
+
+    /** Hány teljes napja áll a deal a jelenlegi lépésén — HubSpot-stílusú "elakadt üzlet" jelzéshez. */
+    public function daysInStage(): int
+    {
+        return (int) ($this->stage_entered_at ?? $this->created_at)->diffInDays(now());
     }
 
     public function pipeline(): BelongsTo

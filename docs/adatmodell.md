@@ -160,7 +160,9 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | status | varchar | `open` / `won` / `lost` |
 | expected_close_date | date nullable | |
 | closed_at | timestamp nullable | |
+| stage_entered_at | timestamp nullable | mikor került a JELENLEGI lépésére — "hány napja ebben a lépésben" (elakadt üzlet) jelzéshez, CRM best practice (2026-07-25) |
 | invoice_status | varchar default 'not_issued' | `not_issued` / `issued` / `paid` — **MVP: csak követés-státusz**, nincs tényleges számla-generálás (lásd `crm_projekt.md` 7. szekció, lezárt nyitott kérdés) |
+| lost_reason | text nullable | miért veszett el — CRM best practice (2026-07-25), hogy tanulni lehessen a bukott üzletekből |
 | custom_fields | json nullable | |
 | created_at / updated_at / deleted_at | | |
 

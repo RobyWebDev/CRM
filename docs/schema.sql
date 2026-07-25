@@ -160,7 +160,9 @@ CREATE TABLE deals (
     status VARCHAR(20) NOT NULL DEFAULT 'open', -- open / won / lost
     expected_close_date DATE NULL,
     closed_at TIMESTAMP NULL,
+    stage_entered_at TIMESTAMP NULL, -- mikor került a JELENLEGI lépésére — "napok a lépésben" (elakadt deal) jelzéshez
     invoice_status VARCHAR(20) NOT NULL DEFAULT 'not_issued', -- not_issued / issued / paid — MVP: csak követés, nincs tényleges számla-generálás
+    lost_reason TEXT NULL, -- miért veszett el — CRM best practice, tanulság a jövőre
     custom_fields JSON NULL,
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,

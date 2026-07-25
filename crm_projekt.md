@@ -199,6 +199,14 @@
   **Végigtesztelve:** paletta-váltás (curl-lel, a `data-palette` attribútum ténylegesen megváltozott a HTML-ben), lead létrehozása + konvertálása (kontakt+deal létrejötte ellenőrizve tinkerrel), drag-and-drop markup (draggable attribútum jelenléte).
   **Következő lépés:** Rob dönt, hogy az AI-kutatás API-választása/költsége miatt mikor térünk vissza rá; addig folytatható a háttér-réteg (policy-k, esemény-hook) vagy további látható modulok (projektek/teendők).
 
+  **Tizedik forduló — a kanban vízszintes görgetés lecserélve:** Rob visszajelezte, hogy a kanban tábla oldalra görgetős elrendezése **nem praktikus, nem eléggé átlátható** — kérte, hogy vegyünk át jól bevált megoldásokat bármilyen CRM-ből (nem csak Salesforce), amik kis projektbe is illenek.
+  **Elkészült:**
+  1. **Új alapértelmezett nézet: rendezett lista/táblázat** (`deals.index`) a vízszintesen görgetős oszlopok helyett — egy dealt-listát mutat (asztali táblázat, mobilon kártyák, a meglévő reszponzív konvenció szerint), lépésenkénti darabszám-jelvényekkel (nem görgetős, tördelődő sorban), és a lépés-váltás ugyanazzal az akadálymentes `<select>`-tel megy soronként.
+  2. **A régi kanban tábla megmaradt**, opcionális második nézetként (`?view=board`, "Tábla nézet" gomb) — nem veszett el a munka, csak nem ez az alapértelmezett.
+  3. **Két új CRM best practice, kis projektbe is illő, más rendszerekből átvéve** (nem csak Salesforce): **"hány napja ebben a lépésben"** jelzés dealenként (HubSpot-stílusú "elakadt üzlet" figyelmeztetés 14+ nap felett — új `deals.stage_entered_at` mező, ami a tényleges lépésváltáskor frissül, NEM ugyanaz, mint az `updated_at`); **súlyozott (forecast) pipeline-érték** (nyitott dealek értéke × a lépéshez tartozó valószínűség — a `pipeline_stages.probability` mező már a séma része volt kezdettől, csak eddig nem használtuk; Pipedrive/Salesforce forecast-nézetének megfelelője). Emellett egy **"elvesztés oka"** mező (`deals.lost_reason`) is bekerült — CRM best practice, hogy tanulni lehessen a bukott üzletekből, csak akkor jelenik meg a szerkesztő űrlapon, ha a deal állapota "elveszett".
+  **Végigtesztelve** (curl): lista nézet + tábla nézet mindkettő betöltődik, súlyozott érték helyesen számol (100.000 Ft × 50% alapértelmezett valószínűség = 50.000 Ft, mivel a seedelt pipeline-okon még nincs kitöltve konkrét `probability` érték), "0 nap" helyesen jelenik meg új dealnél, elvesztés-oka mező megjelenik és mentődik, ha a deal elveszettre vált.
+  **Következő lépés:** Rob kipróbálja az új lista-nézetet; ha jó, a `pipeline_stages.probability` értékek tényleges kitöltése (jelenleg minden lépésen `NULL`, 50%-os alapértelmezéssel számol) egy jövőbeli finomítás lehet, ha pontosabb forecast kell.
+
 ## 7. Nyitott kérdések (még nincs döntés)
 
 - ~~A "coach kereső" weboldal és a CRM viszonya~~ → **LEZÁRVA (2026-07-25):** moduláris monolit + belső API + esemény-alapú hook-rendszer (lásd döntési napló).
