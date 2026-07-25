@@ -13,12 +13,19 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('account_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role', 50)->default('member'); // owner / admin / member
+            $table->boolean('is_super_admin')->default(false); // csak Robnak: minden accountot lát/kezel
+            $table->string('locale', 10)->default('hu');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unique(['account_id', 'email']);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
