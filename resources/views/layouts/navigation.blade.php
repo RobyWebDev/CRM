@@ -33,6 +33,16 @@
                 </div>
             </div>
 
+            <!-- Globális gyorskeresés -->
+            <div class="hidden sm:flex sm:items-center flex-1 justify-center px-4">
+                <form method="GET" action="{{ route('search') }}" class="w-full max-w-xs">
+                    <label class="sr-only" for="nav-search">{{ __('Keresés') }}</label>
+                    <input type="text" id="nav-search" name="q" value="{{ request('q') }}"
+                           placeholder="{{ __('Keresés…') }}"
+                           class="w-full text-fluid-xs rounded-md border-line-strong bg-sunken text-ink-soft focus:border-line-strong focus:ring-line-strong">
+                </form>
+            </div>
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
@@ -81,6 +91,14 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        <div class="px-4 pt-2">
+            <form method="GET" action="{{ route('search') }}">
+                <label class="sr-only" for="nav-search-mobile">{{ __('Keresés') }}</label>
+                <input type="text" id="nav-search-mobile" name="q" value="{{ request('q') }}"
+                       placeholder="{{ __('Keresés…') }}"
+                       class="w-full text-fluid-xs rounded-md border-line-strong bg-sunken text-ink-soft focus:border-line-strong focus:ring-line-strong">
+            </form>
+        </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}

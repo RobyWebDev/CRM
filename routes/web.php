@@ -7,6 +7,7 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RetainerController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ThemeController;
 use App\Services\InsightsEngine;
@@ -32,6 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/profile/export', [ProfileController::class, 'export'])->name('profile.export');
+
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
 
     Route::resource('contacts', ContactController::class);
 

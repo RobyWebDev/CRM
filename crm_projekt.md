@@ -296,7 +296,7 @@
   10. **Látványos pipeline és egyéb vizuális nézetek** — grafikonos/vizuális összefoglalók (pl. tölcsér-diagram a pipeline-hoz), kapcsolódik a már meglévő `riportok-terv.md` Chart.js-javaslatához, és a "nagyon profi vizuális megjelenítés" később külön átbeszélendő téma (Rob explicit kérése, hogy erre még visszatérjünk).
 
   **AI-javaslat, further best practice ötletek (Rob kifejezetten kérte, hogy adjak sajátot is):**
-  - **Globális gyorskeresés** (egy keresőmezőbe beírva egyszerre keres kontaktok/leadek/dealek/projektek között) — szinte minden komoly CRM-ben alapfunkció, sokat gyorsít a napi használaton.
+  - **Globális gyorskeresés** ✅ **megvalósítva (2026-07-25, tizenhatodik forduló):** új `SearchController` + `/search` route, keresőmező a navigációs sávban (asztali és mobil nézetben is), ami egyszerre keres kontaktok, cégek, leadek, üzletek, projektek és retainerek között (név/cím/e-mail/telefon/cég mezőkön), account-szűrten. Eredmények egy csoportosított listaoldalon jelennek meg, kattintható linkekkel a megfelelő rekordra.
   - **Mentett szűrők/nézetek** — egy adott szűrés-kombináció elmenthető névvel (pl. "Forró leadjeim"), hogy ne kelljen mindig újra beállítani.
   - **Adatminőség-jelzés** ✅ **megvalósítva (2026-07-25, tizenhatodik forduló):** az `InsightsEngine` most már jelzi, ha kontaktoknak nincs telefonszáma (`Contact::whereNull('phone')->orWhere('phone', '')`), ugyanabba a Dashboard "Javaslatok" kártyába illesztve, mint a többi szabály.
   - **Gyors-felvétel mobilon** (lebegő "+" gomb, amivel egy kattintással kontaktot/teendőt lehet felvenni terepen, telefonon) — jól illik a már meglévő mobilbarát elvhez.
