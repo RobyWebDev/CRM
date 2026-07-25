@@ -7,7 +7,7 @@
 
 | Riport | Mit mutat | Forrás |
 |---|---|---|
-| **Pipeline-tölcsér (funnel)** | hány deal / mekkora összérték van jelenleg az egyes `pipeline_stages`-eken | `deals` GROUP BY `pipeline_stage_id` |
+| **Pipeline-tölcsér (funnel)** ✅ | hány deal / mekkora összérték van jelenleg az egyes `pipeline_stages`-eken | `deals` GROUP BY `pipeline_stage_id` — **megvalósítva (2026-07-25):** Chart.js vízszintes oszlopdiagram a Pipeline nézeten (`deals/index.blade.php`), lépésenkénti nyitott üzletszámmal |
 | **Nyerési arány (win rate)** | lezárt dealek közül hány % `won` vs `lost`, időszakra szűrve | `deals` WHERE `status` IN (won, lost), csoportosítva |
 | **Átlagos értékesítési ciklus** | átlagosan hány nap telik el a deal létrehozása és `won`/`lost` állapot között | `deals.created_at` → `closed_at` különbség átlaga |
 | **Bevétel szolgáltatás-típusonként** | mennyi `won` deal-érték jutott az egyes `service_types`-ra, időszakonként | `deals` JOIN `pipelines` JOIN `service_types` |

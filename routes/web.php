@@ -9,6 +9,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RetainerController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ThemeController;
+use App\Services\InsightsEngine;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,6 +23,7 @@ Route::get('/dashboard', function () {
         'openLeadsCount' => \App\Models\Lead::whereNotIn('status', ['converted', 'unqualified'])->count(),
         'activeProjectsCount' => \App\Models\Project::whereIn('status', ['active', 'on_hold'])->count(),
         'activeRetainersCount' => \App\Models\Retainer::where('status', 'active')->count(),
+        'insights' => InsightsEngine::generate(),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 

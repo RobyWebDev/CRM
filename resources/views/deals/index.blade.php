@@ -75,6 +75,20 @@
                     @endforeach
                 </div>
 
+                @if ($pipeline->stages->sum(fn ($s) => $s->deals->count()) > 0)
+                    {{-- Pipeline tölcsér-diagram — vízszintes oszlopdiagram, lépésenkénti nyitott üzletszámmal,
+                         a "nagyon profi vizuális megjelenítés" kérésre (Rob), Chart.js-szel (lásd riportok-terv.md). --}}
+                    <div class="bg-surface border border-line rounded-lg p-fluid-md">
+                        <h3 class="font-semibold text-fluid-lg text-ink mb-fluid-xs">{{ __('Pipeline tölcsér') }}</h3>
+                        <div class="relative" style="height: {{ max(180, count($pipeline->stages) * 48) }}px">
+                            <canvas
+                                x-data
+                                x-init="renderFunnelChart($el, {{ Js::from($pipeline->stages->pluck('name')) }}, {{ Js::from($pipeline->stages->map(fn ($s) => $s->deals->where('status', 'open')->count())) }})"
+                            ></canvas>
+                        </div>
+                    </div>
+                @endif
+
                 @php
                     $allDeals = $pipeline->stages->flatMap(fn ($stage) => $stage->deals->map(fn ($deal) => [$deal, $stage]));
                 @endphp

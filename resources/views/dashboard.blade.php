@@ -40,6 +40,29 @@
                     <p class="text-fluid-2xl font-semibold text-ink mt-1">{{ $activeRetainersCount ?? 0 }}</p>
                 </a>
             </div>
+
+            @if (!empty($insights))
+                <div class="bg-surface border border-line rounded-lg p-fluid-md">
+                    <h3 class="font-semibold text-fluid-lg text-ink mb-fluid-xs">{{ __('Javaslatok') }}</h3>
+                    <div class="space-y-2">
+                        @foreach ($insights as $insight)
+                            <div @class([
+                                    'flex items-start gap-2 rounded-md px-3 py-2 border-l-4 bg-sunken',
+                                    'border-danger' => $insight['type'] === 'danger',
+                                    'border-warning' => $insight['type'] === 'warning',
+                                    'border-info' => $insight['type'] === 'info',
+                                ])>
+                                <span @class([
+                                        'text-fluid-sm',
+                                        'text-danger' => $insight['type'] === 'danger',
+                                        'text-warning' => $insight['type'] === 'warning',
+                                        'text-info' => $insight['type'] === 'info',
+                                    ])>{{ $insight['message'] }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>
