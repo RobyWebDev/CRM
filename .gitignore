@@ -1,0 +1,19 @@
+# Titkok — soha nem kerülnek a repóba
+.env
+.env.*
+!.env.example
+
+# Laravel (a projekt inicializálása után lesz relevánsa)
+/vendor
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/bootstrap/cache/*.php
+.phpunit.result.cache
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
