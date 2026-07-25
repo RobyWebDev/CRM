@@ -18,7 +18,7 @@
 11. **Biztonság:** [`biztonsag-terv.md`](biztonsag-terv.md) — bemenet-validáció, rate limiting, tenant-elkülönítés tesztje, HTTPS, 2FA (később).
 12. **Riportok** (opcionális, ha van rá idő MVP-ben): [`riportok-terv.md`](riportok-terv.md) — pipeline-tölcsér, win rate, bevétel szolgáltatásonként.
 13. **Tesztek:** [`teszterv.md`](teszterv.md) — Pest, [`teszt-personak.md`](teszt-personak.md) mindhárom profiljával.
-14. **Élesítéskor (később):** [`deployment-terv.md`](deployment-terv.md), [`coach-kereso-integracio.md`](coach-kereso-integracio.md) (csak 6. fázisban), [`onboarding-terv.md`](onboarding-terv.md) (csak 5-6. fázisban).
+14. **Élesítéskor (később):** [`deployment-terv.md`](deployment-terv.md), [`coach-kereso-integracio.md`](coach-kereso-integracio.md) (csak 6. fázisban), [`onboarding-terv.md`](onboarding-terv.md) (csak 5-6. fázisban), [`teljesitmeny-terv.md`](teljesitmeny-terv.md) (csak ha valós lassulás jelentkezik), [`lokalizacio-terv.md`](lokalizacio-terv.md) (csak nem magyar tenanteknél, 6. fázis).
 
 ## Nyitott architekturális kérdés (lásd `crm_projekt.md` 7. szekció)
 
