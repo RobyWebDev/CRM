@@ -15,7 +15,8 @@
 8. **Kiegészítő funkciók:** [`gdpr-terv.md`](gdpr-terv.md), [`ertesitesek-terv.md`](ertesitesek-terv.md), [`csv-import-terv.md`](csv-import-terv.md).
 9. **Admin-felület** (ha ráér az MVP-ben): [`admin-felulet-terv.md`](admin-felulet-terv.md).
 10. **Fő képernyők:** [`ui-wireframe-terv.md`](ui-wireframe-terv.md) — dashboard, kontaktok, kanban pipeline, projektek, feladatok.
-10b. **Színvilág:** [`szinvilag-terv.md`](szinvilag-terv.md) — sötét alapértelmezett téma (cib.hu-zöld), világos téma, WCAG 2.1/2.2 kontrasztarányok — a Tailwind-konfiguráció ez alapján készül.
+10b. **Színvilág:** [`szinvilag-terv.md`](szinvilag-terv.md) — sötét alapértelmezett téma (cib.hu-zöld ihletésű, OKLCH-alapú), világos téma, WCAG 2.1/2.2 kontrasztarányok — a Tailwind-konfiguráció ez alapján készül.
+10c. **Tipográfia/layout:** [`tipografia-layout-terv.md`](tipografia-layout-terv.md) — fluid `clamp()`-skála, container query-k, modern CSS-egységek.
 11. **Biztonság:** [`biztonsag-terv.md`](biztonsag-terv.md) — bemenet-validáció, rate limiting, tenant-elkülönítés tesztje, HTTPS, 2FA (később).
 12. **Riportok** (opcionális, ha van rá idő MVP-ben): [`riportok-terv.md`](riportok-terv.md) — pipeline-tölcsér, win rate, bevétel szolgáltatásonként.
 13. **Tesztek:** [`teszterv.md`](teszterv.md) — Pest, [`teszt-personak.md`](teszt-personak.md) mindhárom profiljával.
