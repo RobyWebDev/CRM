@@ -346,8 +346,8 @@ CREATE TABLE tasks (
 CREATE TABLE notes (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     account_id BIGINT UNSIGNED NOT NULL,
-    noteable_type VARCHAR(255) NOT NULL,
-    noteable_id BIGINT UNSIGNED NOT NULL,
+    noteable_type VARCHAR(255) NULL, -- NULL = "saját jegyzet", nincs semmilyen rekordhoz kötve (2026-07-25)
+    noteable_id BIGINT UNSIGNED NULL,
     user_id BIGINT UNSIGNED NOT NULL,
     body TEXT NOT NULL,
     created_at TIMESTAMP NULL,

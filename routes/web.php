@@ -4,6 +4,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\PersonalNoteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RetainerController;
@@ -53,6 +54,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
     Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
+
+    Route::get('/sajat-jegyzetek', [PersonalNoteController::class, 'index'])->name('personal-notes.index');
+    Route::post('/sajat-jegyzetek', [PersonalNoteController::class, 'store'])->name('personal-notes.store');
+    Route::patch('/sajat-jegyzetek/{note}', [PersonalNoteController::class, 'update'])->name('personal-notes.update');
+    Route::delete('/sajat-jegyzetek/{note}', [PersonalNoteController::class, 'destroy'])->name('personal-notes.destroy');
 
     Route::patch('/settings/theme', [ThemeController::class, 'update'])->name('theme.update');
 });

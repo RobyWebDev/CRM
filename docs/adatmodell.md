@@ -266,7 +266,7 @@ Polimorf kapcsolat, hogy bármihez (contact, deal, project) köthető legyen fel
 |---|---|---|
 | id | bigint PK | |
 | account_id | bigint FK | |
-| noteable_type, noteable_id | | polimorf FK |
+| noteable_type, noteable_id | nullable | polimorf FK — `NULL` esetén "saját jegyzet" (nincs semmilyen rekordhoz kötve), lásd `crm_projekt.md` 8. szekció 9. pont, megvalósítva 2026-07-25 |
 | user_id | bigint FK | ki írta |
 | body | text | |
 | created_at / updated_at | | |
