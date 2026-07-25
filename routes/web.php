@@ -3,7 +3,11 @@
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\RetainerController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ThemeController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +20,8 @@ Route::get('/dashboard', function () {
         'contactsCount' => \App\Models\Contact::count(),
         'openDealsCount' => \App\Models\Deal::where('status', 'open')->count(),
         'openLeadsCount' => \App\Models\Lead::whereNotIn('status', ['converted', 'unqualified'])->count(),
+        'activeProjectsCount' => \App\Models\Project::whereIn('status', ['active', 'on_hold'])->count(),
+        'activeRetainersCount' => \App\Models\Retainer::where('status', 'active')->count(),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -32,6 +38,16 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('deals', DealController::class)->except(['show']);
     Route::patch('/deals/{deal}/move', [DealController::class, 'move'])->name('deals.move');
+
+    Route::resource('projects', ProjectController::class)->except(['create', 'store']);
+
+    Route::resource('retainers', RetainerController::class)->except(['create', 'store']);
+
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::patch('/tasks/{task}/toggle', [TaskController::class, 'toggle'])->name('tasks.toggle');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+
+    Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
 
     Route::patch('/settings/theme', [ThemeController::class, 'update'])->name('theme.update');
 });

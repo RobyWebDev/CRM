@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\Deal;
 use App\Models\Pipeline;
+use App\Models\Project;
+use App\Models\Retainer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -82,6 +84,11 @@ class DealController extends Controller
 
         $deal = Deal::create($data + ['status' => 'open', 'stage_entered_at' => now()]);
 
+        // Ritka eset, de a form elméletileg engedi rögtön egy "won" lépésre felvenni a dealt.
+        $this->applyStageChange($deal, $deal->pipeline_stage_id);
+        $deal->save();
+        $this->maybeCreateProjectOrRetainer($deal);
+
         return redirect()->route('deals.index', ['pipeline' => $deal->pipeline_id])->with('status', 'deal-created');
     }
 
@@ -106,6 +113,7 @@ class DealController extends Controller
 
         $this->applyStageChange($deal, (int) $data['pipeline_stage_id']);
         $deal->update($data);
+        $this->maybeCreateProjectOrRetainer($deal);
 
         return redirect()->route('deals.index', ['pipeline' => $deal->pipeline_id])->with('status', 'deal-updated');
     }
@@ -122,6 +130,7 @@ class DealController extends Controller
 
         $this->applyStageChange($deal, (int) $data['pipeline_stage_id']);
         $deal->save();
+        $this->maybeCreateProjectOrRetainer($deal);
 
         return back()->with('status', 'deal-moved');
     }
@@ -159,5 +168,44 @@ class DealController extends Controller
             $deal->status = 'open';
             $deal->closed_at = null;
         }
+    }
+
+    /**
+     * Amint egy deal "won" lesz, a pipeline `won_creates` beállítása alapján automatikusan
+     * létrehoz belőle egy egyszeri Projectet VAGY egy ismétlődő Retainert (sosem mindkettőt,
+     * és csak egyszer — ha a deal már rendelkezik project/retainer kapcsolattal, kihagyja).
+     * Lásd architektura.md 5. pont, crm_projekt.md 7. szekció (retainer-döntés).
+     */
+    private function maybeCreateProjectOrRetainer(Deal $deal): void
+    {
+        if ($deal->status !== 'won') {
+            return;
+        }
+
+        if ($deal->project()->exists() || $deal->retainer()->exists()) {
+            return;
+        }
+
+        $attributes = [
+            'deal_id' => $deal->id,
+            'contact_id' => $deal->contact_id,
+            'organization_id' => $deal->organization_id,
+            'service_type_id' => $deal->pipeline->service_type_id,
+            'owner_user_id' => $deal->owner_user_id,
+            'title' => $deal->title,
+            'status' => 'active',
+        ];
+
+        match ($deal->pipeline->won_creates) {
+            'retainer' => Retainer::create($attributes + [
+                'monthly_fee' => $deal->value,
+                'started_at' => now()->toDateString(),
+            ]),
+            'project' => Project::create($attributes + [
+                'budget' => $deal->value,
+                'start_date' => now()->toDateString(),
+            ]),
+            default => null,
+        };
     }
 }

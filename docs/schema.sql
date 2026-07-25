@@ -79,6 +79,7 @@ CREATE TABLE pipelines (
     description TEXT NULL,
     is_default BOOLEAN NOT NULL DEFAULT FALSE,
     sort_order INT NOT NULL DEFAULT 0,
+    won_creates VARCHAR(20) NOT NULL DEFAULT 'project', -- project / retainer / none — mit hozzon létre automatikusan "won" dealnél
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
     deleted_at TIMESTAMP NULL,

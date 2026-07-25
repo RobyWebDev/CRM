@@ -76,6 +76,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | description | text nullable | |
 | is_default | boolean | ha egy service_type-hoz csak egy van, ez legyen az alapértelmezett |
 | sort_order | int | |
+| won_creates | varchar default 'project' | `project` / `retainer` / `none` — amikor egy deal erre a pipeline-ra "won" lesz, mit hozzon létre automatikusan (2026-07-25, megvalósítva) |
 | created_at / updated_at / deleted_at | | |
 
 ### `pipeline_stages`

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['account_id', 'service_type_id', 'name', 'description', 'is_default', 'sort_order'])]
+#[Fillable(['account_id', 'service_type_id', 'name', 'description', 'is_default', 'sort_order', 'won_creates'])]
 class Pipeline extends Model
 {
     use BelongsToAccount, HasFactory, SoftDeletes;

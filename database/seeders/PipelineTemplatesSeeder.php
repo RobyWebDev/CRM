@@ -102,6 +102,7 @@ class PipelineTemplatesSeeder extends Seeder
             name: 'Marketing',
             slug: 'marketing',
             color: '#fb9890',
+            wonCreates: 'retainer',
             stages: [
                 'Érdeklődés',
                 'Igényfelmérés / marketing audit',
@@ -125,6 +126,7 @@ class PipelineTemplatesSeeder extends Seeder
             name: 'SEO',
             slug: 'seo',
             color: '#efd62f',
+            wonCreates: 'retainer',
             stages: [
                 'Érdeklődés',
                 'SEO audit elkészítése',
@@ -149,7 +151,7 @@ class PipelineTemplatesSeeder extends Seeder
      * @param  array<int, string|array{name: string, won?: bool, lost?: bool}>  $stages
      * @param  array<int, array<string, mixed>>  $customFields
      */
-    private function seedService(Account $account, string $name, string $slug, string $color, array $stages, array $customFields): void
+    private function seedService(Account $account, string $name, string $slug, string $color, array $stages, array $customFields, string $wonCreates = 'project'): void
     {
         $serviceType = ServiceType::firstOrCreate(
             ['account_id' => $account->id, 'slug' => $slug],
@@ -158,7 +160,7 @@ class PipelineTemplatesSeeder extends Seeder
 
         $pipeline = Pipeline::firstOrCreate(
             ['account_id' => $account->id, 'service_type_id' => $serviceType->id],
-            ['name' => $name.' pipeline', 'is_default' => true]
+            ['name' => $name.' pipeline', 'is_default' => true, 'won_creates' => $wonCreates]
         );
 
         if ($pipeline->stages()->count() === 0) {

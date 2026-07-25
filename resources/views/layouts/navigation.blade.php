@@ -24,6 +24,12 @@
                     <x-nav-link :href="route('contacts.index')" :active="request()->routeIs('contacts.*')">
                         {{ __('Kontaktok') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
+                        {{ __('Projektek') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('retainers.index')" :active="request()->routeIs('retainers.*')">
+                        {{ __('Retainerek') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -87,6 +93,12 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('contacts.index')" :active="request()->routeIs('contacts.*')">
                 {{ __('Kontaktok') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
+                {{ __('Projektek') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('retainers.index')" :active="request()->routeIs('retainers.*')">
+                {{ __('Retainerek') }}
             </x-responsive-nav-link>
         </div>
 
