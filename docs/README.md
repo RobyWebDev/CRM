@@ -15,8 +15,14 @@
 8. **Kiegészítő funkciók:** [`gdpr-terv.md`](gdpr-terv.md), [`ertesitesek-terv.md`](ertesitesek-terv.md), [`csv-import-terv.md`](csv-import-terv.md).
 9. **Admin-felület** (ha ráér az MVP-ben): [`admin-felulet-terv.md`](admin-felulet-terv.md).
 10. **Fő képernyők:** [`ui-wireframe-terv.md`](ui-wireframe-terv.md) — dashboard, kontaktok, kanban pipeline, projektek, feladatok.
-11. **Tesztek:** [`teszterv.md`](teszterv.md) — Pest, [`teszt-personak.md`](teszt-personak.md) mindhárom profiljával.
-12. **Élesítéskor (később):** [`deployment-terv.md`](deployment-terv.md), [`coach-kereso-integracio.md`](coach-kereso-integracio.md) (csak 6. fázisban), [`onboarding-terv.md`](onboarding-terv.md) (csak 5-6. fázisban).
+11. **Biztonság:** [`biztonsag-terv.md`](biztonsag-terv.md) — bemenet-validáció, rate limiting, tenant-elkülönítés tesztje, HTTPS, 2FA (később).
+12. **Riportok** (opcionális, ha van rá idő MVP-ben): [`riportok-terv.md`](riportok-terv.md) — pipeline-tölcsér, win rate, bevétel szolgáltatásonként.
+13. **Tesztek:** [`teszterv.md`](teszterv.md) — Pest, [`teszt-personak.md`](teszt-personak.md) mindhárom profiljával.
+14. **Élesítéskor (később):** [`deployment-terv.md`](deployment-terv.md), [`coach-kereso-integracio.md`](coach-kereso-integracio.md) (csak 6. fázisban), [`onboarding-terv.md`](onboarding-terv.md) (csak 5-6. fázisban).
+
+## Nyitott architekturális kérdés (lásd `crm_projekt.md` 7. szekció)
+
+Ismétlődő/retainer jellegű (havi díjas) munkák a marketing/SEO pipeline-oknál nincsenek külön kezelve a jelenlegi `projects` adatmodellben, ami egyszeri megbízást feltételez. Rob döntésére vár.
 
 ## Még validálásra vár Robbal (nem technikai, hanem tartalmi kérdés)
 
