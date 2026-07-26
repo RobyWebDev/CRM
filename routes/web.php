@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CustomFieldDefinitionController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\NoteController;
@@ -45,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('organizations', OrganizationController::class)->except(['create', 'store']);
 
     Route::resource('campaigns', CampaignController::class);
+
+    Route::resource('custom-field-definitions', CustomFieldDefinitionController::class)->except(['show']);
 
     Route::resource('leads', LeadController::class)->except(['show']);
     Route::post('/leads/{lead}/convert', [LeadController::class, 'convert'])->name('leads.convert');

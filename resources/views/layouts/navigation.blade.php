@@ -39,6 +39,9 @@
                     <x-nav-link :href="route('personal-notes.index')" :active="request()->routeIs('personal-notes.*')">
                         {{ __('Jegyzeteim') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('custom-field-definitions.index')" :active="request()->routeIs('custom-field-definitions.*')">
+                        {{ __('Egyedi mezők') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -135,6 +138,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('personal-notes.index')" :active="request()->routeIs('personal-notes.*')">
                 {{ __('Jegyzeteim') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('custom-field-definitions.index')" :active="request()->routeIs('custom-field-definitions.*')">
+                {{ __('Egyedi mezők') }}
             </x-responsive-nav-link>
         </div>
 

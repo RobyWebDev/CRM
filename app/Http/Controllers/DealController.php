@@ -8,6 +8,7 @@ use App\Models\Deal;
 use App\Models\Pipeline;
 use App\Models\Project;
 use App\Models\Retainer;
+use App\Support\CustomFieldFormHelper;
 use App\Support\DescriptionChain;
 use App\Support\SelectOrCreate;
 use Illuminate\Http\RedirectResponse;
@@ -73,12 +74,14 @@ class DealController extends Controller
             'selectedPipeline' => $selectedPipeline,
             'contacts' => Contact::orderBy('first_name')->get(),
             'campaigns' => Campaign::orderBy('name')->get(),
+            'serviceTypeId' => $selectedPipeline?->service_type_id,
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
         $this->resolveCampaignId($request);
+        $serviceTypeId = Pipeline::find($request->input('pipeline_id'))?->service_type_id;
 
         $data = $request->validate([
             'pipeline_id' => ['required', 'exists:pipelines,id'],
@@ -88,7 +91,7 @@ class DealController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'value' => ['nullable', 'numeric', 'min:0'],
-        ]);
+        ] + CustomFieldFormHelper::validationRules('deal', $serviceTypeId));
 
         $deal = Deal::create($data + [
             'status' => 'open',
@@ -111,6 +114,7 @@ class DealController extends Controller
             'contacts' => Contact::orderBy('first_name')->get(),
             'campaigns' => Campaign::orderBy('name')->get(),
             'stages' => $deal->pipeline->stages()->orderBy('sort_order')->get(),
+            'serviceTypeId' => $deal->pipeline->service_type_id,
         ]);
     }
 
@@ -126,7 +130,7 @@ class DealController extends Controller
             'campaign_id' => ['nullable', 'exists:campaigns,id'],
             'pipeline_stage_id' => ['required', 'exists:pipeline_stages,id'],
             'lost_reason' => ['nullable', 'string', 'max:2000'],
-        ]);
+        ] + CustomFieldFormHelper::validationRules('deal', $deal->pipeline->service_type_id));
 
         $data['organization_id'] = $this->deriveOrganizationId($data['contact_id'] ?? null);
 

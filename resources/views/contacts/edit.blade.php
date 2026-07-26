@@ -79,6 +79,8 @@
                 <x-contact-fields-editor :fields="old('contact_fields', $contact->contactFields->map(fn ($f) => ['type' => $f->type, 'label' => $f->label, 'value' => $f->value])->all())" />
                 <x-input-error :messages="$errors->get('contact_fields.*.value')" class="mt-2" />
 
+                <x-custom-fields-form entity-type="contact" :values="$contact->custom_fields ?? []" />
+
                 <div class="border border-line rounded-md p-fluid-sm space-y-2">
                     <label class="flex items-center gap-2 text-fluid-base text-ink">
                         <input type="checkbox" name="gdpr_consent_given" value="1" @checked(old('gdpr_consent_given', $contact->gdpr_consent_at !== null))

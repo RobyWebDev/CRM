@@ -80,6 +80,11 @@
                     <x-input-error :messages="$errors->get('value')" class="mt-2" />
                 </div>
 
+                {{-- Az egyedi mezők a KEZDETBEN kiválasztott pipeline szolgáltatás-típusához
+                     igazodnak — ha a fenti lenyílóban közben másik pipeline-ra vált valaki,
+                     ehhez egy oldal-újratöltés szükséges, hogy a megfelelő mezők jelenjenek meg. --}}
+                <x-custom-fields-form entity-type="deal" :service-type-id="$serviceTypeId" />
+
                 <div class="flex items-center justify-end gap-fluid-xs">
                     <a href="{{ route('deals.index') }}"><x-secondary-button type="button">{{ __('Mégse') }}</x-secondary-button></a>
                     <x-primary-button>{{ __('Mentés') }}</x-primary-button>

@@ -89,6 +89,8 @@
                     </div>
                 @endif
 
+                <x-custom-fields-form entity-type="deal" :service-type-id="$serviceTypeId" :values="$deal->custom_fields ?? []" />
+
                 <div class="flex items-center justify-end gap-fluid-xs">
                     <a href="{{ route('deals.index', ['pipeline' => $deal->pipeline_id]) }}"><x-secondary-button type="button">{{ __('Mégse') }}</x-secondary-button></a>
                     <x-primary-button>{{ __('Mentés') }}</x-primary-button>

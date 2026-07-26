@@ -12,7 +12,7 @@ A rendszer NEM tartalmaz szakma-specifikus kódot (nincs `CoachController`, ninc
 - **Milyen lépésekből áll a folyamatom** → `pipelines` + `pipeline_stages` tábla (szabadon szerkeszthető, szolgáltatás-típusonként más lehet).
 - **Milyen egyedi adatokat akarok rögzíteni** → `custom_field_definitions` tábla (tetszőleges mező felvehető bármelyik entitáshoz).
 
-Ez azt jelenti: ha Rob a coachlab.hu-n túl pl. egy fényképészt vagy egy könyvelőt is fel akar venni a rendszerbe, ahhoz **nem kell új kódot írni** — csak egy új `service_type`-ot, hozzá pipeline-t és egyedi mezőket kell létrehozni a felületen (vagy admin seederrel, amíg nincs UI).
+Ez azt jelenti: ha Rob a coachlab.hu-n túl pl. egy fényképészt vagy egy könyvelőt is fel akar venni a rendszerbe, ahhoz **nem kell új kódot írni** — csak egy új `service_type`-ot, hozzá pipeline-t és egyedi mezőket kell létrehozni a felületen. **2026-07-26-tól ez ténylegesen is így működik:** a `custom_field_definitions` admin-felülete (`/custom-field-definitions`) és a hozzá tartozó dinamikus form-renderelés (`<x-custom-fields-form>`/`<x-custom-fields-display>`) a Kontakt és Üzlet űrlapokon élesben megvan — korábban a tábla/modell csak létezett, de semmilyen felület nem használta.
 
 ---
 
@@ -337,6 +337,8 @@ Polimorf kapcsolat, hogy bármihez (contact, deal, project) köthető legyen fel
 ### `custom_field_definitions`
 
 Ez a tábla teszi lehetővé, hogy **fejlesztő nélkül** bármilyen egyedi mezőt fel lehessen venni bármelyik entitáshoz, akár szolgáltatás-típusonként eltérőt.
+
+**Állapot (2026-07-26):** a tábla/modell a projekt legelejétől létezett, de 2026-07-26-ig egyetlen felület sem használta — sem admin-kezelőfelület, sem dinamikus form-renderelés nem volt hozzá (önálló kritikai audit derítette ki). Azóta él: `/custom-field-definitions` admin-felület (`entity_type`: jelenleg `contact` és `deal` van bekötve, `organization`/`project`/`retainer` a modellben megengedett, de még nincs hozzá renderelő nézet), `App\Support\CustomFieldFormHelper` + `<x-custom-fields-form>`/`<x-custom-fields-display>` Blade-komponensek.
 
 | Oszlop | Típus | Megjegyzés |
 | --- | --- | --- |

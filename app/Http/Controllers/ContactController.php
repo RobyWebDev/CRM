@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\Note;
 use App\Models\Organization;
+use App\Support\CustomFieldFormHelper;
 use App\Support\DuplicateFinder;
 use App\Support\SelectOrCreate;
 use Illuminate\Http\RedirectResponse;
@@ -73,7 +74,7 @@ class ContactController extends Controller
             'contact_fields.*.type' => ['required', 'in:email,phone,address,custom'],
             'contact_fields.*.label' => ['nullable', 'string', 'max:255'],
             'contact_fields.*.value' => ['required', 'string', 'max:1000'],
-        ]);
+        ] + CustomFieldFormHelper::validationRules('contact', null));
 
         $note = $data['note'] ?? null;
         $tags = $data['tags'] ?? null;
@@ -154,7 +155,7 @@ class ContactController extends Controller
             'contact_fields.*.type' => ['required', 'in:email,phone,address,custom'],
             'contact_fields.*.label' => ['nullable', 'string', 'max:255'],
             'contact_fields.*.value' => ['required', 'string', 'max:1000'],
-        ]);
+        ] + CustomFieldFormHelper::validationRules('contact', null));
 
         $tags = $data['tags'] ?? null;
         $contactFields = $data['contact_fields'] ?? [];

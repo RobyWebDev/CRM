@@ -109,6 +109,13 @@
                 @endif
             </div>
 
+            @if (\App\Support\CustomFieldFormHelper::definitionsFor('contact', null)->isNotEmpty())
+                <div class="bg-surface border border-line rounded-lg p-fluid-md space-y-2">
+                    <h3 class="font-semibold text-fluid-lg text-ink mb-fluid-xs">{{ __('Egyedi mezők') }}</h3>
+                    <x-custom-fields-display entity-type="contact" :values="$contact->custom_fields ?? []" />
+                </div>
+            @endif
+
             <div class="bg-surface border border-line rounded-lg p-fluid-md">
                 <h3 class="font-semibold text-fluid-lg text-ink mb-fluid-xs">{{ __('Teendők') }}</h3>
                 <x-task-list :taskable="$contact" taskable-type="contact" />
