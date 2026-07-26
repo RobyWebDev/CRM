@@ -30,10 +30,14 @@ trait HasTags
             ->filter()
             ->unique(fn ($name) => Str::lower($name));
 
+        // Kis/nagybetűtől független keresés — enélkül a "VIP" és a "vip" két külön
+        // címkeként jönne létre (2026-07-26, önállóan felismert javítás).
         $tagIds = $names->map(function (string $name) {
-            return Tag::firstOrCreate(
-                ['account_id' => $this->account_id, 'name' => $name]
-            )->id;
+            $existing = Tag::where('account_id', $this->account_id)
+                ->whereRaw('LOWER(name) = ?', [Str::lower($name)])
+                ->first();
+
+            return ($existing ?? Tag::create(['account_id' => $this->account_id, 'name' => $name]))->id;
         });
 
         $this->tags()->sync($tagIds);

@@ -90,7 +90,11 @@ class DealController extends Controller
             'value' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        $deal = Deal::create($data + ['status' => 'open', 'stage_entered_at' => now()]);
+        $deal = Deal::create($data + [
+            'status' => 'open',
+            'stage_entered_at' => now(),
+            'organization_id' => $this->deriveOrganizationId($data['contact_id'] ?? null),
+        ]);
 
         // Ritka eset, de a form elméletileg engedi rögtön egy "won" lépésre felvenni a dealt.
         $this->applyStageChange($deal, $deal->pipeline_stage_id);
@@ -123,6 +127,8 @@ class DealController extends Controller
             'pipeline_stage_id' => ['required', 'exists:pipeline_stages,id'],
             'lost_reason' => ['nullable', 'string', 'max:2000'],
         ]);
+
+        $data['organization_id'] = $this->deriveOrganizationId($data['contact_id'] ?? null);
 
         $this->applyStageChange($deal, (int) $data['pipeline_stage_id']);
         $deal->update($data);
@@ -224,6 +230,18 @@ class DealController extends Controller
             ]),
             default => null,
         };
+    }
+
+    /**
+     * Önállóan felismert hiba (2026-07-26): a deals.organization_id oszlop a UI-ban
+     * SOHA nem lett kitöltve (nem volt hozzá form-mező), ezért mindig NULL maradt —
+     * és ez a NULL öröklődött tovább a belőle létrejövő Project/Retainer rekordba is
+     * (`maybeCreateProjectOrRetainer`). Best practice (Salesforce Account-öröklés
+     * mintája): a Deal automatikusan átveszi a kiválasztott kontakt szervezetét.
+     */
+    private function deriveOrganizationId(?int $contactId): ?int
+    {
+        return $contactId ? Contact::find($contactId)?->organization_id : null;
     }
 
     /**

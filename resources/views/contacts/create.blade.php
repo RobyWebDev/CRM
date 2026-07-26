@@ -77,6 +77,19 @@
                 <x-contact-fields-editor :fields="old('contact_fields', [])" />
                 <x-input-error :messages="$errors->get('contact_fields.*.value')" class="mt-2" />
 
+                <div class="border border-line rounded-md p-fluid-sm space-y-2">
+                    <label class="flex items-center gap-2 text-fluid-base text-ink">
+                        <input type="checkbox" name="gdpr_consent_given" value="1" @checked(old('gdpr_consent_given'))
+                               class="rounded border-line-strong text-accent focus:ring-line-strong">
+                        {{ __('GDPR adatkezelési hozzájárulás megadva') }}
+                    </label>
+                    <div>
+                        <x-input-label for="gdpr_consent_note" :value="__('Hozzájárulás jellege/formája (opcionális)')" />
+                        <x-text-input id="gdpr_consent_note" name="gdpr_consent_note" class="block mt-1 w-full" :value="old('gdpr_consent_note')" placeholder="{{ __('pl. e-mailben, szerződésben, szóban...') }}" />
+                        <x-input-error :messages="$errors->get('gdpr_consent_note')" class="mt-2" />
+                    </div>
+                </div>
+
                 <div>
                     <x-input-label for="note" :value="__('Egyedi megjegyzés / jegyzet')" />
                     <textarea id="note" name="note" rows="3" placeholder="{{ __('Bármilyen szabad szöveges info, amit érdemes rögtön rögzíteni...') }}" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">{{ old('note') }}</textarea>

@@ -79,6 +79,22 @@
                 <x-contact-fields-editor :fields="old('contact_fields', $contact->contactFields->map(fn ($f) => ['type' => $f->type, 'label' => $f->label, 'value' => $f->value])->all())" />
                 <x-input-error :messages="$errors->get('contact_fields.*.value')" class="mt-2" />
 
+                <div class="border border-line rounded-md p-fluid-sm space-y-2">
+                    <label class="flex items-center gap-2 text-fluid-base text-ink">
+                        <input type="checkbox" name="gdpr_consent_given" value="1" @checked(old('gdpr_consent_given', $contact->gdpr_consent_at !== null))
+                               class="rounded border-line-strong text-accent focus:ring-line-strong">
+                        {{ __('GDPR adatkezelési hozzájárulás megadva') }}
+                    </label>
+                    @if ($contact->gdpr_consent_at)
+                        <p class="text-ink-muted text-fluid-xs">{{ __('Rögzítve') }}: {{ $contact->gdpr_consent_at->format('Y.m.d. H:i') }}</p>
+                    @endif
+                    <div>
+                        <x-input-label for="gdpr_consent_note" :value="__('Hozzájárulás jellege/formája (opcionális)')" />
+                        <x-text-input id="gdpr_consent_note" name="gdpr_consent_note" class="block mt-1 w-full" :value="old('gdpr_consent_note', $contact->gdpr_consent_note)" placeholder="{{ __('pl. e-mailben, szerződésben, szóban...') }}" />
+                        <x-input-error :messages="$errors->get('gdpr_consent_note')" class="mt-2" />
+                    </div>
+                </div>
+
                 <div class="flex items-center justify-end gap-fluid-xs">
                     <a href="{{ route('contacts.show', $contact) }}"><x-secondary-button type="button">{{ __('Mégse') }}</x-secondary-button></a>
                     <x-primary-button>{{ __('Mentés') }}</x-primary-button>

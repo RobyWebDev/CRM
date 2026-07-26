@@ -67,6 +67,8 @@ class ContactController extends Controller
             'referred_by_contact_id' => ['nullable', 'exists:contacts,id'],
             'note' => ['nullable', 'string', 'max:4096'],
             'tags' => ['nullable', 'string', 'max:500'],
+            'gdpr_consent_given' => ['nullable', 'boolean'],
+            'gdpr_consent_note' => ['nullable', 'string', 'max:1000'],
             'contact_fields' => ['nullable', 'array'],
             'contact_fields.*.type' => ['required', 'in:email,phone,address,custom'],
             'contact_fields.*.label' => ['nullable', 'string', 'max:255'],
@@ -76,7 +78,11 @@ class ContactController extends Controller
         $note = $data['note'] ?? null;
         $tags = $data['tags'] ?? null;
         $contactFields = $data['contact_fields'] ?? [];
-        unset($data['note'], $data['tags'], $data['contact_fields']);
+        // GDPR: a hozzájárulás pontos időpontja csak akkor kerül rögzítésre, ha a
+        // felhasználó ténylegesen bejelölte — lásd docs/gdpr-terv.md 1. pont
+        // (crm_projekt.md 3. szekció "kritikus szabály", eddig nem volt hozzá UI).
+        $data['gdpr_consent_at'] = ! empty($data['gdpr_consent_given']) ? now() : null;
+        unset($data['note'], $data['tags'], $data['contact_fields'], $data['gdpr_consent_given']);
 
         $contact = Contact::create($data);
         $this->syncContactFields($contact, $contactFields);
@@ -142,6 +148,8 @@ class ContactController extends Controller
             'organization_id' => ['nullable', 'exists:organizations,id'],
             'referred_by_contact_id' => ['nullable', 'exists:contacts,id', Rule::notIn([$contact->id])],
             'tags' => ['nullable', 'string', 'max:500'],
+            'gdpr_consent_given' => ['nullable', 'boolean'],
+            'gdpr_consent_note' => ['nullable', 'string', 'max:1000'],
             'contact_fields' => ['nullable', 'array'],
             'contact_fields.*.type' => ['required', 'in:email,phone,address,custom'],
             'contact_fields.*.label' => ['nullable', 'string', 'max:255'],
@@ -150,13 +158,24 @@ class ContactController extends Controller
 
         $tags = $data['tags'] ?? null;
         $contactFields = $data['contact_fields'] ?? [];
-        unset($data['tags'], $data['contact_fields']);
+        // GDPR: az eredeti hozzájárulás időpontja megmarad, ha már korábban meg lett
+        // adva (nem íródik újra minden mentésnél) — kikapcsoláskor viszont a
+        // visszavonást jelezve nullázódik (docs/gdpr-terv.md 1. pont).
+        $data['gdpr_consent_at'] = ! empty($data['gdpr_consent_given']) ? ($contact->gdpr_consent_at ?? now()) : null;
+        unset($data['tags'], $data['contact_fields'], $data['gdpr_consent_given']);
 
         $contact->update($data);
         $contact->syncTagsFromString($tags ?? '');
         $this->syncContactFields($contact, $contactFields);
 
-        return redirect()->route('contacts.show', $contact)->with('status', 'contact-updated');
+        // Önállóan felismert hiányosság (2026-07-26): a duplikátum-jelzés eddig csak
+        // felvételkor futott — ha valaki szerkesztéskor írta át az e-mailt/telefont
+        // egy már meglévő kontaktéra, semmilyen figyelmeztetés nem jelent meg.
+        $duplicates = DuplicateFinder::find(Contact::class, $contact->email, $contact->phone, $contact->id);
+
+        return redirect()->route('contacts.show', $contact)
+            ->with('status', 'contact-updated')
+            ->with('duplicate_contacts', $duplicates->map(fn ($c) => ['id' => $c->id, 'name' => $c->full_name]));
     }
 
     public function destroy(Contact $contact): RedirectResponse

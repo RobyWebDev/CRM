@@ -68,6 +68,21 @@ class InsightsEngine
             ];
         }
 
+        // A "következő lépés" dátuma (next_step_due_at) szabad szöveges mező, NEM a
+        // tényleges Teendő-rendszer része — enélkül a szabály nélkül egy lejárt
+        // határidejű lead-következő-lépés sehol nem jelenne meg (2026-07-26,
+        // önállóan felismert hiányosság, lásd docs/haladasi-naplo.md).
+        $leadsWithOverdueNextStep = Lead::whereNotIn('status', ['converted', 'unqualified'])
+            ->whereNotNull('next_step_due_at')
+            ->where('next_step_due_at', '<', now()->toDateString())
+            ->count();
+        if ($leadsWithOverdueNextStep > 0) {
+            $insights[] = [
+                'type' => 'danger',
+                'message' => __(':count leadednél lejárt a következő lépés határideje — érdemes utánanézni.', ['count' => $leadsWithOverdueNextStep]),
+            ];
+        }
+
         $contactsWithoutPhone = Contact::whereNull('phone')->orWhere('phone', '')->count();
         if ($contactsWithoutPhone > 0) {
             $insights[] = [

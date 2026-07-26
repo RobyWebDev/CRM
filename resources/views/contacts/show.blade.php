@@ -81,6 +81,15 @@
                 @if ($contact->referredBy)
                     <p><span class="text-ink-muted text-fluid-xs">{{ __('Ki ajánlotta') }}:</span> <a href="{{ route('contacts.show', $contact->referredBy) }}" class="text-accent underline">{{ $contact->referredBy->full_name }}</a></p>
                 @endif
+                <p>
+                    <span class="text-ink-muted text-fluid-xs">{{ __('GDPR hozzájárulás') }}:</span>
+                    @if ($contact->gdpr_consent_at)
+                        <span class="text-success">{{ __('Megadva') }}</span>
+                        <span class="text-ink-muted text-fluid-xs">({{ $contact->gdpr_consent_at->format('Y.m.d.') }}@if ($contact->gdpr_consent_note), {{ $contact->gdpr_consent_note }}@endif)</span>
+                    @else
+                        <span class="text-warning">{{ __('Nincs rögzítve') }}</span>
+                    @endif
+                </p>
                 @if ($contact->tags->isNotEmpty())
                     <div class="flex flex-wrap gap-1 pt-1">
                         @foreach ($contact->tags as $tag)
