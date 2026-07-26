@@ -21,7 +21,7 @@ Ez azt jelenti: ha Rob a coachlab.hu-n túl pl. egy fényképészt vagy egy kön
 ### `accounts` (tenant)
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | name | varchar | fiók/cég neve |
 | slug | varchar unique | subdomain/URL-hez |
@@ -36,7 +36,7 @@ Ez azt jelenti: ha Rob a coachlab.hu-n túl pl. egy fényképészt vagy egy kön
 ### `users`
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK → accounts.id | **kötelező minden usernél** |
 | name, email, password | | Laravel auth alap |
@@ -51,7 +51,7 @@ Ez azt jelenti: ha Rob a coachlab.hu-n túl pl. egy fényképészt vagy egy kön
 Szolgáltatás-típusok — a rendszer NEM tartalmaz hardcode-olt listát, ez a tábla adja a rugalmasságot.
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | egy accounton belül szabadon definiálható lista |
 | name | varchar | pl. "Coaching", "Webdesign" |
@@ -68,7 +68,7 @@ Szolgáltatás-típusok — a rendszer NEM tartalmaz hardcode-olt listát, ez a 
 Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeline" és "Meglévő ügyfél upsell pipeline" ugyanahhoz a szolgáltatáshoz).
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | service_type_id | bigint FK nullable | ha null, szolgáltatás-független (általános) pipeline |
@@ -82,7 +82,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 ### `pipeline_stages`
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | pipeline_id | bigint FK | |
 | name | varchar | pl. "Érdeklődés", "Ajánlat kiküldve" |
@@ -96,7 +96,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 ### `organizations`
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | name | varchar | |
@@ -108,7 +108,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 ### `contacts`
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | organization_id | bigint FK nullable | |
@@ -130,7 +130,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 *Szabadon felvehető, kontaktokhoz/szervezetekhez rendelhető jelölők, amiket a felhasználó egyszerűen begépel (a nem létező címke automatikusan létrejön) — lásd `docs/minicrm-inspiracio.md` 6. pont.*
 
 | Tábla | Oszlop | Típus | Megjegyzés |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `tags` | id, account_id, name, color, created_at/updated_at | | account-szinten egyedi név |
 | `taggables` | tag_id, taggable_type, taggable_id | | polimorf pivot-tábla (Laravel `morphToMany` konvenció) |
 
@@ -139,7 +139,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 *CRM best practice (2026-07-25, Rob kérése) — a klasszikus Salesforce Lead objektum egyszerűsített megfelelője: egy lead még NEM Contact, amíg ki nem derül, hogy valódi, munkára érdemes kapcsolat-e. A "konvertálás" (`LeadController::convert`) Contactot hoz létre belőle, és ha van megadva érdeklődési terület (`service_type_id`), az adott szolgáltatás alapértelmezett pipeline-jának első lépésén egy Dealt is.*
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | owner_user_id | bigint FK nullable | |
@@ -164,7 +164,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 ### `deals` (üzletek/lehetőségek egy pipeline-on belül)
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | pipeline_id | bigint FK | |
@@ -190,7 +190,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 *Fontos elhatárolás: a `projects` kizárólag egyszeri, kezdő- és záródátummal rendelkező megbízásokra való (pl. webdesign, coaching-program). Az ismétlődő, havi díjas munkákhoz (pl. folyamatos marketing/SEO kezelés) külön a `retainers` tábla szolgál — lásd lent. Ez a döntés 2026-07-25-én született, a `crm_projekt.md` 7. szekciójában dokumentált nyitott kérdés lezárásaként.*
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | deal_id | bigint FK nullable | melyik "megnyert" dealből lett |
@@ -214,7 +214,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 *Pontosítás (2026-07-25, Rob): a retainer NEM csak a marketing/SEO ágra vonatkozik — webdesignnál is van havi díjas karbantartás, ugyanígy retainerként kezelendő (lásd `pipeline-sablonok.md` webdesign 9. lépés). Minden retainerhez tartozhat egy visszatérő teendő-lista: a `tasks` tábla polimorf kapcsolata (`taskable`) már ma is lehetővé teszi, hogy egy `retainer`-hez feladatokat rendeljünk (`Retainer::tasks()`). Ha a gyakorlatban kiderül, hogy minden hónapban ugyanazok a teendők ismétlődnek (pl. "havi riport elkészítése", "biztonsági mentés ellenőrzése"), egy jövőbeli finomítás lehet egy "teendő-sablon" mechanizmus, ami minden új `retainer_invoices` periódusnál automatikusan létrehozza a szokásos feladatokat — ez MVP-ben még nem szükséges, egyelőre kézzel is felvehetők a teendők.*
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | deal_id | bigint FK nullable | melyik "megnyert" dealből lett |
@@ -237,7 +237,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 *Mivel a retainer havonta (vagy más ciklusban) ismétlődően számlázandó, egyetlen `invoice_status` mező nem elég (mint az egyszeri `projects`/`deals` esetén) — időszakonként kell nyomon követni. MVP-ben ez is csak követés-státusz, nincs tényleges PDF-számla-generálás.*
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | retainer_id | bigint FK | |
@@ -252,7 +252,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 Polimorf kapcsolat, hogy bármihez (contact, deal, project) köthető legyen feladat.
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | taskable_type, taskable_id | | polimorf FK (Laravel morphs) |
@@ -268,7 +268,7 @@ Polimorf kapcsolat, hogy bármihez (contact, deal, project) köthető legyen fel
 ### `notes`
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | noteable_type, noteable_id | nullable | polimorf FK — `NULL` esetén "saját jegyzet" (nincs semmilyen rekordhoz kötve), lásd `crm_projekt.md` 8. szekció 9. pont, megvalósítva 2026-07-25 |
@@ -279,7 +279,7 @@ Polimorf kapcsolat, hogy bármihez (contact, deal, project) köthető legyen fel
 ### `documents`
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | documentable_type, documentable_id | | polimorf FK |
@@ -293,7 +293,7 @@ Polimorf kapcsolat, hogy bármihez (contact, deal, project) köthető legyen fel
 Ez a tábla teszi lehetővé, hogy **fejlesztő nélkül** bármilyen egyedi mezőt fel lehessen venni bármelyik entitáshoz, akár szolgáltatás-típusonként eltérőt.
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | service_type_id | bigint FK nullable | ha null, minden szolgáltatásra érvényes; ha kitöltött, csak arra a szakmára jelenik meg |
@@ -313,7 +313,7 @@ A `spatie/laravel-activitylog` csomag saját tábláját használjuk (nem kézze
 ### `subscriptions` *(jövőbeli fázis)*
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | tier | varchar | |
@@ -324,7 +324,7 @@ A `spatie/laravel-activitylog` csomag saját tábláját használjuk (nem kézze
 ### `integrations` *(előkészítve)*
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | provider | varchar | pl. "google_docs", "ajanlatkeszito" |
@@ -334,7 +334,7 @@ A `spatie/laravel-activitylog` csomag saját tábláját használjuk (nem kézze
 ### `api_keys` *(előkészítve)*
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | name | varchar | |
@@ -346,7 +346,7 @@ A `spatie/laravel-activitylog` csomag saját tábláját használjuk (nem kézze
 ### `gdpr_consent_log` *(új javaslat — a `contacts.gdpr_consent_at` mellé, ha részletesebb történet kell)*
 
 | Oszlop | Típus | Megjegyzés |
-|---|---|---|
+| --- | --- | --- |
 | id | bigint PK | |
 | account_id | bigint FK | |
 | contact_id | bigint FK | |

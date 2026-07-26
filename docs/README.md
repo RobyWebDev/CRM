@@ -25,9 +25,9 @@
 13. **Tesztek:** [`teszterv.md`](teszterv.md) — Pest, [`teszt-personak.md`](teszt-personak.md) mindhárom profiljával.
 14. **Élesítéskor (később):** [`deployment-terv.md`](deployment-terv.md), [`coach-kereso-integracio.md`](coach-kereso-integracio.md) (csak 6. fázisban), [`onboarding-terv.md`](onboarding-terv.md) (csak 5-6. fázisban), [`teljesitmeny-terv.md`](teljesitmeny-terv.md) (csak ha valós lassulás jelentkezik), [`lokalizacio-terv.md`](lokalizacio-terv.md) (csak nem magyar tenanteknél, 6. fázis).
 
-## Nyitott architekturális kérdés (lásd `crm_projekt.md` 7. szekció)
+## Munkamenet-előzmények és backlog
 
-Ismétlődő/retainer jellegű (havi díjas) munkák a marketing/SEO pipeline-oknál nincsenek külön kezelve a jelenlegi `projects` adatmodellben, ami egyszeri megbízást feltételez. Rob döntésére vár.
+A `crm_projekt.md` egykori "6. Haladási napló" és "8. Ötlet-backlog" szekciói 2026-07-26-tól külön fájlban vannak (kredit-takarékosság miatt — ezek nőttek a leggyorsabban): [`haladasi-naplo.md`](haladasi-naplo.md), [`otlet-backlog.md`](otlet-backlog.md).
 
 ## Még validálásra vár Robbal (nem technikai, hanem tartalmi kérdés)
 

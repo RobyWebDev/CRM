@@ -23,7 +23,7 @@ A MiniCRM nem egyetlen modul, hanem egy **modulárisan bővíthető termékcsal�
 A MiniCRM adatlap-mezőinek típusai és szabályai nagyon közel állnak a mi `custom_field_definitions` tervünkhöz, de van, amiben **pontosabb/gazdagabb**:
 
 | MiniCRM mezőtípus | Jellemző | Nálunk jelenleg | Javaslat |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Legördülő lista | egy érték, kizárólagos | `select` | megvan |
 | Jelölőnégyzetek | több érték egyszerre | `multiselect` | megvan |
 | Szöveg | max. 1024 karakter, NEM szerepelhet statisztikában | `text` | **karakterkorlát bevezetése javasolt** (validációs szabályként) |
@@ -33,6 +33,7 @@ A MiniCRM adatlap-mezőinek típusai és szabályai nagyon közel állnak a mi `
 | **Fájlmező** | dokumentum/fotó feltöltés, max. 24MB | **HIÁNYZIK** | **új mezőtípus javasolt**: `file` — szerződések, fotók csatolása egyedi mezőként |
 
 **Konfigurációs szabályok, amiket érdemes átvenni:**
+
 - **"Kötelező X státusztól kezdve"** — nálunk jelenleg csak egy globális `is_required` van; a MiniCRM lépés-/státuszfüggő kötelezőséget enged (pl. "a Szerződés mező csak a Szerződéskötés lépéstől kötelező"). Ez jól illeszkedne a mi `pipeline_stage_id`-hez kötött validációhoz.
 - **Csak-olvasható mezők** integrációból származó adatokhoz (nálunk ez az `integrations`/API-kulcsok rendszerrel válik majd relevánssá).
 - **Mezőcsoportosítás** (színes, összecsukható dobozok, csoportonként eltérő láthatósággal felhasználói csoportonként) — ez egy jó UI-mintázat a jövőbeli admin-felület mező-szerkesztőjéhez (már szerepel a backlogban: "mezők sorrendje/láthatósága szerkeszthető felület").
@@ -44,6 +45,7 @@ A MiniCRM automatizmus-rendszere **trigger (szűrő) + akciók (lépések sorban
 **Triggerek:** bármilyen szűrő-feltétel (pl. "célcsoportban lévő lead, ami X ideje nem lépett tovább").
 
 **Elérhető akciótípusok (mind hasznos mintaként a mi jövőbeli automatizáció-szerkesztőnkhöz):**
+
 1. E-mail az ügyfélnek (sablonból)
 2. SMS az ügyfélnek (ha van telefon-integráció)
 3. E-mail a munkatársnak (belső értesítés)
@@ -52,6 +54,7 @@ A MiniCRM automatizmus-rendszere **trigger (szűrő) + akciók (lépések sorban
 6. Mezőmódosítás (adatmódosító linken keresztül)
 
 **Konkrét, valóban használt példák a dokumentációjukból** (ezek egy az egyben átvehetők nálunk is, service_type-tól függetlenül, tehát univerzálisan):
+
 - "Ha egy célcsoportban lévő lead X napig nem konvertál → figyelmeztető e-mail."
 - "Ha egy ajánlat 4 napja nincs továbblépve → automatikus utánkövető teendő" (ezt már korábban is kiemeltem, közvetlenül ráépül a mi `stage_entered_at` mezőnkre).
 - "Ha egy ügyfélszolgálati ügy túl sokáig feldolgozatlan → riasztás a support-csapatnak."
