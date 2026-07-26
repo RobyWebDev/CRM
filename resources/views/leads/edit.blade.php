@@ -32,6 +32,20 @@
                 </div>
             @endif
 
+            @if ((session('duplicate_leads') && count(session('duplicate_leads')) > 0) || (session('duplicate_contacts') && count(session('duplicate_contacts')) > 0))
+                <div class="bg-surface border border-line rounded-lg p-fluid-sm text-warning mb-fluid-sm">
+                    <p class="font-medium">{{ __('Figyelem: hasonló e-maillel/telefonnal már van nyilvántartva:') }}</p>
+                    <ul class="list-disc list-inside mt-1">
+                        @foreach (session('duplicate_leads', []) as $duplicate)
+                            <li>{{ __('Lead') }}: <a href="{{ route('leads.edit', $duplicate['id']) }}" class="underline">{{ $duplicate['name'] }}</a></li>
+                        @endforeach
+                        @foreach (session('duplicate_contacts', []) as $duplicate)
+                            <li>{{ __('Kontakt') }}: <a href="{{ route('contacts.show', $duplicate['id']) }}" class="underline">{{ $duplicate['name'] }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('leads.update', $lead) }}" class="bg-surface border border-line rounded-lg p-fluid-md space-y-fluid-sm">
                 @csrf
                 @method('put')

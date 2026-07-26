@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\Note;
 use App\Models\Organization;
+use App\Support\DuplicateFinder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -81,7 +82,14 @@ class ContactController extends Controller
             $contact->syncTagsFromString($tags);
         }
 
-        return redirect()->route('contacts.show', $contact)->with('status', 'contact-created');
+        // Nem blokkoló duplikátum-jelzés (CRM best practice, crm_projekt.md 8. szekció) —
+        // e-mail vagy telefonszám alapján hasonló meglévő kontaktokra figyelmeztetünk,
+        // de a mentést nem akadályozzuk meg.
+        $duplicates = DuplicateFinder::find(Contact::class, $contact->email, $contact->phone, $contact->id);
+
+        return redirect()->route('contacts.show', $contact)
+            ->with('status', 'contact-created')
+            ->with('duplicate_contacts', $duplicates->map(fn ($c) => ['id' => $c->id, 'name' => $c->full_name]));
     }
 
     public function show(Contact $contact): View

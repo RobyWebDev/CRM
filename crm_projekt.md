@@ -122,7 +122,7 @@
 
 **Teljes napló:** [`docs/haladasi-naplo.md`](docs/haladasi-naplo.md).
 
-**Legutóbbi állapot röviden:** a 3. fázis (MVP, csak Robnak) lényegében kész — a teljes Lead→Kontakt→Pipeline→Projekt/Retainer→Teendő/Jegyzet-lánc böngészőben működik, élesben tesztelt tenant-elkülönítéssel. A 4. fázis (Rob saját tesztelése) elkezdhető. **2026-07-26, tizennyolcadik forduló:** megépült az ügyfélszerzés B) ága (`docs/ugyfelszerzes-terv.md`) — "ki ajánlotta?" mező a kontaktokon + strukturált kampány-nyilvántartás/riport, automata teszttel (31/31 zöld). **Tizenkilencedik forduló:** mentett szűrők/nézetek (Kontaktok/Leadek listaoldal), automata teszttel (36/36 zöld). Nyitott, nem blokkoló pont: `pipeline-sablonok.md` Rob-validálása (lásd 7. szekció).
+**Legutóbbi állapot röviden:** a 3. fázis (MVP, csak Robnak) lényegében kész — a teljes Lead→Kontakt→Pipeline→Projekt/Retainer→Teendő/Jegyzet-lánc böngészőben működik, élesben tesztelt tenant-elkülönítéssel. A 4. fázis (Rob saját tesztelése) elkezdhető. **2026-07-26, tizennyolcadik forduló:** megépült az ügyfélszerzés B) ága (`docs/ugyfelszerzes-terv.md`) — "ki ajánlotta?" mező a kontaktokon + strukturált kampány-nyilvántartás/riport, automata teszttel (31/31 zöld). **Tizenkilencedik forduló:** mentett szűrők/nézetek (Kontaktok/Leadek listaoldal), automata teszttel (36/36 zöld). **Huszadik forduló:** nem blokkoló duplikátum-felismerés kontakt/lead felvételkor (e-mail/telefon alapján), automata teszttel (41/41 zöld). Nyitott, nem blokkoló pont: `pipeline-sablonok.md` Rob-validálása (lásd 7. szekció).
 
 ---
 

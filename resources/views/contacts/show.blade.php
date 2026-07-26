@@ -26,6 +26,17 @@
                 </div>
             @endif
 
+            @if (session('duplicate_contacts') && count(session('duplicate_contacts')) > 0)
+                <div class="bg-surface border border-line rounded-lg p-fluid-sm text-warning">
+                    <p class="font-medium">{{ __('Figyelem: hasonló e-maillel/telefonnal már létezik kontakt:') }}</p>
+                    <ul class="list-disc list-inside mt-1">
+                        @foreach (session('duplicate_contacts') as $duplicate)
+                            <li><a href="{{ route('contacts.show', $duplicate['id']) }}" class="underline">{{ $duplicate['name'] }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="bg-surface border border-line rounded-lg p-fluid-md space-y-2">
                 @if ($contact->job_title)
                     <p><span class="text-ink-muted text-fluid-xs">{{ __('Beosztás') }}:</span> <span class="text-ink">{{ $contact->job_title }}</span></p>

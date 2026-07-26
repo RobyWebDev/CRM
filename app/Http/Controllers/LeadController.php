@@ -8,6 +8,7 @@ use App\Models\Deal;
 use App\Models\Lead;
 use App\Models\ServiceType;
 use App\Support\DescriptionChain;
+use App\Support\DuplicateFinder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -60,7 +61,16 @@ class LeadController extends Controller
 
         $lead = Lead::create($data + ['status' => 'new']);
 
-        return redirect()->route('leads.edit', $lead)->with('status', 'lead-created');
+        // Nem blokkoló duplikátum-jelzés (CRM best practice) — mind a meglévő leadek,
+        // mind a már kontakttá vált emberek között keresünk hasonlót e-mail/telefon
+        // alapján, hogy ne vegyünk fel kétszer ugyanazt az érdeklődőt.
+        $duplicateLeads = DuplicateFinder::find(Lead::class, $lead->email, $lead->phone, $lead->id);
+        $duplicateContacts = DuplicateFinder::find(Contact::class, $lead->email, $lead->phone);
+
+        return redirect()->route('leads.edit', $lead)
+            ->with('status', 'lead-created')
+            ->with('duplicate_leads', $duplicateLeads->map(fn ($l) => ['id' => $l->id, 'name' => $l->full_name]))
+            ->with('duplicate_contacts', $duplicateContacts->map(fn ($c) => ['id' => $c->id, 'name' => $c->full_name]));
     }
 
     public function edit(Lead $lead): View
