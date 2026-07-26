@@ -26,6 +26,7 @@ class CustomFieldDefinitionController extends Controller
         'textarea' => 'Hosszú szöveg',
         'number' => 'Szám',
         'date' => 'Dátum',
+        'datetime' => 'Dátum és idő',
         'boolean' => 'Igen/Nem',
         'select' => 'Választólista (egy érték)',
         'multiselect' => 'Választólista (több érték)',

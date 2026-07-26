@@ -90,19 +90,27 @@
                     />
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-fluid-sm">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-fluid-sm"
+                     x-data="{
+                         status: '{{ old('status', $lead->status) }}',
+                         probability: {{ old('win_probability', $lead->win_probability) ?? 'null' }},
+                         defaults: {{ \Illuminate\Support\Js::from(\App\Models\Lead::STATUS_DEFAULT_PROBABILITY) }}
+                     }">
                     <div>
-                        <x-input-label for="status" :value="__('Állapot')" />
-                        <select id="status" name="status" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">
+                        <x-input-label for="status" :value="__('Fázis / állapot')" />
+                        <select id="status" name="status" x-model="status" @change="probability = defaults[status] ?? probability"
+                                class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">
                             @foreach (['new' => 'Új', 'contacted' => 'Felvéve kapcsolat', 'qualified' => 'Minősített', 'unqualified' => 'Elutasított'] as $value => $label)
-                                <option value="{{ $value }}" @selected(old('status', $lead->status) === $value)>{{ __($label) }}</option>
+                                <option value="{{ $value }}">{{ __($label) }}</option>
                             @endforeach
                         </select>
                         <x-input-error :messages="$errors->get('status')" class="mt-2" />
                     </div>
                     <div>
                         <x-input-label for="win_probability" :value="__('Esély a megnyerésre (%)')" />
-                        <x-text-input id="win_probability" type="number" min="0" max="100" name="win_probability" class="block mt-1 w-full" :value="old('win_probability', $lead->win_probability)" />
+                        <input type="number" id="win_probability" name="win_probability" min="0" max="100" x-model="probability"
+                               class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">
+                        <p class="text-ink-muted text-fluid-xs mt-1">{{ __('A fázis váltásakor a jellemző értékre áll, de szabadon felülírható.') }}</p>
                         <x-input-error :messages="$errors->get('win_probability')" class="mt-2" />
                     </div>
                 </div>
@@ -138,14 +146,14 @@
                         <x-input-error :messages="$errors->get('next_step')" class="mt-2" />
                     </div>
                     <div>
-                        <x-input-label for="next_step_due_at" :value="__('Várható időpont')" />
-                        <x-text-input id="next_step_due_at" type="date" name="next_step_due_at" class="block mt-1 w-full" :value="old('next_step_due_at', $lead->next_step_due_at?->format('Y-m-d'))" />
+                        <x-input-label for="next_step_due_at" :value="__('Várható időpont (pl. találkozó)')" />
+                        <x-text-input id="next_step_due_at" type="datetime-local" name="next_step_due_at" class="block mt-1 w-full" :value="old('next_step_due_at', $lead->next_step_due_at?->format('Y-m-d\TH:i'))" />
                         <x-input-error :messages="$errors->get('next_step_due_at')" class="mt-2" />
                     </div>
                 </div>
 
                 <div>
-                    <x-input-label for="comment" :value="__('Megjegyzés (egyéb infók)')" />
+                    <x-input-label for="comment" :value="__('Leírás (egyéb infók)')" />
                     <textarea id="comment" name="comment" rows="4" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">{{ old('comment', $lead->comment) }}</textarea>
                     <x-input-error :messages="$errors->get('comment')" class="mt-2" />
                 </div>

@@ -26,9 +26,9 @@ A MiniCRM adatlap-mezőinek típusai és szabályai nagyon közel állnak a mi `
 | --- | --- | --- | --- |
 | Legördülő lista | egy érték, kizárólagos | `select` | megvan |
 | Jelölőnégyzetek | több érték egyszerre | `multiselect` | megvan |
-| Szöveg | max. 1024 karakter, NEM szerepelhet statisztikában | `text` | **karakterkorlát bevezetése javasolt** (validációs szabályként) |
+| Szöveg | max. 1024 karakter, NEM szerepelhet statisztikában | `text` | ✅ **karakterkorlát bevezetve (2026-07-26)** — `max:1024` a `text`, `max:4096` a `textarea` típusnál (`App\Support\CustomFieldFormHelper`) |
 | Szövegdoboz | max. 4096 karakter, hosszabb jegyzet | `textarea` | megvan |
-| Dátum és idő | opcionális pontos időponttal | `date` | **hiányzik a "dátum + idő" altípus** — javasolt hozzáadni |
+| Dátum és idő | opcionális pontos időponttal | `date` / `datetime` | ✅ **"dátum + idő" altípus hozzáadva (2026-07-26)** — `datetime` field_type, `datetime-local` beviteli mezővel |
 | Egész szám | nem pénzösszeg | `number` | megvan |
 | **Fájlmező** | dokumentum/fotó feltöltés, max. 24MB | **HIÁNYZIK** | **új mezőtípus javasolt**: `file` — szerződések, fotók csatolása egyedi mezőként |
 

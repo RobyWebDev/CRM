@@ -27,12 +27,27 @@ class Lead extends Model
 {
     use BelongsToAccount, HasActivityTimeline, HasFactory, HasPersonName, SoftDeletes;
 
+    /**
+     * A "fázis" (status) váltásakor a nyerési esély automatikusan erre az
+     * alapértelmezett %-ra áll (Salesforce Stage→Probability mintája), de
+     * a mező bármikor szabadon felülírható — lásd leads/edit.blade.php.
+     * Egyelőre fix, kód-szintű alapérték (nem admin-szerkeszthető, ellentétben
+     * a Deal pipeline-lépések `probability` mezőjével) — ha ez a rugalmasság
+     * is kellene, ugyanarra a mintára bővíthető (2026-07-26, Rob kérése).
+     */
+    public const STATUS_DEFAULT_PROBABILITY = [
+        'new' => 10,
+        'contacted' => 25,
+        'qualified' => 60,
+        'unqualified' => 0,
+    ];
+
     protected function casts(): array
     {
         return [
             'custom_fields' => 'array',
             'converted_at' => 'datetime',
-            'next_step_due_at' => 'date',
+            'next_step_due_at' => 'datetime',
         ];
     }
 

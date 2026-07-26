@@ -165,6 +165,51 @@ class CustomFieldDefinitionTest extends TestCase
         $this->actingAs($user)->get('/contacts/create')->assertOk()->assertDontSee('Másik fiók mezője');
     }
 
+    public function test_a_datetime_custom_field_renders_and_saves_with_time(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        CustomFieldDefinition::create([
+            'account_id' => $user->account_id,
+            'entity_type' => 'contact',
+            'field_key' => 'kovetkezo_talalkozo',
+            'label' => 'Következő találkozó',
+            'field_type' => 'datetime',
+        ]);
+
+        $this->get('/contacts/create')->assertOk()->assertSee('Következő találkozó');
+
+        $this->post('/contacts', [
+            'first_name' => 'Datetime Mező Teszt',
+            'custom_fields' => ['kovetkezo_talalkozo' => '2026-08-01T14:30'],
+        ]);
+
+        $contact = Contact::where('first_name', 'Datetime Mező Teszt')->first();
+        $this->assertSame('2026-08-01T14:30', $contact->custom_fields['kovetkezo_talalkozo']);
+    }
+
+    public function test_a_text_custom_field_enforces_the_minicrm_style_character_limit(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        CustomFieldDefinition::create([
+            'account_id' => $user->account_id,
+            'entity_type' => 'contact',
+            'field_key' => 'rovid_szoveg',
+            'label' => 'Rövid szöveg mező',
+            'field_type' => 'text',
+        ]);
+
+        $response = $this->post('/contacts', [
+            'first_name' => 'Túl Hosszú Mező',
+            'custom_fields' => ['rovid_szoveg' => str_repeat('a', 1025)],
+        ]);
+
+        $response->assertSessionHasErrors('custom_fields.rovid_szoveg');
+    }
+
     public function test_index_create_and_edit_pages_render(): void
     {
         $user = User::factory()->create();

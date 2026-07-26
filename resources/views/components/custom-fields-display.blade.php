@@ -13,6 +13,10 @@
             <span class="text-ink">
                 @if ($definition->field_type === 'boolean')
                     {{ $value ? __('Igen') : __('Nem') }}
+                @elseif ($definition->field_type === 'date')
+                    {{ \Illuminate\Support\Carbon::parse($value)->format('Y.m.d.') }}
+                @elseif ($definition->field_type === 'datetime')
+                    {{ \Illuminate\Support\Carbon::parse($value)->format('Y.m.d. H:i') }}
                 @elseif (is_array($value))
                     {{ implode(', ', $value) }}
                 @else

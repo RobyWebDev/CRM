@@ -71,6 +71,10 @@
                         <x-text-input type="date" :id="$fieldId" :name="$fieldName" class="block mt-1 w-full" :value="$oldValue" />
                         @break
 
+                    @case('datetime')
+                        <x-text-input type="datetime-local" :id="$fieldId" :name="$fieldName" class="block mt-1 w-full" :value="$oldValue" />
+                        @break
+
                     @case('url')
                         <x-text-input type="url" :id="$fieldId" :name="$fieldName" class="block mt-1 w-full" :value="$oldValue" placeholder="https://..." />
                         @break

@@ -78,7 +78,7 @@
                                     <span class="font-medium">{{ __('Következő lépés:') }}</span>
                                     {{ $lead->next_step }}
                                     @if ($lead->next_step_due_at)
-                                        <span class="text-ink-muted">({{ $lead->next_step_due_at->format('Y.m.d.') }})</span>
+                                        <span class="text-ink-muted">({{ $lead->next_step_due_at->format('Y.m.d. H:i') }})</span>
                                     @endif
                                 </p>
                             @endif

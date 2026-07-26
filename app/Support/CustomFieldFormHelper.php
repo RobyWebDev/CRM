@@ -40,7 +40,7 @@ class CustomFieldFormHelper
 
             $typeRule = match ($definition->field_type) {
                 'number' => 'numeric',
-                'date' => 'date',
+                'date', 'datetime' => 'date',
                 'boolean' => 'boolean',
                 'url' => 'url',
                 'select' => Rule::in($definition->options ?? []),
@@ -48,7 +48,15 @@ class CustomFieldFormHelper
                 default => 'string',
             };
 
-            $rules["custom_fields.{$definition->field_key}"] = [$required, $typeRule];
+            // Karakterkorlát MiniCRM-mintára (docs/minicrm-inspiracio.md 2. pont):
+            // "Szöveg" max. 1024, "Szövegdoboz" (textarea) max. 4096 karakter.
+            $lengthRule = match ($definition->field_type) {
+                'text' => 'max:1024',
+                'textarea' => 'max:4096',
+                default => null,
+            };
+
+            $rules["custom_fields.{$definition->field_key}"] = array_filter([$required, $typeRule, $lengthRule]);
         }
 
         return $rules;

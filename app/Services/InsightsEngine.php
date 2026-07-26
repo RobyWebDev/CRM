@@ -74,7 +74,7 @@ class InsightsEngine
         // önállóan felismert hiányosság, lásd docs/haladasi-naplo.md).
         $leadsWithOverdueNextStep = Lead::whereNotIn('status', ['converted', 'unqualified'])
             ->whereNotNull('next_step_due_at')
-            ->where('next_step_due_at', '<', now()->toDateString())
+            ->where('next_step_due_at', '<', now())
             ->count();
         if ($leadsWithOverdueNextStep > 0) {
             $insights[] = [

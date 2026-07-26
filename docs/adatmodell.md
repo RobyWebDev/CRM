@@ -183,7 +183,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | status | varchar default 'new' | `new` / `contacted` / `qualified` / `unqualified` / `converted` |
 | current_status_note | text nullable | szabad szöveg: hol tart most a projekt (2026-07-26) |
 | next_step | text nullable | mindig kitölthető, de NEM kötelező mező — mi a várható következő lépés (2026-07-26, Rob explicit kérése) |
-| next_step_due_at | date nullable | a következő lépés várható időpontja (2026-07-26) |
+| next_step_due_at | datetime nullable | a következő lépés várható időpontja, ÓRA:PERC pontossággal (2026-07-26, eredetileg csak dátum volt — Rob kérésére bővítve, mert egy megbeszélt találkozóhoz pontos időpont kell) |
 | win_probability | tinyint nullable | 0-100, "mennyire érzed nyerhetőnek %" (korábbi neve: `score`, átnevezve 2026-07-26, hogy pontosan tükrözze a célját) |
 | comment | text nullable | szabad megjegyzés, egyéb infók (korábbi neve: `notes`, átnevezve 2026-07-26 — VALÓDI HIBA javítva: a `notes` oszlopnév ütközött a `Lead::notes()` polimorf relációval, ami nem teljesen hidratált modell-példányon a relációt adta vissza a szöveg helyett) |
 | custom_fields | json nullable | |
@@ -348,7 +348,7 @@ Ez a tábla teszi lehetővé, hogy **fejlesztő nélkül** bármilyen egyedi mez
 | entity_type | varchar | `contact` / `organization` / `deal` / `project` / `retainer` — melyik táblán jelenik meg a mező |
 | field_key | varchar | pl. `felmeres_pontszam` — ez a kulcs a `custom_fields` JSON-ban |
 | label | varchar | felhasználónak látszó név, pl. "Felmérés pontszám" |
-| field_type | varchar | `text` / `textarea` / `number` / `date` / `boolean` / `select` / `multiselect` / `url` |
+| field_type | varchar | `text` / `textarea` / `number` / `date` / `datetime` / `boolean` / `select` / `multiselect` / `url` — a `datetime` MiniCRM-mintára (2026-07-26, `minicrm-inspiracio.md` 2. pont): pontos időponttal is felvehető mező, pl. találkozó |
 | options | json nullable | `select`/`multiselect` esetén a választható értékek |
 | is_required | boolean default false | |
 | sort_order | int | |

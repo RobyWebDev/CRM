@@ -267,7 +267,7 @@ CREATE TABLE leads (
     status VARCHAR(20) NOT NULL DEFAULT 'new', -- new / contacted / qualified / unqualified / converted
     current_status_note TEXT NULL, -- szabad szöveg: hol tart most a projekt (2026-07-26)
     next_step TEXT NULL, -- mindig kitölthető, de nem kötelező "következő lépés" (2026-07-26)
-    next_step_due_at DATE NULL, -- a következő lépés várható időpontja (2026-07-26)
+    next_step_due_at DATETIME NULL, -- a következő lépés várható időpontja, óra:perc pontossággal (2026-07-26, később bővítve dátumról datetime-ra)
     win_probability TINYINT UNSIGNED NULL, -- 0-100, "mennyire nyerhető" (korábbi neve: score, átnevezve 2026-07-26)
     comment TEXT NULL, -- szabad megjegyzés (korábbi neve: notes, átnevezve 2026-07-26, mert ütközött a Lead::notes() polimorf relációval)
     custom_fields JSON NULL,

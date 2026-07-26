@@ -86,14 +86,14 @@
                         <x-input-error :messages="$errors->get('next_step')" class="mt-2" />
                     </div>
                     <div>
-                        <x-input-label for="next_step_due_at" :value="__('Várható időpont')" />
-                        <x-text-input id="next_step_due_at" type="date" name="next_step_due_at" class="block mt-1 w-full" :value="old('next_step_due_at')" />
+                        <x-input-label for="next_step_due_at" :value="__('Várható időpont (pl. találkozó)')" />
+                        <x-text-input id="next_step_due_at" type="datetime-local" name="next_step_due_at" class="block mt-1 w-full" :value="old('next_step_due_at')" />
                         <x-input-error :messages="$errors->get('next_step_due_at')" class="mt-2" />
                     </div>
                 </div>
 
                 <div>
-                    <x-input-label for="comment" :value="__('Megjegyzés (egyéb infók)')" />
+                    <x-input-label for="comment" :value="__('Leírás (egyéb infók)')" />
                     <textarea id="comment" name="comment" rows="3" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">{{ old('comment') }}</textarea>
                     <x-input-error :messages="$errors->get('comment')" class="mt-2" />
                 </div>
