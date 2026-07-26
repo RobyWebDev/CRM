@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-fluid-xl text-ink leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Irányítópult') }}
         </h2>
     </x-slot>
 

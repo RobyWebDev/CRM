@@ -1,11 +1,11 @@
 <x-guest-layout>
     <div class="mb-4 text-fluid-xs text-ink-muted">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
+        {{ __('Köszönjük a regisztrációt! Mielőtt elkezdenéd használni a rendszert, kérjük, erősítsd meg az e-mail címed az imént küldött linkre kattintva. Ha nem kaptad meg a levelet, szívesen küldünk egy újat.') }}
     </div>
 
     @if (session('status') == 'verification-link-sent')
         <div class="mb-4 font-medium text-fluid-xs text-success">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+            {{ __('Új megerősítő linket küldtünk a regisztráció során megadott e-mail címre.') }}
         </div>
     @endif
 
@@ -15,7 +15,7 @@
 
             <div>
                 <x-primary-button>
-                    {{ __('Resend Verification Email') }}
+                    {{ __('Megerősítő e-mail újraküldése') }}
                 </x-primary-button>
             </div>
         </form>
@@ -24,7 +24,7 @@
             @csrf
 
             <button type="submit" class="underline text-fluid-xs text-ink-muted hover:text-ink rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-line-strong focus-visible:ring-offset-page">
-                {{ __('Log Out') }}
+                {{ __('Kijelentkezés') }}
             </button>
         </form>
     </div>

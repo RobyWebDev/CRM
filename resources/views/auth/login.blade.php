@@ -7,14 +7,14 @@
 
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
+            <x-input-label for="email" :value="__('E-mail')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('Jelszó')" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
@@ -28,19 +28,19 @@
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
                 <input id="remember_me" type="checkbox" class="rounded bg-sunken border-line-strong text-accent shadow-sm focus:ring-line-strong" name="remember">
-                <span class="ms-2 text-fluid-xs text-ink-muted">{{ __('Remember me') }}</span>
+                <span class="ms-2 text-fluid-xs text-ink-muted">{{ __('Emlékezz rám') }}</span>
             </label>
         </div>
 
         <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
                 <a class="underline text-fluid-xs text-ink-muted hover:text-ink rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-line-strong focus-visible:ring-offset-page" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+                    {{ __('Elfelejtetted a jelszavad?') }}
                 </a>
             @endif
 
             <x-primary-button class="ms-3">
-                {{ __('Log in') }}
+                {{ __('Bejelentkezés') }}
             </x-primary-button>
         </div>
     </form>
