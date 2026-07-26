@@ -43,20 +43,30 @@
 - **Hírnév-/vélemény-kezelés (Google/Facebook review automatizálás)** — **részben CRM-funkció, részben marketing-eszköz.** A mag ötlet (elégedett ügyfelet automatikusan megkérni egy Google-értékelésre egy lezárt projekt/retainer után) jól illeszkedne a meglévő automatizáció-backlogunkhoz ("ha a projekt lezárult → X nap múlva automatikus e-mail: kérünk egy értékelést"). **Alacsony prioritású, de olcsó és általános haszon** — bármilyen szolgáltatónak (nemcsak kisvállalkozásnak) hasznos.
 - **Időpontfoglalás naptár-widgettel** — **részben CRM-funkció.** Egy nyilvános, ügyfél által kitölthető foglalási link (pl. "foglalj egy 30 perces konzultációt Robbal"), ami automatikusan Lead-et vagy Kontaktot hoz létre és Teendőt/Naptár-eseményt generál. Ez összefügg a már meglévő "webes űrlap → automatikus lead-befogás" MiniCRM-backlog-tétellel, csak azt naptár-idősáv-választással egészíti ki. **Középtávú, jó backlog-ötlet.**
 
-## 3. Mi az, ami NEM klasszikus CRM-funkció, hanem szomszédos termékkategória — Rob döntésére vár
+## 3. Mi marad kizárva, és mi kerül a TÁVOLI (hosszú távú) scope-ba (2026-07-26, Rob pontosítása)
 
-Ezeket **NEM javaslom automatikusan beépítésre**, mert érdemben kibővítenék a projekt hatókörét egy "CRM"-ből egy "teljes marketingplatform" irányába — ez explicit, önálló döntést igényel Robtól, ha egyáltalán akarja:
+Rob megerősítette: a GoHighLevel/ConnectSoft-jellegű, "teljes all-in-one marketingplatform" irány **legyen a rendszer távoli tervei között**, kifejezetten megjelölve, hogy honnan jött az ötlet (ConnectSoft → valójában GoHighLevel). **Egyetlen kizárás marad: a weboldal/landing oldal/funnel-builder** — ez egy önálló, komplex website-builder termék (drag-and-drop szerkesztő, sablon-motor), és Rob-nak amúgy is van saját, meglévő webdesign-szolgáltatása/eszköze. Ha valaha releváns lesz, inkább egy **linkelési/integrációs pont** legyen (pl. egy külső landing oldal beküldött űrlapja webhookkal létrehoz egy Lead-et nálunk), nem egy saját built-in oldalszerkesztő.
 
-- **Weboldal/landing oldal/funnel-builder** — ez gyakorlatilag egy önálló, komplex website-builder termék (drag-and-drop szerkesztő, sablon-motor). Rob-nak amúgy is van saját, meglévő webdesign-szolgáltatása/eszköze — inkább egy **linkelési/integrációs pont** lenne értelmes (pl. egy landing oldal beküldött űrlapja webhookkal létrehoz egy Lead-et nálunk), nem egy saját built-in oldalszerkesztő.
-- **Tagság-/kurzusplatform, affiliate-modul, közösségimédia-ütemezés, termékértékesítés Stripe-fizetéssel** — ezek mind önálló, nagy termékkategóriák (LMS, affiliate-tracking, social media management, e-commerce), amik jóval túlmutatnak egy CRM hatókörén. **Nem javaslom, hogy ezeket a CRM-be építsük** — ha Robnak ezekre ténylegesen szüksége van a saját vállalkozásához, azok inkább külön, kész SaaS-eszközök (pl. tényleg egy ConnectSoft/GHL-előfizetés) használatával oldhatók meg, a mi CRM-ünk pedig API/webhook-integrációval kapcsolódhatna hozzájuk (pl. "ConnectSoft-ban lezárt értékesítés → webhook → nálunk Deal `won` állapotba kerül").
+**Minden más GoHighLevel-funkció bekerül a távoli scope-ba** (nem MVP, nem közeli, de nyitva hagyva, ha Rob a vállalkozását tényleg ebbe az irányba akarja bővíteni):
+
+- **Tagság-/kurzusplatform** (e-learning, zárt közösségi felület) — a GoHighLevel/ConnectSoft ihlette, saját termékkategória (LMS), de nem kizárt, ha Robnak lesz online kurzus-terméke.
+- **Affiliate-/partnerprogram-modul** (többszintű jutalékrendszer, cookie-alapú követés) — a GoHighLevel/ConnectSoft ihlette; **fontos különbség a MiniCRM hasonló nevű funkciójától** (lásd `minicrm-inspiracio.md` 9c. szakasz): a MiniCRM "meghívói programja" a MiniCRM SAJÁT ügyfélszerzésére való, nem egy olyan eszköz, amit a MiniCRM ügyfelei használhatnának a SAJÁT affiliate-programjukhoz — tehát ha ezt Rob be szeretné vezetni, az valódi GoHighLevel-mintát követne, nem MiniCRM-mintát.
+- **Közösségimédia-ütemezés** (Facebook/Instagram/TikTok/LinkedIn/YouTube/Pinterest posztok előre ütemezve) — a GoHighLevel/ConnectSoft ihlette; a MiniCRM-nél nem található hasonló natív funkció (lásd 9c. szakasz).
+- **Termékértékesítés beépített fizetéssel** (Stripe-integráció, egyszeri/részletes/előfizetéses díjazás) — a GoHighLevel/ConnectSoft ihlette; Laravel Cashier egyszerűsítené a megvalósítást, ha valaha aktuálissá válik.
+- **Teljes e-mail/SMS-marketing automatizáció-motor** (nem csak a már backlogolt "ha X, akkor Y" automatizáció-builder, hanem tényleges tömeges kampány-küldés, forgalmi alapú díjazással) — a GoHighLevel/ConnectSoft ihlette.
 
 ## 4. Összegzés — mi kerüljön a backlogba
+
+**Közelebbi, ténylegesen CRM-hatókörbe illő ötletek** (lásd 2. szakasz):
 
 1. **Egységes kommunikációs idővonal (Unified Inbox-elv)** — architekturális célként rögzítve, amint lesz e-mail/SMS/telefónia-integráció (lásd `crm_projekt.md` 8. szekció).
 2. **Account-szintű "Snapshot"/sablon-klónozás** — a `pipeline-sablonok.md` ötlet kiterjesztése teljes account-konfigurációra.
 3. **Automatikus review-kérés lezárt projekt/retainer után** — kis, olcsó automatizáció-minta.
-4. **Nyilvános időpontfoglaló link** — a webes lead-befogás ötlet kiterjesztése naptár-idősáv-választással.
-5. **Explicit NEM javasolt automatikus beépítésre:** website/funnel-builder, tagság/kurzus, affiliate, social media ütemezés, built-in termékértékesítés — ezek külön termékkategóriák, csak integrációs pontként érdemes rájuk gondolni, ha Rob úgy dönt.
+4. **Nyilvános időpontfoglaló link** — a webes lead-befogás ötlet kiterjesztése naptár-idősáv-választással (a MiniCRM-nél is megvan, lásd 9c. szakasz — két független forrás erősíti meg az ötletet).
+
+**Távoli (hosszú távú) scope, explicit GoHighLevel/ConnectSoft-eredettel megjelölve** (lásd 3. szakasz): tagság-/kurzusplatform, affiliate-/partnerprogram-modul, közösségimédia-ütemezés, beépített termékértékesítés/fizetés, teljes marketing-kampány-motor.
+
+**Az egyetlen továbbra is kizárt terület:** weboldal/landing oldal/funnel-builder — külön termékkategória, csak integrációs pontként érdemes rá gondolni.
 
 ## 5. Kapcsolódó dokumentumok
 

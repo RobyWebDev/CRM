@@ -122,11 +122,22 @@ class LeadController extends Controller
             $firstStage = $pipeline?->stages()->orderBy('sort_order')->first();
 
             if ($pipeline && $firstStage) {
+                // A leadnél rögzített projekt-részletek (project_title, jelenlegi állás,
+                // megjegyzés) átöröklődnek a deal leírásába, hogy a scope ne vesszen el
+                // a konvertáláskor — lásd crm_projekt.md, "leírás végigfut az egész
+                // életúton" elv (2026-07-26, Rob kérése).
+                $description = implode("\n\n", array_filter([
+                    $lead->project_title,
+                    $lead->current_status_note,
+                    $lead->notes,
+                ]));
+
                 $deal = Deal::create([
                     'pipeline_id' => $pipeline->id,
                     'pipeline_stage_id' => $firstStage->id,
                     'contact_id' => $contact->id,
                     'title' => $lead->full_name.' — '.$lead->serviceType->name,
+                    'description' => $description !== '' ? $description : null,
                     'status' => 'open',
                 ]);
             }
