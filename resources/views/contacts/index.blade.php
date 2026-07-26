@@ -4,9 +4,14 @@
             <h2 class="font-semibold text-fluid-xl text-ink leading-tight">
                 {{ __('Kontaktok') }}
             </h2>
-            <a href="{{ route('contacts.create') }}">
-                <x-primary-button>{{ __('+ Új kontakt') }}</x-primary-button>
-            </a>
+            <div class="flex gap-fluid-xs">
+                <a href="{{ route('contacts.import.create') }}">
+                    <x-secondary-button type="button">{{ __('CSV-importálás') }}</x-secondary-button>
+                </a>
+                <a href="{{ route('contacts.create') }}">
+                    <x-primary-button>{{ __('+ Új kontakt') }}</x-primary-button>
+                </a>
+            </div>
         </div>
     </x-slot>
 

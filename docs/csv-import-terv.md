@@ -3,6 +3,17 @@
 > A `crm_projekt.md` 3. szekció "CSV-import" alapelvének kifejtése: kontaktok/adatok tömeges bevitele meglévő Excel/Sheet listákból.
 > Utolsó frissítés: 2026-07-25.
 
+## 0. Állapot (2026-07-26) — MEGVALÓSÍTVA, tudatos MVP-egyszerűsítésekkel
+
+A funkció élesben megvan (`/contacts/import`, három lépés: feltöltés → mezőtérképezés+előnézet → import+riport), a lenti terv 1-3. pontja gyakorlatilag pontosan úgy valósult meg, ahogy tervezve volt (UTF-8/Windows-1250 automatikus felismerés+konverzió, vessző/pontosvessző auto-detektálás, fejléc-alapú okos mezőtérképezés-tipp, előnézet, duplikátum-kihagyás e-mail alapján).
+
+**Két tudatos eltérés a 4. pont technikai javaslatától:**
+
+- **Nincs `maatwebsite/excel` csomag** — natív PHP `str_getcsv()`-vel dolgozunk (`App\Support\ContactCsvImporter`), hogy ne kelljen új Composer-függőséget bevezetni egy olyan funkcióhoz, aminek a neve is "CSV" (nem XLSX) — ha valaha tényleges Excel-fájl (.xlsx) feltöltés is kellene, ez a pont bővítendő.
+- **Nincs Queue Job** — szinkron feldolgozás egy kérésen belül, mert Rob egyfelhasználós, feltehetően néhány száz soros listáival ez bőven elég gyors, és nem igényel folyamatosan futó queue-workert az üzemeltetéshez.
+
+Egyedi mezőkre (`custom_field_definitions`, `entity_type=contact`) is lehet mappelni egy CSV-oszlopot. Tesztelve: `tests/Feature/ContactCsvImportTest.php`.
+
 ## 1. Cél és elsődleges entitás
 
 MVP-ben a legfontosabb (és valószínűleg egyetlen szükséges) import-célpont a **kontaktok** (`contacts`), mivel Robnak feltehetően van egy meglévő Excel/Sheet listája az ügyfelekről/érdeklődőkről. Szervezetek (`organizations`) importja hasonló mintát követhet, de csak akkor kell megépíteni, ha ténylegesen van rá adat.
