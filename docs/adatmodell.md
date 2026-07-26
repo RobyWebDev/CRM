@@ -147,10 +147,14 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | first_name, last_name | varchar | |
 | email, phone | varchar nullable | |
 | company | varchar nullable | |
+| project_title | varchar nullable | konkrét projekt/feladat megnevezése, a `service_type_id` kategóriájánál pontosabb (2026-07-26, Rob kérése) |
 | source | varchar nullable | pl. "weboldal", "ajánlás", "hideg hívás" |
 | status | varchar default 'new' | `new` / `contacted` / `qualified` / `unqualified` / `converted` |
-| score | tinyint nullable | egyszerű 0-100 lead-pontszám (CRM best practice — a jövőben finomítható tényleges pontozási szabályokkal) |
-| notes | text nullable | |
+| current_status_note | text nullable | szabad szöveg: hol tart most a projekt (2026-07-26) |
+| next_step | text nullable | mindig kitölthető, de NEM kötelező mező — mi a várható következő lépés (2026-07-26, Rob explicit kérése) |
+| next_step_due_at | date nullable | a következő lépés várható időpontja (2026-07-26) |
+| win_probability | tinyint nullable | 0-100, "mennyire érzed nyerhetőnek %" (korábbi neve: `score`, átnevezve 2026-07-26, hogy pontosan tükrözze a célját) |
+| notes | text nullable | szabad megjegyzés, egyéb infók (2026-07-26: külön kiemelve, hogy ez a "mindent elmondhatsz" mező) |
 | custom_fields | json nullable | |
 | converted_at | timestamp nullable | |
 | converted_contact_id | bigint FK nullable → contacts.id | |

@@ -38,19 +38,51 @@
                     </div>
                 </div>
 
-                <div>
-                    <x-input-label for="service_type_id" :value="__('Érdeklődik iránta')" />
-                    <select id="service_type_id" name="service_type_id" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">
-                        <option value="">{{ __('— nincs megadva —') }}</option>
-                        @foreach ($serviceTypes as $serviceType)
-                            <option value="{{ $serviceType->id }}" @selected(old('service_type_id') == $serviceType->id)>{{ $serviceType->name }}</option>
-                        @endforeach
-                    </select>
-                    <x-input-error :messages="$errors->get('service_type_id')" class="mt-2" />
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-fluid-sm">
+                    <div>
+                        <x-input-label for="service_type_id" :value="__('Érdeklődik iránta (szolgáltatás típusa)')" />
+                        <select id="service_type_id" name="service_type_id" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">
+                            <option value="">{{ __('— nincs megadva —') }}</option>
+                            @foreach ($serviceTypes as $serviceType)
+                                <option value="{{ $serviceType->id }}" @selected(old('service_type_id') == $serviceType->id)>{{ $serviceType->name }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('service_type_id')" class="mt-2" />
+                    </div>
+                    <div>
+                        <x-input-label for="project_title" :value="__('Projekt / feladat megnevezése')" />
+                        <x-text-input id="project_title" name="project_title" class="block mt-1 w-full" :value="old('project_title')" placeholder="{{ __('pl. Facebook-hirdetéskezelés Q3-ra') }}" />
+                        <x-input-error :messages="$errors->get('project_title')" class="mt-2" />
+                    </div>
                 </div>
 
                 <div>
-                    <x-input-label for="notes" :value="__('Jegyzet')" />
+                    <x-input-label for="win_probability" :value="__('Esély a megnyerésre (%)')" />
+                    <x-text-input id="win_probability" type="number" min="0" max="100" name="win_probability" class="block mt-1 w-full sm:w-40" :value="old('win_probability')" />
+                    <x-input-error :messages="$errors->get('win_probability')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="current_status_note" :value="__('Jelenlegi állás — hol tart most a projekt')" />
+                    <textarea id="current_status_note" name="current_status_note" rows="2" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">{{ old('current_status_note') }}</textarea>
+                    <x-input-error :messages="$errors->get('current_status_note')" class="mt-2" />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-fluid-sm">
+                    <div class="sm:col-span-2">
+                        <x-input-label for="next_step" :value="__('Következő lépés')" />
+                        <x-text-input id="next_step" name="next_step" class="block mt-1 w-full" :value="old('next_step')" placeholder="{{ __('pl. hívás egyeztetése, ajánlat kiküldése...') }}" />
+                        <x-input-error :messages="$errors->get('next_step')" class="mt-2" />
+                    </div>
+                    <div>
+                        <x-input-label for="next_step_due_at" :value="__('Várható időpont')" />
+                        <x-text-input id="next_step_due_at" type="date" name="next_step_due_at" class="block mt-1 w-full" :value="old('next_step_due_at')" />
+                        <x-input-error :messages="$errors->get('next_step_due_at')" class="mt-2" />
+                    </div>
+                </div>
+
+                <div>
+                    <x-input-label for="notes" :value="__('Megjegyzés (egyéb infók)')" />
                     <textarea id="notes" name="notes" rows="3" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">{{ old('notes') }}</textarea>
                     <x-input-error :messages="$errors->get('notes')" class="mt-2" />
                 </div>

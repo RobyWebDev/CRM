@@ -56,6 +56,18 @@ class InsightsEngine
             ];
         }
 
+        $leadsWithoutNextStep = Lead::whereNotIn('status', ['converted', 'unqualified'])
+            ->where(function ($query) {
+                $query->whereNull('next_step')->orWhere('next_step', '');
+            })
+            ->count();
+        if ($leadsWithoutNextStep > 0) {
+            $insights[] = [
+                'type' => 'info',
+                'message' => __(':count nyitott leadednél nincs megadva következő lépés — érdemes rögzíteni, mi legyen a soron következő teendő.', ['count' => $leadsWithoutNextStep]),
+            ];
+        }
+
         $contactsWithoutPhone = Contact::whereNull('phone')->orWhere('phone', '')->count();
         if ($contactsWithoutPhone > 0) {
             $insights[] = [

@@ -42,9 +42,13 @@ class LeadController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'company' => ['nullable', 'string', 'max:255'],
+            'project_title' => ['nullable', 'string', 'max:255'],
             'source' => ['nullable', 'string', 'max:255'],
             'service_type_id' => ['nullable', 'exists:service_types,id'],
-            'score' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'current_status_note' => ['nullable', 'string'],
+            'next_step' => ['nullable', 'string'],
+            'next_step_due_at' => ['nullable', 'date'],
+            'win_probability' => ['nullable', 'integer', 'min:0', 'max:100'],
             'notes' => ['nullable', 'string'],
         ]);
 
@@ -69,10 +73,14 @@ class LeadController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'company' => ['nullable', 'string', 'max:255'],
+            'project_title' => ['nullable', 'string', 'max:255'],
             'source' => ['nullable', 'string', 'max:255'],
             'service_type_id' => ['nullable', 'exists:service_types,id'],
             'status' => ['required', 'in:new,contacted,qualified,unqualified'],
-            'score' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'current_status_note' => ['nullable', 'string'],
+            'next_step' => ['nullable', 'string'],
+            'next_step_due_at' => ['nullable', 'date'],
+            'win_probability' => ['nullable', 'integer', 'min:0', 'max:100'],
             'notes' => ['nullable', 'string'],
         ]);
 

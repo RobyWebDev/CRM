@@ -217,9 +217,13 @@ CREATE TABLE leads (
     email VARCHAR(255) NULL,
     phone VARCHAR(50) NULL,
     company VARCHAR(255) NULL,
+    project_title VARCHAR(255) NULL, -- konkrét projekt/feladat megnevezése (2026-07-26, Rob kérése)
     source VARCHAR(255) NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'new', -- new / contacted / qualified / unqualified / converted
-    score TINYINT UNSIGNED NULL, -- egyszerű 0-100 lead-pontszám
+    current_status_note TEXT NULL, -- szabad szöveg: hol tart most a projekt (2026-07-26)
+    next_step TEXT NULL, -- mindig kitölthető, de nem kötelező "következő lépés" (2026-07-26)
+    next_step_due_at DATE NULL, -- a következő lépés várható időpontja (2026-07-26)
+    win_probability TINYINT UNSIGNED NULL, -- 0-100, "mennyire nyerhető" (korábbi neve: score, átnevezve 2026-07-26)
     notes TEXT NULL,
     custom_fields JSON NULL,
     converted_at TIMESTAMP NULL,

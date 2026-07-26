@@ -41,15 +41,20 @@
                                 <p class="font-semibold text-ink text-fluid-base">
                                     {{ $lead->full_name }}
                                 </p>
-                                @if (! is_null($lead->score))
-                                    <span class="text-fluid-xs text-ink-muted">{{ $lead->score }}/100</span>
+                                @if (! is_null($lead->win_probability))
+                                    <span class="text-fluid-xs text-ink-muted">{{ $lead->win_probability }}%</span>
                                 @endif
                             </div>
                             @if ($lead->company)
                                 <p class="text-ink-muted text-fluid-xs">{{ $lead->company }}</p>
                             @endif
-                            @if ($lead->serviceType)
-                                <p class="text-ink-soft text-fluid-xs mt-1">{{ $lead->serviceType->name }}</p>
+                            @if ($lead->project_title || $lead->serviceType)
+                                <p class="text-ink-soft text-fluid-xs mt-1 font-medium">
+                                    {{ $lead->project_title ?? $lead->serviceType->name }}
+                                    @if ($lead->project_title && $lead->serviceType)
+                                        <span class="text-ink-muted font-normal">— {{ $lead->serviceType->name }}</span>
+                                    @endif
+                                </p>
                             @endif
                             <p class="text-fluid-xs mt-2 inline-block px-2 py-0.5 rounded bg-sunken text-ink-soft">
                                 {{ __(match ($lead->status) {
@@ -61,6 +66,18 @@
                                     default => $lead->status,
                                 }) }}
                             </p>
+                            @if ($lead->current_status_note)
+                                <p class="text-ink-soft text-fluid-xs mt-2 line-clamp-2">{{ $lead->current_status_note }}</p>
+                            @endif
+                            @if ($lead->next_step)
+                                <p class="text-fluid-xs mt-2 text-info">
+                                    <span class="font-medium">{{ __('Következő lépés:') }}</span>
+                                    {{ $lead->next_step }}
+                                    @if ($lead->next_step_due_at)
+                                        <span class="text-ink-muted">({{ $lead->next_step_due_at->format('Y.m.d.') }})</span>
+                                    @endif
+                                </p>
+                            @endif
                         </a>
                     @endforeach
                 </div>

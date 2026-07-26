@@ -18,7 +18,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 #[Fillable([
     'account_id', 'owner_user_id', 'service_type_id', 'first_name', 'last_name', 'email',
-    'phone', 'company', 'source', 'status', 'score', 'notes', 'custom_fields',
+    'phone', 'company', 'project_title', 'source', 'status', 'current_status_note',
+    'next_step', 'next_step_due_at', 'win_probability', 'notes', 'custom_fields',
     'converted_at', 'converted_contact_id', 'converted_deal_id',
 ])]
 class Lead extends Model
@@ -30,6 +31,7 @@ class Lead extends Model
         return [
             'custom_fields' => 'array',
             'converted_at' => 'datetime',
+            'next_step_due_at' => 'date',
         ];
     }
 
