@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\Contact;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
@@ -27,7 +28,7 @@ class DuplicateFinder
         }
 
         return $modelClass::query()
-            ->where(function ($query) use ($email, $normalizedPhone) {
+            ->where(function ($query) use ($email, $normalizedPhone, $modelClass) {
                 if ($email !== '') {
                     $query->orWhereRaw('LOWER(email) = ?', [Str::lower($email)]);
                 }
@@ -40,6 +41,26 @@ class DuplicateFinder
                         "SUBSTR(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '(', ''), ')', ''), '+', ''), -9) = ?",
                         [$normalizedPhone]
                     );
+                }
+
+                // A Kontaktoknál 2026-07-26 óta a fő email/phone mező mellett tetszőleges
+                // számú, szabadon elnevezett további elérhetőség is felvehető
+                // (contact_fields tábla) — enélkül egy csak ott rögzített második
+                // telefonszám/e-mail láthatatlan maradna a duplikátum-keresésnek.
+                if ($modelClass === Contact::class) {
+                    if ($email !== '') {
+                        $query->orWhereHas('contactFields', function ($fieldQuery) use ($email) {
+                            $fieldQuery->where('type', 'email')->whereRaw('LOWER(value) = ?', [Str::lower($email)]);
+                        });
+                    }
+                    if ($normalizedPhone !== null) {
+                        $query->orWhereHas('contactFields', function ($fieldQuery) use ($normalizedPhone) {
+                            $fieldQuery->where('type', 'phone')->whereRaw(
+                                "SUBSTR(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(value, ' ', ''), '-', ''), '(', ''), ')', ''), '+', ''), -9) = ?",
+                                [$normalizedPhone]
+                            );
+                        });
+                    }
                 }
             })
             ->when($excludeId, fn ($query) => $query->where('id', '!=', $excludeId))

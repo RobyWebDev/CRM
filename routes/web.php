@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PersonalNoteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/search', [SearchController::class, 'index'])->name('search');
 
     Route::resource('contacts', ContactController::class);
+
+    Route::resource('organizations', OrganizationController::class)->except(['create', 'store']);
 
     Route::resource('campaigns', CampaignController::class);
 

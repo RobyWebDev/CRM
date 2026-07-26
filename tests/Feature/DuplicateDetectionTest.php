@@ -79,6 +79,26 @@ class DuplicateDetectionTest extends TestCase
         $this->assertEmpty(collect(session('duplicate_contacts')));
     }
 
+    public function test_a_phone_number_stored_only_as_an_extra_contact_field_is_still_caught_as_a_duplicate(): void
+    {
+        // 2026-07-26: a duplikátum-kereső eredetileg csak a contacts.phone fő mezőt
+        // nézte — miután bárki felvehet TOVÁBBI telefonszámokat is (contact_fields),
+        // ez a fő mezőn kívüli adat "láthatatlan" maradt volna a duplikátum-jelzésnek.
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $existing = Contact::create(['account_id' => $user->account_id, 'first_name' => 'Régi']);
+        $existing->contactFields()->create(['account_id' => $user->account_id, 'type' => 'phone', 'label' => 'Vezetékes', 'value' => '0612345678', 'sort_order' => 0]);
+
+        $this->post('/contacts', [
+            'first_name' => 'Új',
+            'phone' => '06 1 234 5678',
+        ]);
+
+        $duplicates = collect(session('duplicate_contacts'));
+        $this->assertTrue($duplicates->contains('id', $existing->id));
+    }
+
     public function test_creating_a_lead_flags_both_similar_leads_and_existing_contacts(): void
     {
         $user = User::factory()->create();

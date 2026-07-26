@@ -9,6 +9,7 @@ use App\Models\Lead;
 use App\Models\ServiceType;
 use App\Support\DescriptionChain;
 use App\Support\DuplicateFinder;
+use App\Support\SelectOrCreate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -42,6 +43,8 @@ class LeadController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $this->resolveCampaignId($request);
+
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
@@ -84,6 +87,8 @@ class LeadController extends Controller
 
     public function update(Request $request, Lead $lead): RedirectResponse
     {
+        $this->resolveCampaignId($request);
+
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
@@ -172,5 +177,17 @@ class LeadController extends Controller
         ]);
 
         return redirect()->route('contacts.show', $contact)->with('status', 'lead-converted');
+    }
+
+    /**
+     * "+ Új kampány..." feloldása — ha a felhasználó ezt választotta a lenyíló
+     * listában, a beírt névvel VALÓDI Campaign-rekord jön létre (nem szabad
+     * szöveges duplikátum), lásd App\Support\SelectOrCreate (Rob kérése, 2026-07-26).
+     */
+    private function resolveCampaignId(Request $request): void
+    {
+        $request->merge([
+            'campaign_id' => SelectOrCreate::resolveId(Campaign::class, $request->input('campaign_id'), $request->input('new_campaign_name')),
+        ]);
     }
 }

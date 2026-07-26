@@ -61,24 +61,19 @@
 
                 <div>
                     <x-input-label for="organization_id" :value="__('Szervezet')" />
-                    <select id="organization_id" name="organization_id" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">
-                        <option value="">{{ __('— nincs —') }}</option>
-                        @foreach ($organizations as $organization)
-                            <option value="{{ $organization->id }}" @selected(old('organization_id', $contact->organization_id) == $organization->id)>{{ $organization->name }}</option>
-                        @endforeach
-                    </select>
-                    <x-input-error :messages="$errors->get('organization_id')" class="mt-2" />
+                    <x-select-or-create
+                        name="organization_id"
+                        :options="$organizations->map(fn ($o) => ['id' => $o->id, 'label' => $o->name])"
+                        :selected="$contact->organization_id"
+                        new-field-name="new_organization_name"
+                        new-placeholder="{{ __('Új szervezet neve') }}"
+                        new-option-label="{{ __('+ Új szervezet...') }}"
+                    />
                 </div>
 
                 <div>
                     <x-input-label for="referred_by_contact_id" :value="__('Ki ajánlotta?')" />
-                    <select id="referred_by_contact_id" name="referred_by_contact_id" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">
-                        <option value="">{{ __('— nincs / nem ajánlás —') }}</option>
-                        @foreach ($contacts as $c)
-                            <option value="{{ $c->id }}" @selected(old('referred_by_contact_id', $contact->referred_by_contact_id) == $c->id)>{{ $c->full_name }}</option>
-                        @endforeach
-                    </select>
-                    <x-input-error :messages="$errors->get('referred_by_contact_id')" class="mt-2" />
+                    <x-referrer-select :contacts="$contacts" :selected="$contact->referred_by_contact_id" />
                 </div>
 
                 <x-contact-fields-editor :fields="old('contact_fields', $contact->contactFields->map(fn ($f) => ['type' => $f->type, 'label' => $f->label, 'value' => $f->value])->all())" />

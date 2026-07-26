@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Models\Note;
 use App\Models\Organization;
 use App\Support\DuplicateFinder;
+use App\Support\SelectOrCreate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -50,6 +51,8 @@ class ContactController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $this->dropEmptyContactFields($request);
+        $this->resolveOrganizationId($request);
+        $this->resolveReferrerId($request);
 
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
@@ -124,6 +127,8 @@ class ContactController extends Controller
     public function update(Request $request, Contact $contact): RedirectResponse
     {
         $this->dropEmptyContactFields($request);
+        $this->resolveOrganizationId($request);
+        $this->resolveReferrerId($request);
 
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
@@ -174,6 +179,46 @@ class ContactController extends Controller
             ->all();
 
         $request->merge(['contact_fields' => $filtered]);
+    }
+
+    /**
+     * "+ Új szervezet..." feloldása — lásd App\Support\SelectOrCreate (Rob kérése, 2026-07-26).
+     */
+    private function resolveOrganizationId(Request $request): void
+    {
+        $request->merge([
+            'organization_id' => SelectOrCreate::resolveId(Organization::class, $request->input('organization_id'), $request->input('new_organization_name')),
+        ]);
+    }
+
+    /**
+     * "+ Új kontakt felvétele ajánlóként..." feloldása — a Kampánytól/Szervezettől
+     * eltérően itt nem elég egy név, egy VALÓDI kontakt-rekordot hozunk létre (első
+     * lépésben csak a megadott alapadatokkal, a többi később a kontakt saját
+     * szerkesztő űrlapján bővíthető) — lásd Rob kérése, 2026-07-26.
+     */
+    private function resolveReferrerId(Request $request): void
+    {
+        if ($request->input('referred_by_contact_id') !== SelectOrCreate::NEW_OPTION_VALUE) {
+            return;
+        }
+
+        $firstName = trim((string) $request->input('referrer_first_name'));
+
+        if ($firstName === '') {
+            $request->merge(['referred_by_contact_id' => null]);
+
+            return;
+        }
+
+        $referrer = Contact::create([
+            'first_name' => $firstName,
+            'last_name' => trim((string) $request->input('referrer_last_name')) ?: null,
+            'email' => trim((string) $request->input('referrer_email')) ?: null,
+            'phone' => trim((string) $request->input('referrer_phone')) ?: null,
+        ]);
+
+        $request->merge(['referred_by_contact_id' => $referrer->id]);
     }
 
     /**

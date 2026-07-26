@@ -9,6 +9,7 @@ use App\Models\Pipeline;
 use App\Models\Project;
 use App\Models\Retainer;
 use App\Support\DescriptionChain;
+use App\Support\SelectOrCreate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -77,6 +78,8 @@ class DealController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $this->resolveCampaignId($request);
+
         $data = $request->validate([
             'pipeline_id' => ['required', 'exists:pipelines,id'],
             'pipeline_stage_id' => ['required', 'exists:pipeline_stages,id'],
@@ -109,6 +112,8 @@ class DealController extends Controller
 
     public function update(Request $request, Deal $deal): RedirectResponse
     {
+        $this->resolveCampaignId($request);
+
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
@@ -219,5 +224,15 @@ class DealController extends Controller
             ]),
             default => null,
         };
+    }
+
+    /**
+     * "+ Új kampány..." feloldása — lásd LeadController::resolveCampaignId() ugyanígy.
+     */
+    private function resolveCampaignId(Request $request): void
+    {
+        $request->merge([
+            'campaign_id' => SelectOrCreate::resolveId(Campaign::class, $request->input('campaign_id'), $request->input('new_campaign_name')),
+        ]);
     }
 }
