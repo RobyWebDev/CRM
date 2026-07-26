@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToAccount;
+use App\Models\Concerns\HasActivityTimeline;
 use App\Models\Concerns\HasPersonName;
 use App\Models\Concerns\HasTags;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -20,7 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 ])]
 class Contact extends Model
 {
-    use BelongsToAccount, HasFactory, HasPersonName, HasTags, SoftDeletes;
+    use BelongsToAccount, HasActivityTimeline, HasFactory, HasPersonName, HasTags, SoftDeletes;
 
     protected function casts(): array
     {

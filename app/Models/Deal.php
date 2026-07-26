@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToAccount;
+use App\Models\Concerns\HasActivityTimeline;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 ])]
 class Deal extends Model
 {
-    use BelongsToAccount, HasFactory, SoftDeletes;
+    use BelongsToAccount, HasActivityTimeline, HasFactory, SoftDeletes;
 
     protected function casts(): array
     {

@@ -65,6 +65,11 @@
                 <x-note-list :noteable="$project" noteable-type="project" />
             </div>
 
+            <div class="bg-surface border border-line rounded-lg p-fluid-md">
+                <h3 class="font-semibold text-fluid-lg text-ink mb-fluid-xs">{{ __('Aktivitás') }}</h3>
+                <x-activity-timeline :subject="$project" />
+            </div>
+
             <a href="{{ route('projects.index') }}" class="text-accent underline text-fluid-xs">{{ __('← Vissza a listához') }}</a>
         </div>
     </div>

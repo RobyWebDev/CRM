@@ -71,6 +71,11 @@
                 <x-note-list :noteable="$retainer" noteable-type="retainer" />
             </div>
 
+            <div class="bg-surface border border-line rounded-lg p-fluid-md">
+                <h3 class="font-semibold text-fluid-lg text-ink mb-fluid-xs">{{ __('Aktivitás') }}</h3>
+                <x-activity-timeline :subject="$retainer" />
+            </div>
+
             <a href="{{ route('retainers.index') }}" class="text-accent underline text-fluid-xs">{{ __('← Vissza a listához') }}</a>
         </div>
     </div>

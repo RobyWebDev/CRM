@@ -154,6 +154,11 @@
                     <x-primary-button>{{ __('Mentés') }}</x-primary-button>
                 </div>
             </form>
+
+            <div class="bg-surface border border-line rounded-lg p-fluid-md mt-fluid-sm">
+                <h3 class="font-semibold text-fluid-lg text-ink mb-fluid-xs">{{ __('Aktivitás') }}</h3>
+                <x-activity-timeline :subject="$lead" />
+            </div>
         </div>
     </div>
 </x-app-layout>

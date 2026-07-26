@@ -94,6 +94,11 @@
                 <x-note-list :noteable="$contact" noteable-type="contact" />
             </div>
 
+            <div class="bg-surface border border-line rounded-lg p-fluid-md">
+                <h3 class="font-semibold text-fluid-lg text-ink mb-fluid-xs">{{ __('Aktivitás') }}</h3>
+                <x-activity-timeline :subject="$contact" />
+            </div>
+
             <a href="{{ route('contacts.index') }}" class="text-accent underline text-fluid-xs">{{ __('← Vissza a listához') }}</a>
         </div>
     </div>
