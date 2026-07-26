@@ -24,7 +24,10 @@ class ContactController extends Controller
                 $query->where(function ($q) use ($term) {
                     $q->where('first_name', 'like', $term)
                         ->orWhere('last_name', 'like', $term)
-                        ->orWhere('email', 'like', $term);
+                        ->orWhere('email', 'like', $term)
+                        // A szabadon hozzáadható elérhetőségek/egyedi mezők (pl. második
+                        // telefonszám, adószám) is kereshetők legyenek (Rob kérése, 2026-07-26).
+                        ->orWhereHas('contactFields', fn ($fq) => $fq->where('value', 'like', $term));
                 });
             })
             ->when($tag !== '', fn ($query) => $query->whereHas('tags', fn ($q) => $q->where('name', $tag)))
@@ -46,6 +49,8 @@ class ContactController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $this->dropEmptyContactFields($request);
+
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
@@ -59,13 +64,19 @@ class ContactController extends Controller
             'referred_by_contact_id' => ['nullable', 'exists:contacts,id'],
             'note' => ['nullable', 'string', 'max:4096'],
             'tags' => ['nullable', 'string', 'max:500'],
+            'contact_fields' => ['nullable', 'array'],
+            'contact_fields.*.type' => ['required', 'in:email,phone,address,custom'],
+            'contact_fields.*.label' => ['nullable', 'string', 'max:255'],
+            'contact_fields.*.value' => ['required', 'string', 'max:1000'],
         ]);
 
         $note = $data['note'] ?? null;
         $tags = $data['tags'] ?? null;
-        unset($data['note'], $data['tags']);
+        $contactFields = $data['contact_fields'] ?? [];
+        unset($data['note'], $data['tags'], $data['contact_fields']);
 
         $contact = Contact::create($data);
+        $this->syncContactFields($contact, $contactFields);
 
         // Rob kérése (2026-07-25): rögtön felvételkor is legyen mód szabad szöveges
         // egyedi megjegyzést rögzíteni, ne csak utólag egy külön jegyzet-oldalon.
@@ -94,14 +105,14 @@ class ContactController extends Controller
 
     public function show(Contact $contact): View
     {
-        $contact->load('organization', 'notes.user', 'tasks', 'tags', 'referredBy', 'referrals');
+        $contact->load('organization', 'notes.user', 'tasks', 'tags', 'referredBy', 'referrals', 'contactFields');
 
         return view('contacts.show', ['contact' => $contact]);
     }
 
     public function edit(Contact $contact): View
     {
-        $contact->load('tags');
+        $contact->load('tags', 'contactFields');
 
         return view('contacts.edit', [
             'contact' => $contact,
@@ -112,6 +123,8 @@ class ContactController extends Controller
 
     public function update(Request $request, Contact $contact): RedirectResponse
     {
+        $this->dropEmptyContactFields($request);
+
         $data = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
@@ -124,13 +137,19 @@ class ContactController extends Controller
             'organization_id' => ['nullable', 'exists:organizations,id'],
             'referred_by_contact_id' => ['nullable', 'exists:contacts,id', Rule::notIn([$contact->id])],
             'tags' => ['nullable', 'string', 'max:500'],
+            'contact_fields' => ['nullable', 'array'],
+            'contact_fields.*.type' => ['required', 'in:email,phone,address,custom'],
+            'contact_fields.*.label' => ['nullable', 'string', 'max:255'],
+            'contact_fields.*.value' => ['required', 'string', 'max:1000'],
         ]);
 
         $tags = $data['tags'] ?? null;
-        unset($data['tags']);
+        $contactFields = $data['contact_fields'] ?? [];
+        unset($data['tags'], $data['contact_fields']);
 
         $contact->update($data);
         $contact->syncTagsFromString($tags ?? '');
+        $this->syncContactFields($contact, $contactFields);
 
         return redirect()->route('contacts.show', $contact)->with('status', 'contact-updated');
     }
@@ -140,5 +159,46 @@ class ContactController extends Controller
         $contact->delete();
 
         return redirect()->route('contacts.index')->with('status', 'contact-deleted');
+    }
+
+    /**
+     * A validáció előtt kiszűri az üresen hagyott "+" sorokat (pl. amikor a
+     * felhasználó hozzáad egy elérhetőség-sort, de nem tölti ki) — enélkül a
+     * kötelező "value" mező hibát dobna egy szándékosan üresen hagyott sorra.
+     */
+    private function dropEmptyContactFields(Request $request): void
+    {
+        $filtered = collect($request->input('contact_fields', []))
+            ->filter(fn ($field) => trim((string) ($field['value'] ?? '')) !== '')
+            ->values()
+            ->all();
+
+        $request->merge(['contact_fields' => $filtered]);
+    }
+
+    /**
+     * Teljes csere-szinkron: a beküldött lista alapján újraépíti a kontakt szabadon
+     * elnevezhető elérhetőségeit/mezőit (Google Címtár-minta, Rob kérése 2026-07-26).
+     */
+    private function syncContactFields(Contact $contact, array $fields): void
+    {
+        $contact->contactFields()->delete();
+
+        foreach (array_values($fields) as $index => $field) {
+            $value = trim((string) ($field['value'] ?? ''));
+
+            if ($value === '') {
+                continue;
+            }
+
+            $label = trim((string) ($field['label'] ?? ''));
+
+            $contact->contactFields()->create([
+                'type' => $field['type'] ?? 'custom',
+                'label' => $label !== '' ? $label : null,
+                'value' => $value,
+                'sort_order' => $index,
+            ]);
+        }
     }
 }

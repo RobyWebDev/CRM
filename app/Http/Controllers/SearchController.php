@@ -34,7 +34,10 @@ class SearchController extends Controller
                 $query->where('first_name', 'like', $like)
                     ->orWhere('last_name', 'like', $like)
                     ->orWhere('email', 'like', $like)
-                    ->orWhere('phone', 'like', $like);
+                    ->orWhere('phone', 'like', $like)
+                    // A szabadon hozzáadható elérhetőségek/egyedi mezők is kereshetők
+                    // legyenek (Rob kérése, 2026-07-26) — pl. egy második telefonszám.
+                    ->orWhereHas('contactFields', fn ($fq) => $fq->where('value', 'like', $like));
             })
             ->limit(10)->get();
 

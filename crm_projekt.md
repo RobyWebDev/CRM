@@ -76,6 +76,7 @@
 | `users` | Bejelentkező személyek, `account_id`-hoz kötve, szerepkörrel (owner, admin, munkatárs) |
 | `leads` | Még nem minősített érdeklődők (CRM best practice) — "konvertáláskor" lesz belőlük `contact` (+ opcionálisan `deal`), döntés: 2026-07-25 |
 | `contacts` | Kapcsolattartók/ügyfelek, `account_id`-hoz kötve |
+| `contact_fields` | Tetszőleges számú, elnevezhető elérhetőség/mező egy kontakthoz (2026-07-26) — Google Címtár-minta, a fő email/phone/address mező mellett bárki hozzáadhat továbbiakat |
 | `organizations` | Cégek/szervezetek, amelyekhez kontaktok tartozhatnak |
 | `service_types` | Szolgáltatás-típusok (coaching, szervezetfejlesztés, webdesign, marketing, SEO) — konfigurálható lista, nem hardcode-olt |
 | `pipelines` | Szolgáltatás-típusonként testre szabható értékesítési/projekt-folyamat |
@@ -122,7 +123,7 @@
 
 **Teljes napló:** [`docs/haladasi-naplo.md`](docs/haladasi-naplo.md).
 
-**Legutóbbi állapot röviden:** a 3. fázis (MVP, csak Robnak) lényegében kész — a teljes Lead→Kontakt→Pipeline→Projekt/Retainer→Teendő/Jegyzet-lánc böngészőben működik, élesben tesztelt tenant-elkülönítéssel. A 4. fázis (Rob saját tesztelése) elkezdhető. **2026-07-26, tizennyolcadik forduló:** megépült az ügyfélszerzés B) ága (`docs/ugyfelszerzes-terv.md`) — "ki ajánlotta?" mező a kontaktokon + strukturált kampány-nyilvántartás/riport, automata teszttel (31/31 zöld). **Tizenkilencedik forduló:** mentett szűrők/nézetek (Kontaktok/Leadek listaoldal), automata teszttel (36/36 zöld). **Huszadik forduló:** nem blokkoló duplikátum-felismerés kontakt/lead felvételkor (e-mail/telefon alapján), automata teszttel (41/41 zöld). **Huszonegyedik forduló:** aktivitás-idővonal — kiderült, hogy a `spatie/laravel-activitylog` eddig csak telepítve volt, de nem naplózott; most bekötve Contact/Deal/Lead/Project/Retainer modellekre, automata teszttel (44/44 zöld). Nyitott, nem blokkoló pont: `pipeline-sablonok.md` Rob-validálása (lásd 7. szekció).
+**Legutóbbi állapot röviden:** a 3. fázis (MVP, csak Robnak) lényegében kész — a teljes Lead→Kontakt→Pipeline→Projekt/Retainer→Teendő/Jegyzet-lánc böngészőben működik, élesben tesztelt tenant-elkülönítéssel. A 4. fázis (Rob saját tesztelése) elkezdhető. **2026-07-26, tizennyolcadik forduló:** megépült az ügyfélszerzés B) ága (`docs/ugyfelszerzes-terv.md`) — "ki ajánlotta?" mező a kontaktokon + strukturált kampány-nyilvántartás/riport, automata teszttel (31/31 zöld). **Tizenkilencedik forduló:** mentett szűrők/nézetek (Kontaktok/Leadek listaoldal), automata teszttel (36/36 zöld). **Huszadik forduló:** nem blokkoló duplikátum-felismerés kontakt/lead felvételkor (e-mail/telefon alapján), automata teszttel (41/41 zöld). **Huszonegyedik forduló:** aktivitás-idővonal — kiderült, hogy a `spatie/laravel-activitylog` eddig csak telepítve volt, de nem naplózott; most bekötve Contact/Deal/Lead/Project/Retainer modellekre, automata teszttel (44/44 zöld). **Huszonkettedik forduló (Rob kérése):** kontakt-kártya átrendezve (cégnév/kontaktnév/elérhetőségek), és Google Címtár-mintára tetszőleges számú, elnevezhető elérhetőség/mező adható egy kontakthoz (`contact_fields` tábla) — a plusz mezőkre a keresés is kiterjed, automata teszttel (51/51 zöld). Nyitott, nem blokkoló pont: `pipeline-sablonok.md` Rob-validálása (lásd 7. szekció).
 
 ---
 

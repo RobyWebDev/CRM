@@ -126,6 +126,21 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | custom_fields | json nullable | |
 | created_at / updated_at / deleted_at | | soft delete kötelező (GDPR törlési igény miatt is) |
 
+### `contact_fields` (tetszőleges számú, elnevezhető elérhetőség — 2026-07-26)
+
+*Google Címtár-minta (Rob kérése): a fenti fő `email`/`phone`/`address` mező MELLETT bárki (nem csak admin) hozzáadhat továbbiakat, saját elnevezéssel — pl. egy cégügyfélnek 2 telefonszáma ("Mobil"/"Vezetékes"), 2 címe ("Helyszín"/"Számlázási cím"), adószáma, vagy bármilyen egyéb szabadon elnevezett mező. Amíg egy `custom` típusú mező nincs elnevezve, a felület "Egyedi mező 1", "Egyedi mező 2" stb. néven jeleníti meg (lásd `Contact::contactFieldsWithDisplayLabels()`) — ez NEM tárolt érték, hanem megjelenítéskor számolt sorszám. A `value` mezőre a helyi kontakt-keresés és a globális gyorskeresés (`/search`) is keres.*
+
+| Oszlop | Típus | Megjegyzés |
+| --- | --- | --- |
+| id | bigint PK | |
+| account_id | bigint FK | |
+| contact_id | bigint FK → contacts.id, cascade delete | |
+| type | varchar | `email` / `phone` / `address` / `custom` |
+| label | varchar nullable | pl. "Mobil", "Számlázási cím", "Adószám" — üres, amíg a felhasználó el nem nevezi |
+| value | text | |
+| sort_order | unsigned int default 0 | megjelenítési sorrend (a felvétel sorrendje) |
+| created_at / updated_at | | nincs soft delete — a kontakttal együtt törlődik (cascade) |
+
 ### `tags` / `taggables` (címkék — 2026-07-25, MiniCRM-inspiráció)
 
 *Szabadon felvehető, kontaktokhoz/szervezetekhez rendelhető jelölők, amiket a felhasználó egyszerűen begépel (a nem létező címke automatikusan létrejön) — lásd `docs/minicrm-inspiracio.md` 6. pont.*

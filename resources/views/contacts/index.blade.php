@@ -49,18 +49,20 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-fluid-sm">
                     @foreach ($contacts as $contact)
                         <a href="{{ route('contacts.show', $contact) }}" class="bg-surface hover:bg-surface-hover border border-line rounded-lg p-fluid-sm transition">
-                            <p class="font-semibold text-ink text-fluid-base">
-                                {{ $contact->full_name }}
-                            </p>
                             @if ($contact->organization)
-                                <p class="text-ink-muted text-fluid-xs">{{ $contact->organization->name }}</p>
+                                <p class="font-semibold text-ink text-fluid-base">{{ $contact->organization->name }}</p>
+                                <p class="text-ink-soft text-fluid-sm">{{ $contact->full_name }}</p>
+                            @else
+                                <p class="font-semibold text-ink text-fluid-base">{{ $contact->full_name }}</p>
                             @endif
-                            @if ($contact->email)
-                                <p class="text-ink-soft text-fluid-xs mt-1">{{ $contact->email }}</p>
-                            @endif
-                            @if ($contact->phone)
-                                <p class="text-ink-soft text-fluid-xs">{{ $contact->phone }}</p>
-                            @endif
+                            <div class="mt-1 space-y-0.5">
+                                @if ($contact->email)
+                                    <p class="text-ink-soft text-fluid-xs">{{ __('E-mail') }}: {{ $contact->email }}</p>
+                                @endif
+                                @if ($contact->phone)
+                                    <p class="text-ink-soft text-fluid-xs">{{ __('Telefon') }}: {{ $contact->phone }}</p>
+                                @endif
+                            </div>
                             @if ($contact->tags->isNotEmpty())
                                 <div class="flex flex-wrap gap-1 mt-2">
                                     @foreach ($contact->tags as $contactTag)

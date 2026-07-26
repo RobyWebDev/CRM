@@ -80,6 +80,9 @@
                     <x-input-error :messages="$errors->get('tags')" class="mt-2" />
                 </div>
 
+                <x-contact-fields-editor :fields="old('contact_fields', [])" />
+                <x-input-error :messages="$errors->get('contact_fields.*.value')" class="mt-2" />
+
                 <div>
                     <x-input-label for="note" :value="__('Egyedi megjegyzés / jegyzet')" />
                     <textarea id="note" name="note" rows="3" placeholder="{{ __('Bármilyen szabad szöveges info, amit érdemes rögtön rögzíteni...') }}" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">{{ old('note') }}</textarea>

@@ -151,6 +151,27 @@ CREATE TABLE contacts (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
+-- contact_fields — tetszőleges számú, elnevezhető elérhetőség/mező egy
+-- kontakthoz, a fő email/phone/address mező MELLETT (Google Címtár-minta,
+-- Rob kérése, 2026-07-26). Amíg egy "custom" típusú mező nincs elnevezve,
+-- a felület "Egyedi mező 1", "Egyedi mező 2" stb. néven jeleníti meg
+-- (nem tárolt érték, megjelenítéskor számolt sorszám).
+-- ============================================================
+CREATE TABLE contact_fields (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    account_id BIGINT UNSIGNED NOT NULL,
+    contact_id BIGINT UNSIGNED NOT NULL,
+    type VARCHAR(255) NOT NULL, -- email / phone / address / custom
+    label VARCHAR(255) NULL, -- pl. "Mobil", "Számlázási cím", "Adószám"
+    value TEXT NOT NULL,
+    sort_order INT UNSIGNED NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    CONSTRAINT fk_contact_fields_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+    CONSTRAINT fk_contact_fields_contact FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
 -- campaigns — strukturált kampány-nyilvántartás a leads/contacts szabad
 -- szöveges `source` mezője MELLETT (2026-07-26, ügyfélszerzés B) ág,
 -- Salesforce Lead Source/Campaign Influence minta egyszerűsítve,

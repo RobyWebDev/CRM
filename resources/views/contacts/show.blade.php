@@ -1,9 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between gap-fluid-sm flex-wrap">
-            <h2 class="font-semibold text-fluid-xl text-ink leading-tight">
-                {{ $contact->full_name }}
-            </h2>
+            <div>
+                @if ($contact->organization)
+                    <h2 class="font-semibold text-fluid-xl text-ink leading-tight">
+                        {{ $contact->organization->name }}
+                    </h2>
+                    <p class="text-ink-soft text-fluid-base leading-tight">{{ $contact->full_name }}</p>
+                @else
+                    <h2 class="font-semibold text-fluid-xl text-ink leading-tight">
+                        {{ $contact->full_name }}
+                    </h2>
+                @endif
+            </div>
             <div class="flex gap-fluid-xs">
                 <a href="{{ route('contacts.edit', $contact) }}"><x-secondary-button type="button">{{ __('Szerkesztés') }}</x-secondary-button></a>
                 <form method="POST" action="{{ route('contacts.destroy', $contact) }}" onsubmit="return confirm('{{ __('Biztosan törlöd?') }}')">
@@ -38,26 +47,33 @@
             @endif
 
             <div class="bg-surface border border-line rounded-lg p-fluid-md space-y-2">
-                @if ($contact->job_title)
-                    <p><span class="text-ink-muted text-fluid-xs">{{ __('Beosztás') }}:</span> <span class="text-ink">{{ $contact->job_title }}</span></p>
-                @endif
-                @if ($contact->organization)
-                    <p><span class="text-ink-muted text-fluid-xs">{{ __('Szervezet') }}:</span> <span class="text-ink">{{ $contact->organization->name }}</span></p>
-                @endif
+                <h3 class="font-semibold text-fluid-lg text-ink mb-fluid-xs">{{ __('Elérhetőségek') }}</h3>
                 @if ($contact->email)
                     <p><span class="text-ink-muted text-fluid-xs">{{ __('E-mail') }}:</span> <span class="text-ink">{{ $contact->email }}</span></p>
                 @endif
                 @if ($contact->phone)
                     <p><span class="text-ink-muted text-fluid-xs">{{ __('Telefon') }}:</span> <span class="text-ink">{{ $contact->phone }}</span></p>
                 @endif
-                @if ($contact->birthday)
-                    <p><span class="text-ink-muted text-fluid-xs">{{ __('Születésnap') }}:</span> <span class="text-ink">{{ $contact->birthday->format('Y.m.d.') }}</span></p>
-                @endif
                 @if ($contact->website)
                     <p><span class="text-ink-muted text-fluid-xs">{{ __('Weboldal') }}:</span> <a href="{{ $contact->website }}" target="_blank" rel="noopener" class="text-accent underline">{{ $contact->website }}</a></p>
                 @endif
                 @if ($contact->address)
                     <p><span class="text-ink-muted text-fluid-xs">{{ __('Cím') }}:</span> <span class="text-ink whitespace-pre-line">{{ $contact->address }}</span></p>
+                @endif
+                @foreach ($contact->contactFieldsWithDisplayLabels() as $field)
+                    <p><span class="text-ink-muted text-fluid-xs">{{ $field->label }}:</span> <span class="text-ink whitespace-pre-line">{{ $field->value }}</span></p>
+                @endforeach
+            </div>
+
+            <div class="bg-surface border border-line rounded-lg p-fluid-md space-y-2">
+                @if ($contact->job_title)
+                    <p><span class="text-ink-muted text-fluid-xs">{{ __('Beosztás') }}:</span> <span class="text-ink">{{ $contact->job_title }}</span></p>
+                @endif
+                @if ($contact->organization)
+                    <p><span class="text-ink-muted text-fluid-xs">{{ __('Szervezet') }}:</span> <span class="text-ink">{{ $contact->organization->name }}</span></p>
+                @endif
+                @if ($contact->birthday)
+                    <p><span class="text-ink-muted text-fluid-xs">{{ __('Születésnap') }}:</span> <span class="text-ink">{{ $contact->birthday->format('Y.m.d.') }}</span></p>
                 @endif
                 @if ($contact->source)
                     <p><span class="text-ink-muted text-fluid-xs">{{ __('Forrás') }}:</span> <span class="text-ink">{{ $contact->source }}</span></p>

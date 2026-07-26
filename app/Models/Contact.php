@@ -83,4 +83,42 @@ class Contact extends Model
     {
         return $this->morphMany(Document::class, 'documentable');
     }
+
+    /** Tetszőleges számú, elnevezhető elérhetőség/mező — Google Címtár-minta, lásd contact_fields migráció. */
+    public function contactFields(): HasMany
+    {
+        return $this->hasMany(ContactField::class)->orderBy('sort_order');
+    }
+
+    /**
+     * A contactFields listája megjelenítésre kész címkével — az e-mail/telefon/cím
+     * típusú, még el nem nevezett mezők egy alapértelmezett típusnevet kapnak, a
+     * "custom" típusú, el nem nevezett mezők pedig sorban "Egyedi mező 1", "Egyedi
+     * mező 2" stb. néven jelennek meg, amíg a felhasználó át nem nevezi őket
+     * (Rob kérése, 2026-07-26).
+     */
+    public function contactFieldsWithDisplayLabels(): \Illuminate\Support\Collection
+    {
+        $customCounter = 0;
+
+        return $this->contactFields->map(function (ContactField $field) use (&$customCounter) {
+            $label = trim((string) $field->label);
+
+            if ($label === '') {
+                if ($field->type === 'custom') {
+                    $customCounter++;
+                    $label = __('Egyedi mező :n', ['n' => $customCounter]);
+                } else {
+                    $label = match ($field->type) {
+                        'email' => __('E-mail'),
+                        'phone' => __('Telefon'),
+                        'address' => __('Cím'),
+                        default => __('Mező'),
+                    };
+                }
+            }
+
+            return (object) ['type' => $field->type, 'label' => $label, 'value' => $field->value];
+        });
+    }
 }

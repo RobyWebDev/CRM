@@ -81,6 +81,9 @@
                     <x-input-error :messages="$errors->get('referred_by_contact_id')" class="mt-2" />
                 </div>
 
+                <x-contact-fields-editor :fields="old('contact_fields', $contact->contactFields->map(fn ($f) => ['type' => $f->type, 'label' => $f->label, 'value' => $f->value])->all())" />
+                <x-input-error :messages="$errors->get('contact_fields.*.value')" class="mt-2" />
+
                 <div class="flex items-center justify-end gap-fluid-xs">
                     <a href="{{ route('contacts.show', $contact) }}"><x-secondary-button type="button">{{ __('Mégse') }}</x-secondary-button></a>
                     <x-primary-button>{{ __('Mentés') }}</x-primary-button>
