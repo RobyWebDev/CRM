@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campaign;
 use App\Models\Contact;
 use App\Models\Deal;
 use App\Models\Pipeline;
@@ -70,6 +71,7 @@ class DealController extends Controller
             'pipelines' => $pipelines,
             'selectedPipeline' => $selectedPipeline,
             'contacts' => Contact::orderBy('first_name')->get(),
+            'campaigns' => Campaign::orderBy('name')->get(),
         ]);
     }
 
@@ -79,6 +81,7 @@ class DealController extends Controller
             'pipeline_id' => ['required', 'exists:pipelines,id'],
             'pipeline_stage_id' => ['required', 'exists:pipeline_stages,id'],
             'contact_id' => ['nullable', 'exists:contacts,id'],
+            'campaign_id' => ['nullable', 'exists:campaigns,id'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'value' => ['nullable', 'numeric', 'min:0'],
@@ -99,6 +102,7 @@ class DealController extends Controller
         return view('deals.edit', [
             'deal' => $deal,
             'contacts' => Contact::orderBy('first_name')->get(),
+            'campaigns' => Campaign::orderBy('name')->get(),
             'stages' => $deal->pipeline->stages()->orderBy('sort_order')->get(),
         ]);
     }
@@ -110,6 +114,7 @@ class DealController extends Controller
             'description' => ['nullable', 'string'],
             'value' => ['nullable', 'numeric', 'min:0'],
             'contact_id' => ['nullable', 'exists:contacts,id'],
+            'campaign_id' => ['nullable', 'exists:campaigns,id'],
             'pipeline_stage_id' => ['required', 'exists:pipeline_stages,id'],
             'lost_reason' => ['nullable', 'string', 'max:2000'],
         ]);

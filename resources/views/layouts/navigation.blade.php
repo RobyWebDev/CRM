@@ -30,6 +30,9 @@
                     <x-nav-link :href="route('retainers.index')" :active="request()->routeIs('retainers.*')">
                         {{ __('Retainerek') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('campaigns.index')" :active="request()->routeIs('campaigns.*')">
+                        {{ __('Kampányok') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('personal-notes.index')" :active="request()->routeIs('personal-notes.*')">
                         {{ __('Jegyzeteim') }}
                     </x-nav-link>
@@ -120,6 +123,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('retainers.index')" :active="request()->routeIs('retainers.*')">
                 {{ __('Retainerek') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('campaigns.index')" :active="request()->routeIs('campaigns.*')">
+                {{ __('Kampányok') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('personal-notes.index')" :active="request()->routeIs('personal-notes.*')">
                 {{ __('Jegyzeteim') }}

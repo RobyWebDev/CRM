@@ -7,6 +7,7 @@ use App\Models\Note;
 use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ContactController extends Controller
@@ -36,7 +37,10 @@ class ContactController extends Controller
 
     public function create(): View
     {
-        return view('contacts.create', ['organizations' => Organization::orderBy('name')->get()]);
+        return view('contacts.create', [
+            'organizations' => Organization::orderBy('name')->get(),
+            'contacts' => Contact::orderBy('first_name')->get(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -51,6 +55,7 @@ class ContactController extends Controller
             'website' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:1000'],
             'organization_id' => ['nullable', 'exists:organizations,id'],
+            'referred_by_contact_id' => ['nullable', 'exists:contacts,id'],
             'note' => ['nullable', 'string', 'max:4096'],
             'tags' => ['nullable', 'string', 'max:500'],
         ]);
@@ -81,7 +86,7 @@ class ContactController extends Controller
 
     public function show(Contact $contact): View
     {
-        $contact->load('organization', 'notes.user', 'tasks', 'tags');
+        $contact->load('organization', 'notes.user', 'tasks', 'tags', 'referredBy', 'referrals');
 
         return view('contacts.show', ['contact' => $contact]);
     }
@@ -93,6 +98,7 @@ class ContactController extends Controller
         return view('contacts.edit', [
             'contact' => $contact,
             'organizations' => Organization::orderBy('name')->get(),
+            'contacts' => Contact::where('id', '!=', $contact->id)->orderBy('first_name')->get(),
         ]);
     }
 
@@ -108,6 +114,7 @@ class ContactController extends Controller
             'website' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:1000'],
             'organization_id' => ['nullable', 'exists:organizations,id'],
+            'referred_by_contact_id' => ['nullable', 'exists:contacts,id', Rule::notIn([$contact->id])],
             'tags' => ['nullable', 'string', 'max:500'],
         ]);
 

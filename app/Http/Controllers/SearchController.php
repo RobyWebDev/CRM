@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campaign;
 use App\Models\Contact;
 use App\Models\Deal;
 use App\Models\Lead;
@@ -51,6 +52,7 @@ class SearchController extends Controller
         $deals = Deal::query()->where('title', 'like', $like)->limit(10)->get();
         $projects = Project::query()->where('title', 'like', $like)->limit(10)->get();
         $retainers = Retainer::query()->where('title', 'like', $like)->limit(10)->get();
+        $campaigns = Campaign::query()->where('name', 'like', $like)->limit(10)->get();
 
         return view('search.index', [
             'q' => $q,
@@ -61,6 +63,7 @@ class SearchController extends Controller
                 'deals' => $deals,
                 'projects' => $projects,
                 'retainers' => $retainers,
+                'campaigns' => $campaigns,
             ],
         ]);
     }

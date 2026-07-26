@@ -64,6 +64,17 @@
                 </div>
 
                 <div>
+                    <x-input-label for="referred_by_contact_id" :value="__('Ki ajánlotta?')" />
+                    <select id="referred_by_contact_id" name="referred_by_contact_id" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">
+                        <option value="">{{ __('— nincs / nem ajánlás —') }}</option>
+                        @foreach ($contacts as $c)
+                            <option value="{{ $c->id }}" @selected(old('referred_by_contact_id') == $c->id)>{{ $c->full_name }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('referred_by_contact_id')" class="mt-2" />
+                </div>
+
+                <div>
                     <x-input-label for="tags" :value="__('Címkék (vesszővel elválasztva)')" />
                     <x-text-input id="tags" name="tags" class="block mt-1 w-full" :value="old('tags')" placeholder="{{ __('pl. vip, budapest, ajánlás') }}" />
                     <x-input-error :messages="$errors->get('tags')" class="mt-2" />

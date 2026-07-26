@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
-    'account_id', 'organization_id', 'owner_user_id', 'first_name', 'last_name', 'job_title',
-    'email', 'phone', 'birthday', 'website', 'address', 'source', 'gdpr_consent_at',
-    'gdpr_consent_note', 'custom_fields',
+    'account_id', 'organization_id', 'owner_user_id', 'referred_by_contact_id', 'first_name',
+    'last_name', 'job_title', 'email', 'phone', 'birthday', 'website', 'address', 'source',
+    'gdpr_consent_at', 'gdpr_consent_note', 'custom_fields',
 ])]
 class Contact extends Model
 {
@@ -39,6 +39,18 @@ class Contact extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_user_id');
+    }
+
+    /** Melyik meglévő kontakt ajánlotta — Salesforce referral-partner minta, lásd ugyfelszerzes-terv.md 3.1. pont. */
+    public function referredBy(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class, 'referred_by_contact_id');
+    }
+
+    /** Ez a kontakt kiket ajánlott (a referredBy fordítottja). */
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(Contact::class, 'referred_by_contact_id');
     }
 
     public function deals(): HasMany

@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * (ld. LeadController::convert) lesz belőle Contact, opcionálisan Deal is.
  */
 #[Fillable([
-    'account_id', 'owner_user_id', 'service_type_id', 'first_name', 'last_name', 'email',
-    'phone', 'company', 'project_title', 'source', 'status', 'current_status_note',
+    'account_id', 'owner_user_id', 'service_type_id', 'campaign_id', 'first_name', 'last_name',
+    'email', 'phone', 'company', 'project_title', 'source', 'status', 'current_status_note',
     'next_step', 'next_step_due_at', 'win_probability', 'comment', 'custom_fields',
     'converted_at', 'converted_contact_id', 'converted_deal_id',
 ])]
@@ -43,6 +43,11 @@ class Lead extends Model
     public function serviceType(): BelongsTo
     {
         return $this->belongsTo(ServiceType::class);
+    }
+
+    public function campaign(): BelongsTo
+    {
+        return $this->belongsTo(Campaign::class);
     }
 
     public function convertedContact(): BelongsTo

@@ -106,6 +106,18 @@
                             </div>
                         </div>
                     @endif
+                    @if ($results['campaigns']->isNotEmpty())
+                        <div class="bg-surface border border-line rounded-lg p-fluid-md">
+                            <h3 class="font-semibold text-fluid-lg text-ink mb-fluid-xs">{{ __('Kampányok') }}</h3>
+                            <div class="space-y-1">
+                                @foreach ($results['campaigns'] as $campaign)
+                                    <a href="{{ route('campaigns.show', $campaign) }}" class="block px-3 py-2 rounded-md hover:bg-surface-hover">
+                                        <span class="text-ink font-medium">{{ $campaign->name }}</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 @endif
             @endif
         </div>

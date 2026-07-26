@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campaign;
 use App\Models\Contact;
 use App\Models\Deal;
 use App\Models\Lead;
@@ -32,7 +33,10 @@ class LeadController extends Controller
 
     public function create(): View
     {
-        return view('leads.create', ['serviceTypes' => ServiceType::orderBy('name')->get()]);
+        return view('leads.create', [
+            'serviceTypes' => ServiceType::orderBy('name')->get(),
+            'campaigns' => Campaign::orderBy('name')->get(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -45,6 +49,7 @@ class LeadController extends Controller
             'company' => ['nullable', 'string', 'max:255'],
             'project_title' => ['nullable', 'string', 'max:255'],
             'source' => ['nullable', 'string', 'max:255'],
+            'campaign_id' => ['nullable', 'exists:campaigns,id'],
             'service_type_id' => ['nullable', 'exists:service_types,id'],
             'current_status_note' => ['nullable', 'string'],
             'next_step' => ['nullable', 'string'],
@@ -63,6 +68,7 @@ class LeadController extends Controller
         return view('leads.edit', [
             'lead' => $lead,
             'serviceTypes' => ServiceType::orderBy('name')->get(),
+            'campaigns' => Campaign::orderBy('name')->get(),
         ]);
     }
 
@@ -76,6 +82,7 @@ class LeadController extends Controller
             'company' => ['nullable', 'string', 'max:255'],
             'project_title' => ['nullable', 'string', 'max:255'],
             'source' => ['nullable', 'string', 'max:255'],
+            'campaign_id' => ['nullable', 'exists:campaigns,id'],
             'service_type_id' => ['nullable', 'exists:service_types,id'],
             'status' => ['required', 'in:new,contacted,qualified,unqualified'],
             'current_status_note' => ['nullable', 'string'],
@@ -139,6 +146,7 @@ class LeadController extends Controller
                     'pipeline_id' => $pipeline->id,
                     'pipeline_stage_id' => $firstStage->id,
                     'contact_id' => $contact->id,
+                    'campaign_id' => $lead->campaign_id,
                     'title' => $lead->full_name.' — '.$lead->serviceType->name,
                     'description' => DescriptionChain::appendPhaseEntry(null, 'Lead', $leadContent !== '' ? $leadContent : null),
                     'status' => 'open',

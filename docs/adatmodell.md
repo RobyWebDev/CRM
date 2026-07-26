@@ -112,6 +112,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | id | bigint PK | |
 | account_id | bigint FK | |
 | organization_id | bigint FK nullable | |
+| referred_by_contact_id | bigint FK nullable → contacts.id | melyik meglévő kontakt ajánlotta — Salesforce referral-partner minta egyszerűsítve (2026-07-26), lásd `ugyfelszerzes-terv.md` 3.1. pont |
 | owner_user_id | bigint FK nullable | melyik munkatárshoz tartozik |
 | first_name, last_name | varchar | |
 | job_title | varchar nullable | beosztás/pozíció (2026-07-25, MiniCRM-inspiráció) |
@@ -134,6 +135,20 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | `tags` | id, account_id, name, color, created_at/updated_at | | account-szinten egyedi név |
 | `taggables` | tag_id, taggable_type, taggable_id | | polimorf pivot-tábla (Laravel `morphToMany` konvenció) |
 
+### `campaigns` (strukturált kampány-nyilvántartás — 2026-07-26, ügyfélszerzés B) ág)
+
+*Salesforce Lead Source/Campaign Influence minta egyszerűsítve, lásd `ugyfelszerzes-terv.md` 3.2. pont. A `leads.source`/`contacts.source` szabad szöveges mező MELLETT (nem helyette), hogy "melyik hirdetésem térül meg valójában" kérdésre riport is épülhessen (lásd `CampaignController::index`/`show`, leadek/nyert üzletek/nyert bevétel kampányonként).*
+
+| Oszlop | Típus | Megjegyzés |
+| --- | --- | --- |
+| id | bigint PK | |
+| account_id | bigint FK | |
+| name | varchar | |
+| type | varchar nullable | pl. "Facebook-hirdetés", "hideghívás", "ajánlás" |
+| started_at | date nullable | |
+| cost | decimal nullable | |
+| created_at / updated_at | | nincs soft delete — egyszerű lookup-tábla, mint a `service_types` |
+
 ### `leads` (még nem minősített érdeklődők)
 
 *CRM best practice (2026-07-25, Rob kérése) — a klasszikus Salesforce Lead objektum egyszerűsített megfelelője: egy lead még NEM Contact, amíg ki nem derül, hogy valódi, munkára érdemes kapcsolat-e. A "konvertálás" (`LeadController::convert`) Contactot hoz létre belőle, és ha van megadva érdeklődési terület (`service_type_id`), az adott szolgáltatás alapértelmezett pipeline-jának első lépésén egy Dealt is.*
@@ -149,6 +164,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | company | varchar nullable | |
 | project_title | varchar nullable | konkrét projekt/feladat megnevezése, a `service_type_id` kategóriájánál pontosabb (2026-07-26, Rob kérése) |
 | source | varchar nullable | pl. "weboldal", "ajánlás", "hideg hívás" |
+| campaign_id | bigint FK nullable → campaigns.id | strukturált kampány-attribúció a szabad szöveges `source` mellett (2026-07-26) |
 | status | varchar default 'new' | `new` / `contacted` / `qualified` / `unqualified` / `converted` |
 | current_status_note | text nullable | szabad szöveg: hol tart most a projekt (2026-07-26) |
 | next_step | text nullable | mindig kitölthető, de NEM kötelező mező — mi a várható következő lépés (2026-07-26, Rob explicit kérése) |
@@ -171,6 +187,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | pipeline_stage_id | bigint FK | jelenlegi lépés |
 | contact_id | bigint FK nullable | |
 | organization_id | bigint FK nullable | |
+| campaign_id | bigint FK nullable → campaigns.id | strukturált kampány-attribúció (2026-07-26) — a Lead→Deal konverziónál átöröklődik, ha a leadnek volt kampánya |
 | owner_user_id | bigint FK nullable | |
 | title | varchar | |
 | description | text nullable | mit ajánlunk/tárgyalunk — a Lead `project_title`-jánál részletesebb; ha az üzlet nyer és Projectet/Retainert hoz létre, ez öröklődik tovább azok `description` mezőjébe (2026-07-26) |

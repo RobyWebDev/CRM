@@ -51,11 +51,24 @@
                 @if ($contact->source)
                     <p><span class="text-ink-muted text-fluid-xs">{{ __('Forrás') }}:</span> <span class="text-ink">{{ $contact->source }}</span></p>
                 @endif
+                @if ($contact->referredBy)
+                    <p><span class="text-ink-muted text-fluid-xs">{{ __('Ki ajánlotta') }}:</span> <a href="{{ route('contacts.show', $contact->referredBy) }}" class="text-accent underline">{{ $contact->referredBy->full_name }}</a></p>
+                @endif
                 @if ($contact->tags->isNotEmpty())
                     <div class="flex flex-wrap gap-1 pt-1">
                         @foreach ($contact->tags as $tag)
                             <a href="{{ route('contacts.index', ['tag' => $tag->name]) }}" class="text-fluid-xs px-2 py-0.5 rounded bg-sunken text-ink-soft hover:bg-surface-hover">#{{ $tag->name }}</a>
                         @endforeach
+                    </div>
+                @endif
+                @if ($contact->referrals->isNotEmpty())
+                    <div class="pt-1">
+                        <span class="text-ink-muted text-fluid-xs">{{ __('Ő ajánlotta') }}:</span>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            @foreach ($contact->referrals as $referral)
+                                <a href="{{ route('contacts.show', $referral) }}" class="text-fluid-xs px-2 py-0.5 rounded bg-sunken text-ink-soft hover:bg-surface-hover">{{ $referral->full_name }}</a>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
             </div>

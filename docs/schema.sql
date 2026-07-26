@@ -137,6 +137,7 @@ CREATE TABLE contacts (
     website VARCHAR(255) NULL,
     address TEXT NULL,
     source VARCHAR(255) NULL,
+    referred_by_contact_id BIGINT UNSIGNED NULL, -- ki ajánlotta (self-referencing FK) — Salesforce referral-partner minta, 2026-07-26
     gdpr_consent_at TIMESTAMP NULL,
     gdpr_consent_note TEXT NULL,
     custom_fields JSON NULL,
@@ -145,7 +146,26 @@ CREATE TABLE contacts (
     deleted_at TIMESTAMP NULL,
     CONSTRAINT fk_contacts_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
     CONSTRAINT fk_contacts_organization FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL,
-    CONSTRAINT fk_contacts_owner FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL
+    CONSTRAINT fk_contacts_owner FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL,
+    CONSTRAINT fk_contacts_referred_by FOREIGN KEY (referred_by_contact_id) REFERENCES contacts(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- campaigns — strukturált kampány-nyilvántartás a leads/contacts szabad
+-- szöveges `source` mezője MELLETT (2026-07-26, ügyfélszerzés B) ág,
+-- Salesforce Lead Source/Campaign Influence minta egyszerűsítve,
+-- lásd docs/ugyfelszerzes-terv.md 3.2. pont)
+-- ============================================================
+CREATE TABLE campaigns (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    account_id BIGINT UNSIGNED NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(255) NULL,
+    started_at DATE NULL,
+    cost DECIMAL(10,2) NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    CONSTRAINT fk_campaigns_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -181,6 +201,7 @@ CREATE TABLE deals (
     pipeline_stage_id BIGINT UNSIGNED NOT NULL,
     contact_id BIGINT UNSIGNED NULL,
     organization_id BIGINT UNSIGNED NULL,
+    campaign_id BIGINT UNSIGNED NULL, -- strukturált kampány-attribúció (2026-07-26)
     owner_user_id BIGINT UNSIGNED NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT NULL, -- mit ajánlunk/tárgyalunk — a Lead project_title-jánál részletesebb, a Project description-jénél még nem végleges (2026-07-26)
@@ -201,6 +222,7 @@ CREATE TABLE deals (
     CONSTRAINT fk_deals_stage FOREIGN KEY (pipeline_stage_id) REFERENCES pipeline_stages(id) ON DELETE RESTRICT,
     CONSTRAINT fk_deals_contact FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE SET NULL,
     CONSTRAINT fk_deals_organization FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL,
+    CONSTRAINT fk_deals_campaign FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE SET NULL,
     CONSTRAINT fk_deals_owner FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -220,6 +242,7 @@ CREATE TABLE leads (
     company VARCHAR(255) NULL,
     project_title VARCHAR(255) NULL, -- konkrét projekt/feladat megnevezése (2026-07-26, Rob kérése)
     source VARCHAR(255) NULL,
+    campaign_id BIGINT UNSIGNED NULL, -- strukturált kampány-attribúció a source mellett (2026-07-26)
     status VARCHAR(20) NOT NULL DEFAULT 'new', -- new / contacted / qualified / unqualified / converted
     current_status_note TEXT NULL, -- szabad szöveg: hol tart most a projekt (2026-07-26)
     next_step TEXT NULL, -- mindig kitölthető, de nem kötelező "következő lépés" (2026-07-26)
@@ -236,6 +259,7 @@ CREATE TABLE leads (
     CONSTRAINT fk_leads_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
     CONSTRAINT fk_leads_owner FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL,
     CONSTRAINT fk_leads_service_type FOREIGN KEY (service_type_id) REFERENCES service_types(id) ON DELETE SET NULL,
+    CONSTRAINT fk_leads_campaign FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE SET NULL,
     CONSTRAINT fk_leads_converted_contact FOREIGN KEY (converted_contact_id) REFERENCES contacts(id) ON DELETE SET NULL,
     CONSTRAINT fk_leads_converted_deal FOREIGN KEY (converted_deal_id) REFERENCES deals(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

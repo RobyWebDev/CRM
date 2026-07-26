@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\LeadController;
@@ -38,6 +39,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/search', [SearchController::class, 'index'])->name('search');
 
     Route::resource('contacts', ContactController::class);
+
+    Route::resource('campaigns', CampaignController::class);
 
     Route::resource('leads', LeadController::class)->except(['show']);
     Route::post('/leads/{lead}/convert', [LeadController::class, 'convert'])->name('leads.convert');

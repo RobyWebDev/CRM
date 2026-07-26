@@ -64,6 +64,17 @@
                     </div>
                 </div>
 
+                <div>
+                    <x-input-label for="campaign_id" :value="__('Kampány (opcionális)')" />
+                    <select id="campaign_id" name="campaign_id" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">
+                        <option value="">{{ __('— nincs —') }}</option>
+                        @foreach ($campaigns as $campaign)
+                            <option value="{{ $campaign->id }}" @selected(old('campaign_id', $lead->campaign_id) == $campaign->id)>{{ $campaign->name }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('campaign_id')" class="mt-2" />
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-fluid-sm">
                     <div>
                         <x-input-label for="status" :value="__('Állapot')" />

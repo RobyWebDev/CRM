@@ -46,11 +46,11 @@ A Salesforce megkülönbözteti:
 
 ## 4. Összegzés — mi kerüljön a "nem túl távoli" backlogba
 
-1. **Ajánló-/partnerprogram a CRM SAJÁT növekedéséhez** (MiniCRM-minta) — csak akkor aktuális, ha a CRM SaaS-termékké válik, de MOST rögzítve, nem a távoli scope-ban.
-2. **"Ki ajánlotta?" mező a kontaktokon** (`referred_by_contact_id`, Salesforce referral-partner minta egyszerűsítve) — kis munka, közvetlenül segíti Rob saját ügyfélszerzését.
-3. **Egyszerű kampány-nyilvántartás + kampányonkénti riport** (`campaigns` tábla, Salesforce Lead Source/Campaign Influence minta egyszerűsítve) — összeköthető a már tervezett `riportok-terv.md`-vel.
+1. **Ajánló-/partnerprogram a CRM SAJÁT növekedéséhez** (MiniCRM-minta) — csak akkor aktuális, ha a CRM SaaS-termékké válik, de MOST rögzítve, nem a távoli scope-ban. **Változatlanul később esedékes** (5-6. fázis).
+2. **"Ki ajánlotta?" mező a kontaktokon** (`referred_by_contact_id`, Salesforce referral-partner minta egyszerűsítve) ✅ **megvalósítva (2026-07-26)** — kontakt felvételi/szerkesztő űrlapon választható meglévő kontakt, a kontakt-részletek oldal mutatja mindkét irányt ("ki ajánlotta" + "ő kiket ajánlott").
+3. **Egyszerű kampány-nyilvántartás + kampányonkénti riport** (`campaigns` tábla, Salesforce Lead Source/Campaign Influence minta egyszerűsítve) ✅ **megvalósítva (2026-07-26)** — önálló "Kampányok" menüpont (CRUD), a lead/deal felvételi és szerkesztő űrlapokon választható kampány a szabad szöveges `source` mező mellett, a kampány-részletek oldal mutatja a leadek/nyitott és nyert üzletek számát és a nyert bevételt.
 
-Egyik sem MVP-blokkoló, de Rob explicit kérésére **nem a távoli (GoHighLevel-jellegű) scope-ba, hanem középtávú prioritásba** kerültek.
+Mindkettő tesztelve (`tests/Feature/CampaignTest.php` — account-elkülönítés, önhivatkozás elleni védelem, form-renderelés — 6/6 zöld; teljes csomag 31/31 zöld).
 
 ## 5. Kapcsolódó dokumentumok
 
