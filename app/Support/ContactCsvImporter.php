@@ -27,10 +27,11 @@ class ContactCsvImporter
         'birthday' => ['szuletesnap', 'birthday', 'szuletesidatum', 'birthdate'],
         'website' => ['weboldal', 'website', 'honlap', 'web'],
         'address' => ['cim', 'address', 'lakcim'],
-        'organization_name' => ['ceg', 'cegnev', 'szervezet', 'company', 'organization'],
+        'organization_name' => ['ceg', 'cegnev', 'szervezet', 'company', 'organization', 'szervezetneve'],
         'tags' => ['cimkek', 'tags', 'cimke', 'tag'],
     ];
 
+    /** A mezőtérképezés lenyíló listájában megjelenő, magyarázó feliratok. */
     public const TARGET_FIELD_LABELS = [
         'first_name' => 'Keresztnév',
         'last_name' => 'Vezetéknév',
@@ -42,6 +43,24 @@ class ContactCsvImporter
         'address' => 'Cím',
         'organization_name' => 'Szervezet neve',
         'tags' => 'Címkék (vesszővel elválasztva a cellában)',
+    ];
+
+    /**
+     * Rövid, "természetes" oszlopfejlécek a letölthető minta-CSV-hez — szándékosan
+     * rövidebbek, mint a fenti TARGET_FIELD_LABELS (aminek a zárójeles magyarázata
+     * fejlécként használva NEM egyezne a FIELD_ALIASES-ban felismert alakokkal).
+     */
+    public const TEMPLATE_HEADERS = [
+        'first_name' => 'Keresztnév',
+        'last_name' => 'Vezetéknév',
+        'email' => 'E-mail',
+        'phone' => 'Telefon',
+        'job_title' => 'Beosztás',
+        'birthday' => 'Születésnap',
+        'website' => 'Weboldal',
+        'address' => 'Cím',
+        'organization_name' => 'Szervezet neve',
+        'tags' => 'Címkék',
     ];
 
     /**
@@ -85,6 +104,36 @@ class ContactCsvImporter
         }
 
         return ['headers' => $headers, 'rows' => $rows];
+    }
+
+    /**
+     * Letölthető minta-CSV egy kitöltött példasorral (Rob kérése, 2026-07-26 —
+     * "adj egy formátum mintát"), hogy egyértelmű legyen, mit VÁRUNK el, még ha a
+     * tényleges import nem is követeli meg pontosan ezeket a fejléceket (lásd
+     * `guessMapping()` — bármilyen oszlopnevet el lehet fogadni, a mezőtérképezés
+     * mindig kézzel is felülbírálható). BOM-mal kezdődik, hogy Excel Windows-on
+     * helyesen, ékezetesen nyissa meg dupla kattintásra.
+     *
+     * @param  array<int, string>  $customFieldLabels  az account aktív, kontakt-szintű egyedi mezőinek felirata
+     */
+    public static function templateCsv(array $customFieldLabels = []): string
+    {
+        $headers = array_values(self::TEMPLATE_HEADERS);
+        $example = ['Anna', 'Kovács', 'anna.kovacs@pelda.hu', '06301112233', 'Ügyvezető', '1990-05-12', 'https://pelda.hu', 'Budapest, Fő utca 1.', 'Bau-Haus Kft.', 'vip,ajánlás'];
+
+        foreach ($customFieldLabels as $label) {
+            $headers[] = $label;
+            $example[] = '';
+        }
+
+        $handle = fopen('php://temp', 'w+');
+        fputcsv($handle, $headers);
+        fputcsv($handle, $example);
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+
+        return "\xEF\xBB\xBF".$csv;
     }
 
     /**

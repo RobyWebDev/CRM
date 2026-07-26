@@ -13,13 +13,30 @@
                 </div>
             @endif
 
+            <div class="bg-surface border border-line rounded-lg p-fluid-md space-y-2 mb-fluid-sm">
+                <h3 class="font-semibold text-fluid-base text-ink">{{ __('Mit fogadunk el?') }}</h3>
+                <p class="text-ink-soft text-fluid-xs">
+                    {{ __('Gyakorlatilag BÁRMILYEN CSV feltölthető — nem kell pontos, előírt oszlopnevet használnod. A feltöltés utáni képernyőn Te választod ki (legördülőkből), melyik saját oszlopod melyik mezőnek felel meg; amit nem képezel le, egyszerűen kimarad. Ha a fejléceid amúgy is hasonlítanak a lenti nevekre (pl. "Keresztnév", "E-mail"), ezt automatikusan ki is találjuk neked, de ez csak egy kényelmi tipp, nem elvárás.') }}
+                </p>
+                <ul class="list-disc list-inside text-ink-soft text-fluid-xs space-y-1">
+                    <li>{{ __('Az első sor legyen a fejléc (oszlopnevek) — ez kötelező, a 2. sortól kezdve olvassuk az adatokat.') }}</li>
+                    <li>{{ __('Elválasztó lehet vessző vagy pontosvessző — automatikusan felismerjük.') }}</li>
+                    <li>{{ __('A kódolás (UTF-8 vagy a magyar Excel-exportoknál szokásos Windows-1250) szintén automatikusan felismerve/konvertálva — nem kell vele foglalkoznod.') }}</li>
+                    <li>{{ __('Ha egy cellában vesszővel felsorolt több értéket adsz meg (pl. több címke egy kontaktnál), és a fájlod vesszővel tagolt, azt a cellát idézőjelbe kell tenni — Excel/Sheets ezt automatikusan megteszi, ha onnan mented CSV-be.') }}</li>
+                    <li>{{ __('A születésnapnál az ÉÉÉÉ-HH-NN formátum (pl. 1990-05-12) a legbiztosabb — más formátumnál előfordulhat, hogy az adott sor hibásként kimarad.') }}</li>
+                    <li>{{ __('Duplikátum-kezelés: ha egy sor e-mail címe már szerepel a rendszerben, az a sor kimarad (nem írja felül a meglévő kontaktot).') }}</li>
+                </ul>
+                <p class="text-ink-soft text-fluid-xs">
+                    {{ __('A választható mezők') }}: {{ implode(', ', array_values($templateHeaders)) }}@if ($customFieldDefinitions->isNotEmpty()), {{ $customFieldDefinitions->pluck('label')->implode(', ') }} ({{ __('egyedi mezők') }})@endif.
+                </p>
+                <a href="{{ route('contacts.import.template') }}" class="text-accent underline text-fluid-xs inline-block">
+                    {{ __('Minta CSV letöltése (kitöltött példasorral)') }}
+                </a>
+            </div>
+
             <form method="POST" action="{{ route('contacts.import.preview') }}" enctype="multipart/form-data"
                   class="bg-surface border border-line rounded-lg p-fluid-md space-y-fluid-sm">
                 @csrf
-
-                <p class="text-ink-muted text-fluid-xs">
-                    {{ __('Meglévő Excel/Sheet listád első sora legyen a fejléc (oszlopnevek). A feltöltés után kiválaszthatod, melyik oszlop melyik mezőnek felel meg, és megnézheted az első pár sor előnézetét, mielőtt ténylegesen elindítanád az importot.') }}
-                </p>
 
                 <div>
                     <x-input-label for="file" :value="__('CSV-fájl')" />

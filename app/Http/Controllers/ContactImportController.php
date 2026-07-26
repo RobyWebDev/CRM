@@ -27,7 +27,25 @@ class ContactImportController extends Controller
 
     public function create(): View
     {
-        return view('contacts.import.create');
+        return view('contacts.import.create', [
+            'templateHeaders' => ContactCsvImporter::TEMPLATE_HEADERS,
+            'customFieldDefinitions' => CustomFieldFormHelper::definitionsFor('contact', null),
+        ]);
+    }
+
+    /**
+     * Letölthető minta-CSV (Rob kérése, 2026-07-26) — nem kötelező ezt használni
+     * (bármilyen oszlopelnevezés elfogadott, lásd `preview()`), de aki nem tudja,
+     * mit várunk, innen egyértelmű kiindulópontot kap.
+     */
+    public function template(): \Illuminate\Http\Response
+    {
+        $customLabels = CustomFieldFormHelper::definitionsFor('contact', null)->pluck('label')->all();
+
+        return response(ContactCsvImporter::templateCsv($customLabels), 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="kontakt-import-minta.csv"',
+        ]);
     }
 
     public function preview(Request $request): View

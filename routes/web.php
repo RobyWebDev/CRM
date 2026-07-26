@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
     // A /contacts/import útvonalaknak a resource ELŐTT kell szerepelniük, különben a
     // Route::resource "contacts/{contact}" mintája fogná el "import"-ot mint kontakt-ID-t.
     Route::get('/contacts/import', [ContactImportController::class, 'create'])->name('contacts.import.create');
+    Route::get('/contacts/import/template', [ContactImportController::class, 'template'])->name('contacts.import.template');
     Route::post('/contacts/import/preview', [ContactImportController::class, 'preview'])->name('contacts.import.preview');
     Route::post('/contacts/import', [ContactImportController::class, 'import'])->name('contacts.import.store');
 

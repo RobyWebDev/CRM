@@ -14,6 +14,8 @@ A funkció élesben megvan (`/contacts/import`, három lépés: feltöltés → 
 
 Egyedi mezőkre (`custom_field_definitions`, `entity_type=contact`) is lehet mappelni egy CSV-oszlopot. Tesztelve: `tests/Feature/ContactCsvImportTest.php`.
 
+**Kiegészítés (2026-07-26, Rob kérdése: "kell-e pontos mezőelnevezés, vagy adj formátum mintát"):** a feltöltő oldalon egyértelmű magyarázat + **letölthető minta-CSV** (`/contacts/import/template`, kitöltött példasorral, az account aktív egyedi mezőivel kiegészítve, UTF-8 BOM-mal, hogy Excel Windows-on helyesen nyissa meg). A lényeg: a mezőtérképezés miatt **bármilyen oszlopnév elfogadott** — a minta csak kényelmi kiindulópont, nem előírás.
+
 ## 1. Cél és elsődleges entitás
 
 MVP-ben a legfontosabb (és valószínűleg egyetlen szükséges) import-célpont a **kontaktok** (`contacts`), mivel Robnak feltehetően van egy meglévő Excel/Sheet listája az ügyfelekről/érdeklődőkről. Szervezetek (`organizations`) importja hasonló mintát követhet, de csak akkor kell megépíteni, ha ténylegesen van rá adat.

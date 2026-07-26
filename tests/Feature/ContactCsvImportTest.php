@@ -177,6 +177,53 @@ class ContactCsvImportTest extends TestCase
         $this->assertNotNull(Contact::where('account_id', $user->account_id)->where('email', 'kozos@pelda.hu')->first());
     }
 
+    public function test_the_upload_page_explains_the_expected_format_and_offers_a_template_download(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get('/contacts/import')
+            ->assertOk()
+            ->assertSee('BÁRMILYEN CSV feltölthető', false)
+            ->assertSee(route('contacts.import.template'), false);
+    }
+
+    public function test_the_downloaded_template_round_trips_through_the_mapping_guesser(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $templateContent = $this->get('/contacts/import/template')->getContent();
+        // Az UTF-8 BOM-ot eltávolítjuk, mielőtt visszaküldenénk feltöltésként — a BOM a
+        // fájl elején él, nem magában a fejléc-szövegben, amit a guessMapping() vizsgál.
+        $csvWithoutBom = ltrim($templateContent, "\xEF\xBB\xBF");
+
+        $preview = $this->post('/contacts/import/preview', ['file' => $this->csvFile($csvWithoutBom)]);
+        $preview->assertOk();
+
+        // Minden egyes TEMPLATE_HEADERS oszlopnak a saját célmezőjére kellett kitalálódnia.
+        foreach (\App\Support\ContactCsvImporter::TEMPLATE_HEADERS as $field => $header) {
+            $preview->assertSee('value="'.$field.'" selected', false);
+        }
+    }
+
+    public function test_the_template_includes_active_custom_field_labels_as_extra_columns(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        CustomFieldDefinition::create([
+            'account_id' => $user->account_id,
+            'entity_type' => 'contact',
+            'field_key' => 'ajanlo',
+            'label' => 'Ajánló neve',
+            'field_type' => 'text',
+        ]);
+
+        $content = $this->get('/contacts/import/template')->getContent();
+
+        $this->assertStringContainsString('Ajánló neve', $content);
+    }
+
     private function extractFilename($response): string
     {
         preg_match('/name="filename" value="([a-f0-9\-]+\.csv)"/', $response->getContent(), $matches);
