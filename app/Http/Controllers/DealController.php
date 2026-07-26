@@ -79,6 +79,7 @@ class DealController extends Controller
             'pipeline_stage_id' => ['required', 'exists:pipeline_stages,id'],
             'contact_id' => ['nullable', 'exists:contacts,id'],
             'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
             'value' => ['nullable', 'numeric', 'min:0'],
         ]);
 
@@ -105,6 +106,7 @@ class DealController extends Controller
     {
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
             'value' => ['nullable', 'numeric', 'min:0'],
             'contact_id' => ['nullable', 'exists:contacts,id'],
             'pipeline_stage_id' => ['required', 'exists:pipeline_stages,id'],
@@ -193,6 +195,7 @@ class DealController extends Controller
             'service_type_id' => $deal->pipeline->service_type_id,
             'owner_user_id' => $deal->owner_user_id,
             'title' => $deal->title,
+            'description' => $deal->description,
             'status' => 'active',
         ];
 

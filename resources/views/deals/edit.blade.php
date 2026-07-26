@@ -25,6 +25,12 @@
                 </div>
 
                 <div>
+                    <x-input-label for="description" :value="__('Leírás — mit ajánlunk/tárgyalunk')" />
+                    <textarea id="description" name="description" rows="3" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">{{ old('description', $deal->description) }}</textarea>
+                    <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                </div>
+
+                <div>
                     <x-input-label for="pipeline_stage_id" :value="__('Lépés')" />
                     <select id="pipeline_stage_id" name="pipeline_stage_id" required
                             class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">

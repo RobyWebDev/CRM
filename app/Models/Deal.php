@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
     'account_id', 'pipeline_id', 'pipeline_stage_id', 'contact_id', 'organization_id',
-    'owner_user_id', 'title', 'value', 'currency', 'status', 'expected_close_date',
+    'owner_user_id', 'title', 'description', 'value', 'currency', 'status', 'expected_close_date',
     'closed_at', 'stage_entered_at', 'lost_reason', 'invoice_status', 'custom_fields',
 ])]
 class Deal extends Model

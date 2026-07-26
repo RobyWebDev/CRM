@@ -183,6 +183,7 @@ CREATE TABLE deals (
     organization_id BIGINT UNSIGNED NULL,
     owner_user_id BIGINT UNSIGNED NULL,
     title VARCHAR(255) NOT NULL,
+    description TEXT NULL, -- mit ajánlunk/tárgyalunk — a Lead project_title-jánál részletesebb, a Project description-jénél még nem végleges (2026-07-26)
     value DECIMAL(12,2) NULL,
     currency VARCHAR(10) NOT NULL DEFAULT 'HUF',
     status VARCHAR(20) NOT NULL DEFAULT 'open', -- open / won / lost

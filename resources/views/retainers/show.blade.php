@@ -42,6 +42,9 @@
                 @if ($retainer->started_at)
                     <p><span class="text-ink-muted text-fluid-xs">{{ __('Kezdés') }}:</span> <span class="text-ink">{{ $retainer->started_at->format('Y.m.d.') }}</span></p>
                 @endif
+                @if ($retainer->description)
+                    <p class="text-ink-soft whitespace-pre-line">{{ $retainer->description }}</p>
+                @endif
             </div>
 
             @if ($retainer->invoices->isNotEmpty())

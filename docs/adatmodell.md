@@ -173,6 +173,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | organization_id | bigint FK nullable | |
 | owner_user_id | bigint FK nullable | |
 | title | varchar | |
+| description | text nullable | mit ajánlunk/tárgyalunk — a Lead `project_title`-jánál részletesebb; ha az üzlet nyer és Projectet/Retainert hoz létre, ez öröklődik tovább azok `description` mezőjébe (2026-07-26) |
 | value | decimal(10,2) nullable | várható/tárgyalt összeg |
 | currency | varchar default 'HUF' | |
 | status | varchar | `open` / `won` / `lost` |

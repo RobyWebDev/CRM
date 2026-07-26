@@ -18,6 +18,12 @@
                 </div>
 
                 <div>
+                    <x-input-label for="description" :value="__('Leírás — mit ajánlunk/tárgyalunk')" />
+                    <textarea id="description" name="description" rows="3" class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">{{ old('description') }}</textarea>
+                    <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                </div>
+
+                <div>
                     <x-input-label for="pipeline_id" :value="__('Pipeline')" />
                     <select id="pipeline_id" name="pipeline_id" x-model="pipelineId" required
                             class="block mt-1 w-full rounded-md border-line-strong bg-sunken text-ink text-fluid-base focus:border-line-strong focus:ring-line-strong">
