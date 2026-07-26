@@ -11,6 +11,8 @@
 
 Mobilon: hamburger-menü, azonos sorrendben, lenyíló listaként.
 
+**Frissítés (2026-07-26, Rob jelzése: "a felső menüpontok nem férnek el egy ablaknyi sorban"):** a tényleges felület időközben 11 fő menüpontig bővült (Irányítópult, Leadek, Pipeline, Kontaktok, Szervezetek, Projektek, Retainerek, Kampányok, Jegyzeteim, Egyedi mezők, Napló), ami már nem fér el egy sorban. Megoldás: a napi használatú 6 pont (Irányítópult, Leadek, Pipeline, Kontaktok, Projektek, Retainerek) maradt önálló linkként, a ritkábban látogatott 5 (Szervezetek, Kampányok, Jegyzeteim, Egyedi mezők, Napló) egy "Egyéb" lenyíló menübe került (`layouts/navigation.blade.php`). Mobilon a lenyíló lista "Egyéb" felirattal vizuálisan is elkülönül a napi pontoktól.
+
 ## 2. Dashboard (kezdőoldal bejelentkezés után)
 
 - Felül: gyors számok — "Nyitott dealek", "Aktív projektek", "Ma esedékes feladatok", "Lejárt feladatok" (kártyák, kattinthatók, a megfelelő szűrt listára visznek).

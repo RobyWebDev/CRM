@@ -1,3 +1,9 @@
+@php
+    // A felső sorban csak a leggyakrabban használt pontok férnek el egy sorban —
+    // a ritkábban látogatott admin-/kiegészítő oldalak (Rob jelzése, 2026-07-26:
+    // "nem fér el egy ablaknyi sorban") egy "Egyéb" lenyíló menübe kerültek.
+    $secondaryNavActive = request()->routeIs(['organizations.*', 'campaigns.*', 'personal-notes.*', 'custom-field-definitions.*', 'activity-log.*']);
+@endphp
 <nav x-data="{ open: false }" class="bg-surface border-b border-line">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,27 +30,32 @@
                     <x-nav-link :href="route('contacts.index')" :active="request()->routeIs('contacts.*')">
                         {{ __('Kontaktok') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('organizations.index')" :active="request()->routeIs('organizations.*')">
-                        {{ __('Szervezetek') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                         {{ __('Projektek') }}
                     </x-nav-link>
                     <x-nav-link :href="route('retainers.index')" :active="request()->routeIs('retainers.*')">
                         {{ __('Retainerek') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('campaigns.index')" :active="request()->routeIs('campaigns.*')">
-                        {{ __('Kampányok') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('personal-notes.index')" :active="request()->routeIs('personal-notes.*')">
-                        {{ __('Jegyzeteim') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('custom-field-definitions.index')" :active="request()->routeIs('custom-field-definitions.*')">
-                        {{ __('Egyedi mezők') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('activity-log.index')" :active="request()->routeIs('activity-log.*')">
-                        {{ __('Napló') }}
-                    </x-nav-link>
+
+                    <x-dropdown align="left" width="56">
+                        <x-slot name="trigger">
+                            <button type="button"
+                                    class="{{ $secondaryNavActive ? 'border-accent text-ink' : 'border-transparent text-ink-muted hover:text-ink-soft hover:border-line' }} inline-flex items-center gap-1 px-1 pt-1 border-b-2 text-fluid-xs font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
+                                {{ __('Egyéb') }}
+                                <svg class="h-3 w-3 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('organizations.index')">{{ __('Szervezetek') }}</x-dropdown-link>
+                            <x-dropdown-link :href="route('campaigns.index')">{{ __('Kampányok') }}</x-dropdown-link>
+                            <x-dropdown-link :href="route('personal-notes.index')">{{ __('Jegyzeteim') }}</x-dropdown-link>
+                            <x-dropdown-link :href="route('custom-field-definitions.index')">{{ __('Egyedi mezők') }}</x-dropdown-link>
+                            <x-dropdown-link :href="route('activity-log.index')">{{ __('Napló') }}</x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
                 </div>
             </div>
 
@@ -127,14 +138,16 @@
             <x-responsive-nav-link :href="route('contacts.index')" :active="request()->routeIs('contacts.*')">
                 {{ __('Kontaktok') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('organizations.index')" :active="request()->routeIs('organizations.*')">
-                {{ __('Szervezetek') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                 {{ __('Projektek') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('retainers.index')" :active="request()->routeIs('retainers.*')">
                 {{ __('Retainerek') }}
+            </x-responsive-nav-link>
+
+            <p class="px-4 pt-3 pb-1 text-fluid-xs font-medium text-ink-muted uppercase tracking-wide">{{ __('Egyéb') }}</p>
+            <x-responsive-nav-link :href="route('organizations.index')" :active="request()->routeIs('organizations.*')">
+                {{ __('Szervezetek') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('campaigns.index')" :active="request()->routeIs('campaigns.*')">
                 {{ __('Kampányok') }}
