@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Models\Deal;
 use App\Models\Lead;
 use App\Models\ServiceType;
+use App\Support\DescriptionChain;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -49,7 +50,7 @@ class LeadController extends Controller
             'next_step' => ['nullable', 'string'],
             'next_step_due_at' => ['nullable', 'date'],
             'win_probability' => ['nullable', 'integer', 'min:0', 'max:100'],
-            'notes' => ['nullable', 'string'],
+            'comment' => ['nullable', 'string'],
         ]);
 
         $lead = Lead::create($data + ['status' => 'new']);
@@ -81,7 +82,7 @@ class LeadController extends Controller
             'next_step' => ['nullable', 'string'],
             'next_step_due_at' => ['nullable', 'date'],
             'win_probability' => ['nullable', 'integer', 'min:0', 'max:100'],
-            'notes' => ['nullable', 'string'],
+            'comment' => ['nullable', 'string'],
         ]);
 
         $lead->update($data);
@@ -125,11 +126,13 @@ class LeadController extends Controller
                 // A leadnél rögzített projekt-részletek (project_title, jelenlegi állás,
                 // megjegyzés) átöröklődnek a deal leírásába, hogy a scope ne vesszen el
                 // a konvertáláskor — lásd crm_projekt.md, "leírás végigfut az egész
-                // életúton" elv (2026-07-26, Rob kérése).
-                $description = implode("\n\n", array_filter([
+                // életúton" elv (2026-07-26, Rob kérése). A fázis + pontos időpont a
+                // szövegben is jelölve van (DescriptionChain), hogy utólag látszódjon,
+                // melyik rész honnan, mikor került be.
+                $leadContent = implode("\n\n", array_filter([
                     $lead->project_title,
                     $lead->current_status_note,
-                    $lead->notes,
+                    $lead->comment,
                 ]));
 
                 $deal = Deal::create([
@@ -137,7 +140,7 @@ class LeadController extends Controller
                     'pipeline_stage_id' => $firstStage->id,
                     'contact_id' => $contact->id,
                     'title' => $lead->full_name.' — '.$lead->serviceType->name,
-                    'description' => $description !== '' ? $description : null,
+                    'description' => DescriptionChain::appendPhaseEntry(null, 'Lead', $leadContent !== '' ? $leadContent : null),
                     'status' => 'open',
                 ]);
             }

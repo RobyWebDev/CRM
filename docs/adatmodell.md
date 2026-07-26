@@ -154,7 +154,7 @@ Egy service_type-hoz tartozhat egy vagy több folyamat (pl. "Új ügyfél pipeli
 | next_step | text nullable | mindig kitölthető, de NEM kötelező mező — mi a várható következő lépés (2026-07-26, Rob explicit kérése) |
 | next_step_due_at | date nullable | a következő lépés várható időpontja (2026-07-26) |
 | win_probability | tinyint nullable | 0-100, "mennyire érzed nyerhetőnek %" (korábbi neve: `score`, átnevezve 2026-07-26, hogy pontosan tükrözze a célját) |
-| notes | text nullable | szabad megjegyzés, egyéb infók (2026-07-26: külön kiemelve, hogy ez a "mindent elmondhatsz" mező) |
+| comment | text nullable | szabad megjegyzés, egyéb infók (korábbi neve: `notes`, átnevezve 2026-07-26 — VALÓDI HIBA javítva: a `notes` oszlopnév ütközött a `Lead::notes()` polimorf relációval, ami nem teljesen hidratált modell-példányon a relációt adta vissza a szöveg helyett) |
 | custom_fields | json nullable | |
 | converted_at | timestamp nullable | |
 | converted_contact_id | bigint FK nullable → contacts.id | |

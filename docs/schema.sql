@@ -225,7 +225,7 @@ CREATE TABLE leads (
     next_step TEXT NULL, -- mindig kitölthető, de nem kötelező "következő lépés" (2026-07-26)
     next_step_due_at DATE NULL, -- a következő lépés várható időpontja (2026-07-26)
     win_probability TINYINT UNSIGNED NULL, -- 0-100, "mennyire nyerhető" (korábbi neve: score, átnevezve 2026-07-26)
-    notes TEXT NULL,
+    comment TEXT NULL, -- szabad megjegyzés (korábbi neve: notes, átnevezve 2026-07-26, mert ütközött a Lead::notes() polimorf relációval)
     custom_fields JSON NULL,
     converted_at TIMESTAMP NULL,
     converted_contact_id BIGINT UNSIGNED NULL,

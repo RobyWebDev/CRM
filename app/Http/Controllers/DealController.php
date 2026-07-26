@@ -7,6 +7,7 @@ use App\Models\Deal;
 use App\Models\Pipeline;
 use App\Models\Project;
 use App\Models\Retainer;
+use App\Support\DescriptionChain;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -195,16 +196,19 @@ class DealController extends Controller
             'service_type_id' => $deal->pipeline->service_type_id,
             'owner_user_id' => $deal->owner_user_id,
             'title' => $deal->title,
-            'description' => $deal->description,
             'status' => 'active',
         ];
 
+        // A leírás-lánc fázis + pontos időpont jelöléssel folytatódik (DescriptionChain) —
+        // lásd crm_projekt.md, "leírás végigfut az egész életúton" elv (2026-07-26).
         match ($deal->pipeline->won_creates) {
             'retainer' => Retainer::create($attributes + [
+                'description' => DescriptionChain::appendPhaseEntry($deal->description, 'Retainerré vált'),
                 'monthly_fee' => $deal->value,
                 'started_at' => now()->toDateString(),
             ]),
             'project' => Project::create($attributes + [
+                'description' => DescriptionChain::appendPhaseEntry($deal->description, 'Projektté vált'),
                 'budget' => $deal->value,
                 'start_date' => now()->toDateString(),
             ]),
