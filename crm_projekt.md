@@ -88,6 +88,7 @@
 | `notes` | Szabad szöveges jegyzetek kontaktokhoz/projektekhez |
 | `documents` | Linkek szerződésekhez, ajánlatokhoz (pl. Google Docs linkek) |
 | `campaigns` | Strukturált kampány-nyilvántartás (2026-07-26) — a `leads`/`deals` szabad szöveges `source` mezője MELLETT, kampányonkénti riporthoz (Salesforce-minta) |
+| `saved_filters` | Mentett szűrők/nézetek egy listaoldalhoz (2026-07-26), pl. "Forró leadjeim" — csak a szerzőjéhez tartozik |
 | `subscriptions` | *(jövőbeli fázis)* — mit fizet az adott account a SaaS-ért |
 | `integrations` | *(előkészítve, jövőbeli fázis)* — egy accounthoz kapcsolt külső eszköz (ajánlatkészítő, szerződéskészítő, Google Docs/Sheets stb.), API-kulcsokkal/beállításokkal |
 | `api_keys` | *(előkészítve)* — accounthoz tartozó API-kulcsok, amikkel külső modulok hitelesítve elérik a CRM API-t |
@@ -121,7 +122,7 @@
 
 **Teljes napló:** [`docs/haladasi-naplo.md`](docs/haladasi-naplo.md).
 
-**Legutóbbi állapot röviden:** a 3. fázis (MVP, csak Robnak) lényegében kész — a teljes Lead→Kontakt→Pipeline→Projekt/Retainer→Teendő/Jegyzet-lánc böngészőben működik, élesben tesztelt tenant-elkülönítéssel. A 4. fázis (Rob saját tesztelése) elkezdhető. **2026-07-26, tizennyolcadik forduló:** megépült az ügyfélszerzés B) ága (`docs/ugyfelszerzes-terv.md`) — "ki ajánlotta?" mező a kontaktokon + strukturált kampány-nyilvántartás/riport, automata teszttel (31/31 zöld). Nyitott, nem blokkoló pont: `pipeline-sablonok.md` Rob-validálása (lásd 7. szekció).
+**Legutóbbi állapot röviden:** a 3. fázis (MVP, csak Robnak) lényegében kész — a teljes Lead→Kontakt→Pipeline→Projekt/Retainer→Teendő/Jegyzet-lánc böngészőben működik, élesben tesztelt tenant-elkülönítéssel. A 4. fázis (Rob saját tesztelése) elkezdhető. **2026-07-26, tizennyolcadik forduló:** megépült az ügyfélszerzés B) ága (`docs/ugyfelszerzes-terv.md`) — "ki ajánlotta?" mező a kontaktokon + strukturált kampány-nyilvántartás/riport, automata teszttel (31/31 zöld). **Tizenkilencedik forduló:** mentett szűrők/nézetek (Kontaktok/Leadek listaoldal), automata teszttel (36/36 zöld). Nyitott, nem blokkoló pont: `pipeline-sablonok.md` Rob-validálása (lásd 7. szekció).
 
 ---
 

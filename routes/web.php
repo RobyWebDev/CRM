@@ -9,6 +9,7 @@ use App\Http\Controllers\PersonalNoteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RetainerController;
+use App\Http\Controllers\SavedFilterController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ThemeController;
@@ -57,6 +58,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
     Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
+
+    Route::post('/saved-filters', [SavedFilterController::class, 'store'])->name('saved-filters.store');
+    Route::delete('/saved-filters/{savedFilter}', [SavedFilterController::class, 'destroy'])->name('saved-filters.destroy');
 
     Route::get('/sajat-jegyzetek', [PersonalNoteController::class, 'index'])->name('personal-notes.index');
     Route::post('/sajat-jegyzetek', [PersonalNoteController::class, 'store'])->name('personal-notes.store');

@@ -17,6 +17,8 @@
                     @if (session('status') === 'lead-created') {{ __('Lead létrehozva.') }} @endif
                     @if (session('status') === 'lead-updated') {{ __('Lead frissítve.') }} @endif
                     @if (session('status') === 'lead-deleted') {{ __('Lead törölve.') }} @endif
+                    @if (session('status') === 'saved-filter-created') {{ __('Szűrő elmentve.') }} @endif
+                    @if (session('status') === 'saved-filter-deleted') {{ __('Mentett szűrő törölve.') }} @endif
                 </div>
             @endif
 
@@ -28,6 +30,8 @@
                     </a>
                 @endforeach
             </div>
+
+            <x-saved-filters resource="leads" index-route="leads.index" />
 
             @if ($leads->isEmpty())
                 <div class="bg-surface border border-line rounded-lg p-fluid-lg text-center text-ink-muted">

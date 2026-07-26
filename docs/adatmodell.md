@@ -293,6 +293,20 @@ Polimorf kapcsolat, hogy bármihez (contact, deal, project) köthető legyen fel
 | body | text | |
 | created_at / updated_at | | |
 
+### `saved_filters` (mentett szűrők/nézetek — 2026-07-26)
+
+*Rob saját AI-javaslata (crm_projekt.md 8. szekció) — egy listaoldal (Kontaktok/Leadek) szűrés-kombinációja névvel elmenthető, hogy egy kattintással újra alkalmazható legyen. Csak a szerzőjéhez tartozik, mint a `notes` tábla "saját jegyzet" (user_id) ága.*
+
+| Oszlop | Típus | Megjegyzés |
+| --- | --- | --- |
+| id | bigint PK | |
+| account_id | bigint FK | |
+| user_id | bigint FK | csak ő láthatja/törölheti |
+| resource | varchar | melyik listaoldalra vonatkozik (`contacts` / `leads`) |
+| name | varchar | pl. "Forró leadjeim" |
+| query_string | text | a lista URL-jének lekérdezés-része (pl. `status=qualified`) |
+| created_at / updated_at | | |
+
 ### `documents`
 
 | Oszlop | Típus | Megjegyzés |

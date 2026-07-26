@@ -17,6 +17,8 @@
                     @if (session('status') === 'contact-created') {{ __('Kontakt létrehozva.') }} @endif
                     @if (session('status') === 'contact-updated') {{ __('Kontakt frissítve.') }} @endif
                     @if (session('status') === 'contact-deleted') {{ __('Kontakt törölve.') }} @endif
+                    @if (session('status') === 'saved-filter-created') {{ __('Szűrő elmentve.') }} @endif
+                    @if (session('status') === 'saved-filter-deleted') {{ __('Mentett szűrő törölve.') }} @endif
                 </div>
             @endif
 
@@ -35,6 +37,8 @@
                     <a href="{{ route('contacts.index') }}" class="text-fluid-xs text-accent underline">{{ __('szűrő törlése') }}</a>
                 </div>
             @endif
+
+            <x-saved-filters resource="contacts" index-route="contacts.index" />
 
             @if ($contacts->isEmpty())
                 <div class="bg-surface border border-line rounded-lg p-fluid-lg text-center text-ink-muted">

@@ -36,7 +36,7 @@
 
   **AI-javaslat, further best practice ötletek (Rob kifejezetten kérte, hogy adjak sajátot is):**
   - **Globális gyorskeresés** ✅ **megvalósítva (2026-07-25, tizenhatodik forduló):** új `SearchController` + `/search` route, keresőmező a navigációs sávban (asztali és mobil nézetben is), ami egyszerre keres kontaktok, cégek, leadek, üzletek, projektek és retainerek között (név/cím/e-mail/telefon/cég mezőkön), account-szűrten. Eredmények egy csoportosított listaoldalon jelennek meg, kattintható linkekkel a megfelelő rekordra.
-  - **Mentett szűrők/nézetek** — egy adott szűrés-kombináció elmenthető névvel (pl. "Forró leadjeim"), hogy ne kelljen mindig újra beállítani.
+  - **Mentett szűrők/nézetek** ✅ **megvalósítva (2026-07-26, tizenkilencedik forduló):** új `saved_filters` tábla + `SavedFilterController` + `<x-saved-filters>` komponens, bekötve a Kontaktok és Leadek listaoldalba — egy adott szűrés-kombináció (pl. "Forró leadjeim") névvel elmenthető, egy kattintással újra alkalmazható, csak a szerzőjéhez tartozik (más felhasználó, még ugyanabban a fiókban is, nem törölheti).
   - **Adatminőség-jelzés** ✅ **megvalósítva (2026-07-25, tizenhatodik forduló):** az `InsightsEngine` most már jelzi, ha kontaktoknak nincs telefonszáma (`Contact::whereNull('phone')->orWhere('phone', '')`), ugyanabba a Dashboard "Javaslatok" kártyába illesztve, mint a többi szabály.
   - **Gyors-felvétel mobilon** (lebegő "+" gomb, amivel egy kattintással kontaktot/teendőt lehet felvenni terepen, telefonon) — jól illik a már meglévő mobilbarát elvhez.
   - **Billentyűparancsok "haladó" módban** — a 2. pontban említett Egyszerű/Haladó mód-váltáshoz szervesen illeszkedő extra, ami a rutinos felhasználóknak gyorsít, kezdőknek nem zavaró (mert csak haladó módban aktív).

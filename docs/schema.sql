@@ -387,6 +387,24 @@ CREATE TABLE notes (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
+-- saved_filters — mentett szűrők/nézetek egy listaoldalhoz (2026-07-26,
+-- Rob saját AI-javaslata, crm_projekt.md 8. szekció). Csak a szerzőjéhez
+-- tartozik, mint a notes tábla "saját jegyzet" ága.
+-- ============================================================
+CREATE TABLE saved_filters (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    account_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    resource VARCHAR(255) NOT NULL, -- pl. "contacts", "leads"
+    name VARCHAR(255) NOT NULL,
+    query_string TEXT NOT NULL,
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    CONSTRAINT fk_saved_filters_account FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE,
+    CONSTRAINT fk_saved_filters_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
 -- documents — linkek szerződésekhez, ajánlatokhoz, polimorf kapcsolattal
 -- ============================================================
 CREATE TABLE documents (
