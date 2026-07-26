@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CustomFieldDefinitionController;
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/export', [ProfileController::class, 'export'])->name('profile.export');
 
     Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+    Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
 
     Route::resource('contacts', ContactController::class);
 

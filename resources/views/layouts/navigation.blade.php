@@ -42,6 +42,9 @@
                     <x-nav-link :href="route('custom-field-definitions.index')" :active="request()->routeIs('custom-field-definitions.*')">
                         {{ __('Egyedi mezők') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('activity-log.index')" :active="request()->routeIs('activity-log.*')">
+                        {{ __('Napló') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -141,6 +144,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('custom-field-definitions.index')" :active="request()->routeIs('custom-field-definitions.*')">
                 {{ __('Egyedi mezők') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('activity-log.index')" :active="request()->routeIs('activity-log.*')">
+                {{ __('Napló') }}
             </x-responsive-nav-link>
         </div>
 

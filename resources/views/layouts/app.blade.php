@@ -33,6 +33,10 @@
             <main>
                 {{ $slot }}
             </main>
+
+            @auth
+                <x-quick-add-fab />
+            @endauth
         </div>
     </body>
 </html>
